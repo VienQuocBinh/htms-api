@@ -15,8 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Test {
-    //    @EmbeddedId
-//    private TestId id;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

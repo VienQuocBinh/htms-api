@@ -13,8 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClassSubject {
-    //    @EmbeddedId
-//    private ClassSubjectId id;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID classSubjectId;
