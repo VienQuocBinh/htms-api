@@ -11,7 +11,7 @@ spring:
         format_sql: true
     hibernate:
       #disable this to run flyway. If need to change anything to database, please create new flyway script to run
-      ddl-auto: create-drop
+      ddl-auto: none
     show-sql: false
   flyway:
     enabled: true

@@ -23,7 +23,7 @@ public class ProgramPerCycle {
     private Date programEndDate;
 
     @OneToMany(mappedBy = "programPerCycle", fetch = FetchType.LAZY)
-    private List<ClassSubject> subjects;
+    private List<Class> classes;
     @OneToMany(mappedBy = "programPerCycle", fetch = FetchType.LAZY)
     private List<Test> tests;
 }

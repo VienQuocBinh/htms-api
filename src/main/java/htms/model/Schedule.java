@@ -39,7 +39,6 @@ public class Schedule extends BaseEntityAuditing {
 //            @JoinColumn(name = "program_id"),
 //            @JoinColumn(name = "cycle_id")
 //    })
-//    private ClassSubject subject;
 
     // base
 }

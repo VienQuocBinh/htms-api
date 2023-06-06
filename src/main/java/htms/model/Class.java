@@ -2,6 +2,7 @@ package htms.model;
 
 import htms.common.constance.ClassStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import lombok.*;
 
 import java.util.UUID;
@@ -12,13 +13,15 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassSubject {
+public class Class {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID classSubjectId;
-    private String title;
+    private UUID id;
+    private String name;
     @Enumerated(EnumType.STRING)
     private ClassStatus status;
+    @Max(30)
+    private int quantity;
 
     @ManyToOne
     @JoinColumns({
