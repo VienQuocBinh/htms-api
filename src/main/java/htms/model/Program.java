@@ -26,4 +26,6 @@ public class Program {
     private Department department;
     @OneToMany(mappedBy = "id.program")
     private List<ProgramPerCycle> programPerCycles;
+    @OneToMany(mappedBy = "id.program")
+    private List<Enrollment> enrollments;
 }

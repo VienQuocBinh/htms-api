@@ -1,7 +1,8 @@
 package htms.model;
 
 import htms.model.embeddedkey.EnrollmentId;
-import jakarta.persistence.*;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -21,9 +22,4 @@ public class Enrollment implements Serializable {
     private Date enrollmentDate;
     private boolean isCancelled;
     private String cancelReason;
-
-    @ManyToOne
-    @MapsId("traineeID")
-    @JoinColumn(name = "trainee_id")
-    private Trainee trainee;
 }

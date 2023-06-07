@@ -36,7 +36,7 @@ public class Trainee extends BaseEntityAuditing {
     private List<Attendance> attendances;
     @OneToMany(mappedBy = "trainee", fetch = FetchType.LAZY)
     private List<TestScore> scores;
-    @OneToMany(mappedBy = "trainee", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.trainee", fetch = FetchType.LAZY)
     private List<Enrollment> enrollments;
 
     protected Trainee(TraineeBuilder<?, ?> builder) {

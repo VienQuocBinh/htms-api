@@ -1,3 +1,8 @@
+create sequence public.option_seq
+    increment by 50;
+
+alter sequence public.option_seq owner to "user";
+
 create table if not exists public.flyway_schema_history
 (
     installed_rank integer                 not null
@@ -110,6 +115,48 @@ create table if not exists public.class
 alter table public.class
     owner to "user";
 
+create table if not exists public.question_bank
+(
+    id         uuid not null
+        primary key,
+    subject_id uuid,
+    password   varchar(255)
+);
+
+alter table public.question_bank
+    owner to "user";
+
+create table if not exists public.question
+(
+    id                  serial
+        primary key,
+    mark                double precision not null
+        constraint question_mark_check
+            check ((mark >= (0)::double precision) AND (mark <= (10)::double precision)),
+    single_answer_input char             not null,
+    question_bank_id    uuid
+        constraint fkejbwnygbsv82ocl8dq6o2k6yq
+            references public.question_bank,
+    title               varchar(255)
+);
+
+alter table public.question
+    owner to "user";
+
+create table if not exists public.option
+(
+    id              smallint not null
+        primary key,
+    is_right_answer boolean,
+    option_char     char,
+    question_id     integer
+        constraint fkgtlhwmagte7l2ssfsgw47x9ka
+            references public.question
+);
+
+alter table public.option
+    owner to "user";
+
 create table if not exists public.role
 (
     id   bigserial
@@ -192,6 +239,78 @@ create table if not exists public.schedule
 alter table public.schedule
     owner to "user";
 
+create table if not exists public.syllabus
+(
+    total_sessions smallint,
+    id             uuid not null
+        primary key,
+    description    varchar(255),
+    pass_criteria  varchar(255)
+);
+
+alter table public.syllabus
+    owner to "user";
+
+create table if not exists public.assessment_scheme
+(
+    id          serial
+        primary key,
+    weight      double precision,
+    syllabus_id uuid
+        constraint fkrtqf7smtj6kp8u3y415kwkw51
+            references public.syllabus,
+    category    varchar(255)
+        constraint assessment_scheme_category_check
+            check ((category)::text = ANY
+                   ((ARRAY ['ASSIGNMENT'::character varying, 'QUIZ'::character varying, 'FE'::character varying, 'PE'::character varying])::text[]))
+);
+
+alter table public.assessment_scheme
+    owner to "user";
+
+create table if not exists public.material
+(
+    id          uuid         not null
+        primary key,
+    syllabus_id uuid
+        constraint fkfmuye2g2ot4vg2md2d7lhc5lc
+            references public.syllabus,
+    description varchar(255),
+    link        varchar(255),
+    name        varchar(255) not null
+);
+
+alter table public.material
+    owner to "user";
+
+create table if not exists public.module
+(
+    module_no   smallint,
+    id          uuid not null
+        primary key,
+    syllabus_id uuid
+        constraint fk99595argxkb49s31xoikat3ti
+            references public.syllabus,
+    description varchar(255),
+    link        varchar(255)
+);
+
+alter table public.module
+    owner to "user";
+
+create table if not exists public.session
+(
+    session_no smallint,
+    id         uuid not null
+        primary key,
+    module_id  uuid
+        constraint fk7vcm9xoec4eqifbkryow1dv1y
+            references public.module
+);
+
+alter table public.session
+    owner to "user";
+
 create table if not exists public.test
 (
     date       timestamp(6) not null,
@@ -211,6 +330,19 @@ create table if not exists public.test
 );
 
 alter table public.test
+    owner to "user";
+
+create table if not exists public.test_question
+(
+    question_id integer not null
+        constraint fkk5qvcm9mkgbi8hm4u2mlidm4i
+            references public.question,
+    test_id     bigint  not null
+        constraint fkk2sfq1wyx19uvwn7pkgk1bc9n
+            references public.test
+);
+
+alter table public.test_question
     owner to "user";
 
 create table if not exists public.trainee
@@ -262,8 +394,12 @@ create table if not exists public.enrollment
 (
     is_cancelled    boolean      not null,
     enrollment_date timestamp(6) not null,
-    cycle_id        uuid         not null,
-    program_id      uuid         not null,
+    cycle_id        uuid         not null
+        constraint fk9qhq4kj769exbklnarshma93o
+            references public.cycle,
+    program_id      uuid         not null
+        constraint fksv31c7aw3p6lgvhaulei4jmwt
+            references public.program,
     trainee_id      uuid         not null
         constraint fkgbr3ng3rd30tmhyw0gc32oxli
             references public.trainee,
@@ -310,5 +446,21 @@ create table if not exists public.trainer
 );
 
 alter table public.trainer
+    owner to "user";
+
+create table if not exists public.unit
+(
+    duration    integer not null,
+    id          serial
+        primary key,
+    unit_no     smallint,
+    session_id  uuid
+        constraint fk3ltxu5g3m8paauww2nigsjh07
+            references public.session,
+    description varchar(255),
+    name        varchar(255)
+);
+
+alter table public.unit
     owner to "user";
 

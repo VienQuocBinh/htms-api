@@ -35,4 +35,6 @@ public class Test {
     private ProgramPerCycle programPerCycle;
     @OneToMany(mappedBy = "test", fetch = FetchType.LAZY)
     private List<TestScore> testScore;
+    @ManyToMany(mappedBy = "tests", fetch = FetchType.LAZY)
+    private List<Question> questions;
 }
