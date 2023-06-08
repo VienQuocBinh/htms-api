@@ -5,12 +5,10 @@ import htms.api.response.ClassResponse;
 import htms.service.ClassService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +19,11 @@ public class ClassController {
     @GetMapping
     public ResponseEntity<List<ClassResponse>> getClasses() {
         return ResponseEntity.ok(classService.getClasses());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClassResponse> getClassDetail(@PathVariable UUID id) {
+        return ResponseEntity.ok(classService.getClassDetail(id));
     }
 
     @PostMapping

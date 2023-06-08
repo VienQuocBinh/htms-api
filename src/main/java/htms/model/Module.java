@@ -18,7 +18,7 @@ public class Module {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String description;
-    private Short moduleNo;
+    private Integer moduleNo;
     @URL
     private String link;
 

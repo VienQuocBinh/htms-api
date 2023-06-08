@@ -18,7 +18,7 @@ public class Test {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long testNo;
+    private Integer testNo;
     @NotNull
     private Date date;
     @NotNull

@@ -16,7 +16,7 @@ public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private Short sessionNo;
+    private Integer sessionNo;
 
     @ManyToOne
     @JoinColumn(name = "module_id")

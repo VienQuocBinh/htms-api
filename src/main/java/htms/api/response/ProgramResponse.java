@@ -2,6 +2,7 @@ package htms.api.response;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -10,11 +11,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProgramResponse {
-    // program start/end date
     private UUID id;
     private String description;
     private String code;
-
-//    private Department department;
-//    private List<ProgramPerCycle> programPerCycles;
+    private DepartmentResponse department;
+    private List<ProgramPerCycleResponse> programPerCycleList;
 }

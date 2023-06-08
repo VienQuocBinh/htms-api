@@ -19,7 +19,7 @@ public class Question {
     private String title;
     private char singleAnswerInput;
     @Range(min = 0, max = 10)
-    private double mark;
+    private Double mark;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "test_question",

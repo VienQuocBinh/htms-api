@@ -12,7 +12,7 @@ import lombok.*;
 public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Short id;
+    private Integer id;
     private Character optionChar; // A/B/C/D
     private Boolean isRightAnswer;
 

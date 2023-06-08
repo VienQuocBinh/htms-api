@@ -145,7 +145,7 @@ alter table public.question
 
 create table if not exists public.option
 (
-    id              smallint not null
+    id              integer not null
         primary key,
     is_right_answer boolean,
     option_char     char,

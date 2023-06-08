@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassResponse {
+public class ClassDetailResponse {
     private UUID id;
     private String name;
     private ClassStatus status;
@@ -26,5 +26,6 @@ public class ClassResponse {
     private Date startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date endDate;
+    // add more fields
     private UUID trainerId;
 }

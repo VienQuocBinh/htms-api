@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class ClassServiceImpl implements ClassService {
         var clazz = Class.builder()
                 .name("Class SE1615")
                 .status(ClassStatus.PENDING)
-                .quantity(29)
+                .maxQuantity(29)
                 .build();
         classRepository.save(clazz);
         return modelMapper.map(clazz, ClassResponse.class);
@@ -34,5 +35,13 @@ public class ClassServiceImpl implements ClassService {
         return classRepository.findAll()
                 .stream().map((element) -> modelMapper.map(element, ClassResponse.class))
                 .toList();
+    }
+
+    @Override
+    public ClassResponse getClassDetail(UUID id) {
+        // todo: handle exceptions
+        return classRepository.findById(id)
+                .map((element) -> modelMapper.map(element, ClassResponse.class))
+                .orElseThrow();
     }
 }

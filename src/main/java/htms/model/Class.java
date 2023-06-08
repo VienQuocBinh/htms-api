@@ -2,9 +2,9 @@ package htms.model;
 
 import htms.common.constance.ClassStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import lombok.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -20,8 +20,12 @@ public class Class {
     private String name;
     @Enumerated(EnumType.STRING)
     private ClassStatus status;
-    @Max(30)
-    private int quantity;
+    private Integer minQuantity;
+    private Integer maxQuantity;
+    private Date startDate;
+    private Date endDate;
+    private String code;
+    private String reason;
 
     @ManyToOne
     @JoinColumns({

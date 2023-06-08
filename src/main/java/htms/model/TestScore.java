@@ -17,7 +17,7 @@ public class TestScore {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Length(max = 10)
-    private double score;
+    private Double score;
     @org.hibernate.validator.constraints.UUID
     private UUID cycleId;
 

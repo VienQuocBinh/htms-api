@@ -15,8 +15,8 @@ public class Unit {
     private Integer id;
     private String name;
     private String description;
-    private int duration;
-    private Short unitNo;
+    private Integer duration;
+    private Integer unitNo;
 
     @ManyToOne
     @JoinColumn(name = "session_id")

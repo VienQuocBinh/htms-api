@@ -25,6 +25,8 @@ public class Trainee extends BaseEntityAuditing {
     @NotNull
     private String name;
     @NotNull
+    private String code;
+    @NotNull
     private String phone;
     private Date birthdate;
 
