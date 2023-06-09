@@ -1,3 +1,8 @@
+create sequence public.option_seq
+    increment by 50;
+
+alter sequence public.option_seq owner to "user";
+
 create table if not exists public.flyway_schema_history
 (
     installed_rank integer                 not null
@@ -372,17 +377,15 @@ create table if not exists public.enrollment
 (
     is_cancelled    boolean      not null,
     enrollment_date timestamp(6) not null,
-    cycle_id        uuid         not null
-        constraint fk9qhq4kj769exbklnarshma93o
-            references public.cycle,
-    program_id      uuid         not null
-        constraint fksv31c7aw3p6lgvhaulei4jmwt
-            references public.program,
+    cycle_id        uuid         not null,
+    program_id      uuid         not null,
     trainee_id      uuid         not null
         constraint fkgbr3ng3rd30tmhyw0gc32oxli
             references public.trainee,
     cancel_reason   varchar(255),
-    primary key (cycle_id, program_id, trainee_id)
+    primary key (cycle_id, program_id, trainee_id),
+    constraint fk1qu88r9jgfk0qrtybqvgw8p76
+        foreign key (cycle_id, program_id) references public.program_per_cycle
 );
 
 alter table public.enrollment

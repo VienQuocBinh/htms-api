@@ -26,4 +26,6 @@ public class ProgramPerCycle {
     private List<Class> classes;
     @OneToMany(mappedBy = "programPerCycle", fetch = FetchType.LAZY)
     private List<Test> tests;
+    @OneToMany(mappedBy = "id.programPerCycle", fetch = FetchType.LAZY)
+    private List<Enrollment> enrollments;
 }
