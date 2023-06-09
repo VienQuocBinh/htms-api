@@ -29,7 +29,8 @@ public class Schedule extends BaseEntityAuditing {
     @NotNull
     private Date endTime;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "room_id")
     private Room room;
     @OneToMany(mappedBy = "schedule")
     private List<Attendance> attendance;

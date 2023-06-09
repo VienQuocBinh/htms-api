@@ -65,8 +65,13 @@ values ('b49d2b9c-d8a1-473d-bafe-2207f62a034b', 'NVH601'),
        ('35f2fc98-1331-4917-81cd-651a312a6316', '202'),
        ('26df01e1-03c6-42c6-bcdc-43047d081c14', '221');
 
-insert into public.schedule (is_deleted, created_date, date, end_time, start_time, updated_date, created_by, id,
-                             room_id, updated_by)
+insert into public.schedule (is_deleted, created_date, date, end_time, start_time, updated_date, changed_schedule_id,
+                             class_id, created_by, id, room_id, trainer_id, updated_by)
 values (false, '2023-06-09 10:27:20.000000', '2023-06-09 10:27:23.000000', '2023-06-09 10:27:28.000000',
-        '2023-06-09 12:27:30.000000', null, '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08',
-        'f6ecacd2-a1ed-4f41-8261-6921887580aa', 'b49d2b9c-d8a1-473d-bafe-2207f62a034b', null);
+        '2023-06-09 12:27:30.000000', null, null, 'a64edcb5-a30b-47c5-a053-332cd2a10f6b',
+        '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08', 'f6ecacd2-a1ed-4f41-8261-6921887580aa',
+        'b49d2b9c-d8a1-473d-bafe-2207f62a034b', '3ae6a7fb-87a4-423e-8f38-d1313e710a00', null),
+       (false, '2023-06-09 10:27:20.000000', '2023-06-10 10:27:23.000000', '2023-06-10 10:27:23.000000',
+        '2023-06-10 10:27:23.000000', null, null, 'a64edcb5-a30b-47c5-a053-332cd2a10f6b',
+        '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08', '9e03574d-2d9a-4a5c-83eb-e0e012a9e43c',
+        'b49d2b9c-d8a1-473d-bafe-2207f62a034b', 'ff5a3c78-2642-4d4d-a793-b2cabdabde17', null);

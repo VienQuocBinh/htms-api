@@ -3,6 +3,7 @@ package htms.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,6 +18,6 @@ public class Room {
     private UUID id;
     private String name;
 
-    @OneToOne(mappedBy = "room")
-    private Schedule schedule;
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    private List<Schedule> schedules;
 }

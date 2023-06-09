@@ -446,7 +446,6 @@ create table if not exists public.schedule
     id                  uuid         not null
         primary key,
     room_id             uuid
-        unique
         constraint fkh2hdhbss2x31ns719hka6enma
             references public.room,
     trainer_id          uuid
