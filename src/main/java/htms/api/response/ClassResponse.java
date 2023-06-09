@@ -26,5 +26,5 @@ public class ClassResponse {
     private Date startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date endDate;
-    private UUID trainerId;
+//    private UUID trainerId;
 }

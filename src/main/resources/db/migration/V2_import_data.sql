@@ -59,3 +59,14 @@ insert into public.enrollment (is_cancelled, enrollment_date, cycle_id, program_
 values (false, '2023-06-08 16:16:42.000000', 'd99ae531-4845-4b8b-b826-829b5c5f032b',
         '73574861-62eb-4965-9ebc-cecbb50ea11f', '673e3d95-bdac-426f-ab4b-4acb0a85554b', null);
 
+insert into public.room (id, name)
+values ('b49d2b9c-d8a1-473d-bafe-2207f62a034b', 'NVH601'),
+       ('66bcd96c-cd47-4f20-9e03-115333153e57', 'NVH409'),
+       ('35f2fc98-1331-4917-81cd-651a312a6316', '202'),
+       ('26df01e1-03c6-42c6-bcdc-43047d081c14', '221');
+
+insert into public.schedule (is_deleted, created_date, date, end_time, start_time, updated_date, created_by, id,
+                             room_id, updated_by)
+values (false, '2023-06-09 10:27:20.000000', '2023-06-09 10:27:23.000000', '2023-06-09 10:27:28.000000',
+        '2023-06-09 12:27:30.000000', null, '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08',
+        'f6ecacd2-a1ed-4f41-8261-6921887580aa', 'b49d2b9c-d8a1-473d-bafe-2207f62a034b', null);

@@ -33,12 +33,24 @@ public class Schedule extends BaseEntityAuditing {
     private Room room;
     @OneToMany(mappedBy = "schedule")
     private List<Attendance> attendance;
-//    @ManyToOne
-//    @JoinColumns({
-//            @JoinColumn(name = "class_subject_id"),
-//            @JoinColumn(name = "program_id"),
-//            @JoinColumn(name = "cycle_id")
-//    })
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    private Class clazz;
+    @OneToOne
+    private Trainer trainer;
+    @OneToOne
+    private ChangedSchedule changedSchedule;
 
-    // base
+    public Schedule(ScheduleBuilder<?, ?> builder) {
+        super(builder);
+        this.id = builder.id;
+        this.date = builder.date;
+        this.startTime = builder.startTime;
+        this.endTime = builder.endTime;
+        this.room = builder.room;
+        this.attendance = builder.attendance;
+        this.clazz = builder.clazz;
+        this.trainer = builder.trainer;
+        this.changedSchedule = builder.changedSchedule;
+    }
 }

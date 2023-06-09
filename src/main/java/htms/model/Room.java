@@ -15,6 +15,7 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    private String name;
 
     @OneToOne(mappedBy = "room")
     private Schedule schedule;

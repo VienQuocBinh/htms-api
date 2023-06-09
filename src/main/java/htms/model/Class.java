@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -33,4 +34,7 @@ public class Class {
             @JoinColumn(name = "program_id", referencedColumnName = "program_id")
     })
     private ProgramPerCycle programPerCycle;
+
+    @OneToMany(mappedBy = "clazz")
+    private List<Schedule> schedules;
 }

@@ -31,6 +31,8 @@ public class Trainer extends BaseEntityAuditing {
 
     @OneToOne
     private Account account;
+    @OneToOne(mappedBy = "trainer")
+    private Schedule schedule;
 
     public Trainer(BaseEntityAuditingBuilder<?, ?> builder, UUID id, @NotNull String name, @NotNull String phone, Date birthdate, Account account) {
         super(builder);

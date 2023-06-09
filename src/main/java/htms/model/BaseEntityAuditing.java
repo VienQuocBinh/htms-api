@@ -18,9 +18,9 @@ import java.util.UUID;
 @Setter
 @SuperBuilder
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class BaseEntityAuditing {
     @CreatedDate
     @Column(updatable = false, nullable = false)

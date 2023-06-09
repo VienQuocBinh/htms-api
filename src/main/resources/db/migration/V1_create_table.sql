@@ -1,8 +1,3 @@
-create sequence public.option_seq
-    increment by 50;
-
-alter sequence public.option_seq owner to "user";
-
 create table if not exists public.flyway_schema_history
 (
     installed_rank integer                 not null
@@ -25,6 +20,24 @@ alter table public.flyway_schema_history
 create index if not exists flyway_schema_history_s_idx
     on public.flyway_schema_history (success);
 
+create table if not exists public.changed_schedule
+(
+    created_date       timestamp(6) not null,
+    from_date          timestamp(6) not null,
+    last_modified_date timestamp(6),
+    to_date            timestamp(6) not null,
+    changed_by         uuid         not null,
+    from_trainer       uuid         not null,
+    id                 uuid         not null
+        primary key,
+    to_trainer         uuid         not null,
+    comment            varchar(255),
+    reason             varchar(255)
+);
+
+alter table public.changed_schedule
+    owner to "user";
+
 create table if not exists public.cycle
 (
     end_date            timestamp(6),
@@ -43,7 +56,8 @@ create table if not exists public.department
 (
     id   uuid         not null
         primary key,
-    name varchar(100) not null
+    name varchar(100) not null,
+    code varchar(255)
 );
 
 alter table public.department
@@ -96,15 +110,18 @@ alter table public.program_per_cycle
 
 create table if not exists public.class
 (
-    quantity   integer not null
-        constraint class_quantity_check
-            check (quantity <= 30),
-    cycle_id   uuid,
-    id         uuid    not null
+    max_quantity integer,
+    min_quantity integer,
+    end_date     timestamp(6),
+    start_date   timestamp(6),
+    cycle_id     uuid,
+    id           uuid not null
         primary key,
-    program_id uuid,
-    name       varchar(255),
-    status     varchar(255)
+    program_id   uuid,
+    code         varchar(255),
+    name         varchar(255),
+    reason       varchar(255),
+    status       varchar(255)
         constraint class_status_check
             check ((status)::text = ANY
                    ((ARRAY ['PENDING'::character varying, 'ACCEPTED'::character varying, 'REJECTED'::character varying])::text[])),
@@ -130,10 +147,10 @@ create table if not exists public.question
 (
     id                  serial
         primary key,
-    mark                double precision not null
+    mark                double precision
         constraint question_mark_check
             check ((mark >= (0)::double precision) AND (mark <= (10)::double precision)),
-    single_answer_input char             not null,
+    single_answer_input char not null,
     question_bank_id    uuid
         constraint fkejbwnygbsv82ocl8dq6o2k6yq
             references public.question_bank,
@@ -211,32 +228,12 @@ alter table public.permission
 
 create table if not exists public.room
 (
-    id uuid not null
-        primary key
+    id   uuid not null
+        primary key,
+    name varchar(255)
 );
 
 alter table public.room
-    owner to "user";
-
-create table if not exists public.schedule
-(
-    is_deleted   boolean      not null,
-    created_date timestamp(6) not null,
-    date         timestamp(6) not null,
-    end_time     timestamp(6) not null,
-    start_time   timestamp(6) not null,
-    updated_date timestamp(6),
-    created_by   uuid         not null,
-    id           uuid         not null
-        primary key,
-    room_id      uuid
-        unique
-        constraint fkh2hdhbss2x31ns719hka6enma
-            references public.room,
-    updated_by   uuid
-);
-
-alter table public.schedule
     owner to "user";
 
 create table if not exists public.syllabus
@@ -285,7 +282,7 @@ alter table public.material
 
 create table if not exists public.module
 (
-    module_no   smallint,
+    module_no   integer,
     id          uuid not null
         primary key,
     syllabus_id uuid
@@ -300,7 +297,7 @@ alter table public.module
 
 create table if not exists public.session
 (
-    session_no smallint,
+    session_no integer,
     id         uuid not null
         primary key,
     module_id  uuid
@@ -313,10 +310,10 @@ alter table public.session
 
 create table if not exists public.test
 (
+    test_no    integer,
     date       timestamp(6) not null,
     id         bigserial
         primary key,
-    test_no    bigint,
     time       bigint       not null,
     cycle_id   uuid,
     program_id uuid,
@@ -363,31 +360,12 @@ create table if not exists public.trainee
         constraint fkltl5tu7qk21at5ctvt7mc6v1c
             references public.profile,
     updated_by   uuid,
+    code         varchar(255) not null,
     name         varchar(255) not null,
     phone        varchar(255) not null
 );
 
 alter table public.trainee
-    owner to "user";
-
-create table if not exists public.attendance
-(
-    is_deleted   boolean      not null,
-    created_date timestamp(6) not null,
-    updated_date timestamp(6),
-    created_by   uuid         not null,
-    id           uuid         not null
-        primary key,
-    schedule_id  uuid
-        constraint fk3ubfa45l2ve7k80jlxkwh5ht5
-            references public.schedule,
-    trainee_id   uuid
-        constraint fkghlbinj34ic6pwlx2nv1largn
-            references public.trainee,
-    updated_by   uuid
-);
-
-alter table public.attendance
     owner to "user";
 
 create table if not exists public.enrollment
@@ -412,7 +390,7 @@ alter table public.enrollment
 
 create table if not exists public.test_score
 (
-    score      double precision not null,
+    score      double precision,
     id         bigserial
         primary key,
     test_id    bigint
@@ -441,6 +419,7 @@ create table if not exists public.trainer
     id           uuid         not null
         primary key,
     updated_by   uuid,
+    code         varchar(255) not null,
     name         varchar(255) not null,
     phone        varchar(255) not null
 );
@@ -448,12 +427,64 @@ create table if not exists public.trainer
 alter table public.trainer
     owner to "user";
 
+create table if not exists public.schedule
+(
+    is_deleted          boolean      not null,
+    created_date        timestamp(6) not null,
+    date                timestamp(6) not null,
+    end_time            timestamp(6) not null,
+    start_time          timestamp(6) not null,
+    updated_date        timestamp(6),
+    changed_schedule_id uuid
+        unique
+        constraint fkd0retj13eb69vrcw1x4hueshs
+            references public.changed_schedule,
+    class_id            uuid
+        constraint fkqqv2rqy5xxw2oyhie35seyclw
+            references public.class,
+    created_by          uuid         not null,
+    id                  uuid         not null
+        primary key,
+    room_id             uuid
+        unique
+        constraint fkh2hdhbss2x31ns719hka6enma
+            references public.room,
+    trainer_id          uuid
+        unique
+        constraint fkl1u2pb62wun0njqsorvvlvoy8
+            references public.trainer,
+    updated_by          uuid
+);
+
+alter table public.schedule
+    owner to "user";
+
+create table if not exists public.attendance
+(
+    is_deleted   boolean      not null,
+    created_date timestamp(6) not null,
+    updated_date timestamp(6),
+    created_by   uuid         not null,
+    id           uuid         not null
+        primary key,
+    schedule_id  uuid
+        constraint fk3ubfa45l2ve7k80jlxkwh5ht5
+            references public.schedule,
+    trainee_id   uuid
+        constraint fkghlbinj34ic6pwlx2nv1largn
+            references public.trainee,
+    updated_by   uuid
+);
+
+alter table public.attendance
+    owner to "user";
+
 create table if not exists public.unit
 (
-    duration    integer not null,
+    duration    integer,
     id          serial
         primary key,
-    unit_no     smallint,
+    unit_no     integer,
     session_id  uuid
         constraint fk3ltxu5g3m8paauww2nigsjh07
             references public.session,
