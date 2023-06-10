@@ -27,14 +27,17 @@ public class Class {
     private Date endDate;
     private String code;
     private String reason;
+    private String weekdays; // Monday, Tuesday...
 
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "cycle_id", referencedColumnName = "cycle_id"),
-            @JoinColumn(name = "program_id", referencedColumnName = "program_id")
-    })
-    private ProgramPerCycle programPerCycle;
+//    @ManyToOne
+//    @JoinColumns({
+//            @JoinColumn(name = "cycle_id", referencedColumnName = "cycle_id"),
+//            @JoinColumn(name = "program_id", referencedColumnName = "program_id")
+//    })
+//    private ProgramPerClass programPerClass;
 
     @OneToMany(mappedBy = "clazz")
     private List<Schedule> schedules;
+    @OneToMany(mappedBy = "id.clazz")
+    private List<ClassReasonDetail> classReasonDetails;
 }

@@ -2,8 +2,9 @@ package htms.service.impl;
 
 import htms.api.request.ProgramPerCycleRequest;
 import htms.api.response.ProgramPerCycleResponse;
-import htms.model.ProgramPerCycle;
-import htms.model.embeddedkey.ProgramPerCycleId;
+import htms.model.ProgramPerClass;
+import htms.model.embeddedkey.ProgramPerClassId;
+import htms.repository.ClassRepository;
 import htms.repository.CycleRepository;
 import htms.repository.ProgramPerCycleRepository;
 import htms.repository.ProgramRepository;
@@ -19,6 +20,7 @@ import java.util.List;
 public class ProgramPerCycleServiceImpl implements ProgramPerCycleService {
     private final ProgramPerCycleRepository programPerCycleRepository;
     private final CycleRepository cycleRepository;
+    private final ClassRepository classRepository;
     private final ProgramRepository programRepository;
     private final ModelMapper mapper;
 
@@ -31,9 +33,10 @@ public class ProgramPerCycleServiceImpl implements ProgramPerCycleService {
 
     @Override
     public ProgramPerCycleResponse create(ProgramPerCycleRequest request) {
-        var programPerCycle = ProgramPerCycle.builder()
-                .id(ProgramPerCycleId.builder()
-                        .cycle(cycleRepository.findById(request.getCycleId()).get())
+        var programPerCycle = ProgramPerClass.builder()
+                .id(ProgramPerClassId.builder()
+//                        .cycle(cycleRepository.findById(request.getCycleId()).get())
+                        .clazz(classRepository.findById(request.getClassId()).get())
                         .program(programRepository.findById(request.getProgramId()).get())
                         .build())
                 .programStartDate(request.getProgramStartDate())

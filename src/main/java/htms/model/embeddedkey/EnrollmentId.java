@@ -1,6 +1,6 @@
 package htms.model.embeddedkey;
 
-import htms.model.ProgramPerCycle;
+import htms.model.ProgramPerClass;
 import htms.model.Trainee;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
@@ -23,7 +23,7 @@ public class EnrollmentId implements Serializable {
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "program_id", referencedColumnName = "program_id"),
-            @JoinColumn(name = "cycle_id", referencedColumnName = "cycle_id")
+            @JoinColumn(name = "class_id", referencedColumnName = "class_id")
     })
-    private ProgramPerCycle programPerCycle;
+    private ProgramPerClass programPerClass;
 }

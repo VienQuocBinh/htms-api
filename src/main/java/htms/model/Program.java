@@ -25,7 +25,7 @@ public class Program {
     @JoinColumn(name = "department_id")
     private Department department;
     @OneToMany(mappedBy = "id.program")
-    private List<ProgramPerCycle> programPerCycles;
-//    @OneToMany(mappedBy = "id.program")
-//    private List<Enrollment> enrollments;
+    private List<ProgramPerClass> programPerClasses;
+    @OneToOne
+    private Syllabus syllabus;
 }

@@ -29,10 +29,10 @@ public class Test {
 
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "cycle_id", referencedColumnName = "cycle_id"),
+            @JoinColumn(name = "class_id", referencedColumnName = "class_id"),
             @JoinColumn(name = "program_id", referencedColumnName = "program_id")
     })
-    private ProgramPerCycle programPerCycle;
+    private ProgramPerClass programPerClass;
     @OneToMany(mappedBy = "test", fetch = FetchType.LAZY)
     private List<TestScore> testScore;
     @ManyToMany(mappedBy = "tests", fetch = FetchType.LAZY)

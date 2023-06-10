@@ -14,7 +14,7 @@ public class ProgramMapper {
 
     public ProgramResponse toResponse(Program program) {
         var response = mapper.map(program, ProgramResponse.class);
-        var ppc = program.getProgramPerCycles()
+        var ppc = program.getProgramPerClasses()
                 .stream()
                 .map((element) -> mapper.map(element, ProgramPerCycleResponse.class))
                 .toList();

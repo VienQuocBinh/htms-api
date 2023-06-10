@@ -23,6 +23,7 @@ public class TraineeServiceImpl implements TraineeService {
 //        return list.stream()
 //                .map(trainees -> mapper.map(trainees, TraineeResponse.class))
 //                .toList();
+
         return null;
     }
 }

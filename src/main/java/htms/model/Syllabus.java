@@ -26,4 +26,6 @@ public class Syllabus {
     private List<Material> materials;
     @OneToMany(mappedBy = "syllabus", fetch = FetchType.LAZY)
     private List<Module> modules;
+    @OneToOne(mappedBy = "syllabus")
+    private Program program;
 }
