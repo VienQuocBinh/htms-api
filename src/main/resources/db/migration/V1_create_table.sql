@@ -3,7 +3,7 @@ create sequence public.option_seq
 
 alter sequence public.option_seq owner to "user";
 
-create table if not exists public.flyway_schema_history
+create table public.flyway_schema_history
 (
     installed_rank integer                 not null
         constraint flyway_schema_history_pk
@@ -22,10 +22,10 @@ create table if not exists public.flyway_schema_history
 alter table public.flyway_schema_history
     owner to "user";
 
-create index if not exists flyway_schema_history_s_idx
+create index flyway_schema_history_s_idx
     on public.flyway_schema_history (success);
 
-create table if not exists public.changed_schedule
+create table public.changed_schedule
 (
     created_date       timestamp(6) not null,
     from_date          timestamp(6) not null,
@@ -43,7 +43,7 @@ create table if not exists public.changed_schedule
 alter table public.changed_schedule
     owner to "user";
 
-create table if not exists public.class
+create table public.class
 (
     is_deleted       boolean      not null,
     created_date     timestamp(6) not null,
@@ -52,7 +52,8 @@ create table if not exists public.class
     id               uuid         not null
         primary key,
     updated_by       uuid,
-    code             varchar(255),
+    code             varchar(255)
+        unique,
     general_schedule varchar(255),
     name             varchar(255)
 );
@@ -60,7 +61,7 @@ create table if not exists public.class
 alter table public.class
     owner to "user";
 
-create table if not exists public.additional_material
+create table public.additional_material
 (
     class_id    uuid
         constraint fk6w3gnovpbf04evr3w3vatyhbg
@@ -74,12 +75,15 @@ create table if not exists public.additional_material
 alter table public.additional_material
     owner to "user";
 
-create table if not exists public.class_approval
+create table public.class_approval
 (
-    id            serial
-        primary key,
     approval_date timestamp(6),
     created_date  timestamp(6) not null,
+    id            bigserial
+        primary key,
+    class_id      uuid
+        constraint fk47jaj62s2g40sxnc379ce0sxh
+            references public.class,
     created_by    uuid,
     content       varchar(255),
     type          varchar(255)
@@ -91,21 +95,7 @@ create table if not exists public.class_approval
 alter table public.class_approval
     owner to "user";
 
-create table if not exists public.class_id
-(
-    id       integer not null
-        primary key
-        constraint fknsoyaax7r2dn7f1ep4rkagsws
-            references public.class_approval,
-    clazz_id uuid
-        constraint fkt191sx4m4f9nmo9lxvjgbf646
-            references public.class
-);
-
-alter table public.class_id
-    owner to "user";
-
-create table if not exists public.cycle
+create table public.cycle
 (
     duration    integer,
     id          uuid not null
@@ -116,18 +106,19 @@ create table if not exists public.cycle
 alter table public.cycle
     owner to "user";
 
-create table if not exists public.department
+create table public.department
 (
     id   uuid         not null
         primary key,
     name varchar(100) not null,
     code varchar(255)
+        unique
 );
 
 alter table public.department
     owner to "user";
 
-create table if not exists public.profile
+create table public.profile
 (
     is_deleted   boolean      not null,
     created_date timestamp(6) not null,
@@ -142,7 +133,7 @@ create table if not exists public.profile
 alter table public.profile
     owner to "user";
 
-create table if not exists public.question
+create table public.question
 (
     id                  serial
         primary key,
@@ -156,7 +147,7 @@ create table if not exists public.question
 alter table public.question
     owner to "user";
 
-create table if not exists public.option
+create table public.option
 (
     id              integer not null
         primary key,
@@ -169,7 +160,7 @@ create table if not exists public.option
 alter table public.option
     owner to "user";
 
-create table if not exists public.role
+create table public.role
 (
     id   bigserial
         primary key,
@@ -179,7 +170,7 @@ create table if not exists public.role
 alter table public.role
     owner to "user";
 
-create table if not exists public.account
+create table public.account
 (
     is_deleted    boolean      not null,
     created_date  timestamp(6) not null,
@@ -201,7 +192,7 @@ create table if not exists public.account
 alter table public.account
     owner to "user";
 
-create table if not exists public.permission
+create table public.permission
 (
     id         bigserial
         primary key,
@@ -221,7 +212,7 @@ create table if not exists public.permission
 alter table public.permission
     owner to "user";
 
-create table if not exists public.room
+create table public.room
 (
     max_capacity integer,
     id           uuid not null
@@ -232,7 +223,7 @@ create table if not exists public.room
 alter table public.room
     owner to "user";
 
-create table if not exists public.syllabus
+create table public.syllabus
 (
     total_sessions smallint,
     id             uuid not null
@@ -244,7 +235,7 @@ create table if not exists public.syllabus
 alter table public.syllabus
     owner to "user";
 
-create table if not exists public.assessment_scheme
+create table public.assessment_scheme
 (
     id          serial
         primary key,
@@ -261,7 +252,7 @@ create table if not exists public.assessment_scheme
 alter table public.assessment_scheme
     owner to "user";
 
-create table if not exists public.material
+create table public.material
 (
     id          uuid         not null
         primary key,
@@ -276,7 +267,7 @@ create table if not exists public.material
 alter table public.material
     owner to "user";
 
-create table if not exists public.module
+create table public.module
 (
     module_no   integer,
     id          uuid not null
@@ -291,7 +282,7 @@ create table if not exists public.module
 alter table public.module
     owner to "user";
 
-create table if not exists public.program
+create table public.program
 (
     department_id uuid
         constraint fkbx2a0ta1c2ppgqcm9fa1ufftf
@@ -304,12 +295,13 @@ create table if not exists public.program
             references public.syllabus,
     description   varchar(1000),
     code          varchar(255) not null
+        unique
 );
 
 alter table public.program
     owner to "user";
 
-create table if not exists public.program_per_class
+create table public.program_per_class
 (
     max_quantity       integer,
     min_quantity       integer,
@@ -330,7 +322,7 @@ create table if not exists public.program_per_class
 alter table public.program_per_class
     owner to "user";
 
-create table if not exists public.question_bank
+create table public.question_bank
 (
     id         uuid not null
         primary key,
@@ -343,7 +335,7 @@ create table if not exists public.question_bank
 alter table public.question_bank
     owner to "user";
 
-create table if not exists public.session
+create table public.session
 (
     session_no integer,
     id         uuid not null
@@ -356,7 +348,7 @@ create table if not exists public.session
 alter table public.session
     owner to "user";
 
-create table if not exists public.test
+create table public.test
 (
     test_no    integer,
     date       timestamp(6) not null,
@@ -377,7 +369,7 @@ create table if not exists public.test
 alter table public.test
     owner to "user";
 
-create table if not exists public.test_question
+create table public.test_question
 (
     question_id integer not null
         constraint fkk5qvcm9mkgbi8hm4u2mlidm4i
@@ -390,7 +382,7 @@ create table if not exists public.test_question
 alter table public.test_question
     owner to "user";
 
-create table if not exists public.trainee
+create table public.trainee
 (
     is_deleted   boolean      not null,
     birthdate    timestamp(6),
@@ -408,7 +400,8 @@ create table if not exists public.trainee
         constraint fkltl5tu7qk21at5ctvt7mc6v1c
             references public.profile,
     updated_by   uuid,
-    code         varchar(255) not null,
+    code         varchar(255) not null
+        unique,
     name         varchar(255) not null,
     phone        varchar(255) not null
 );
@@ -416,7 +409,7 @@ create table if not exists public.trainee
 alter table public.trainee
     owner to "user";
 
-create table if not exists public.enrollment
+create table public.enrollment
 (
     is_cancelled    boolean      not null,
     enrollment_date timestamp(6) not null,
@@ -434,7 +427,7 @@ create table if not exists public.enrollment
 alter table public.enrollment
     owner to "user";
 
-create table if not exists public.test_score
+create table public.test_score
 (
     score      double precision,
     id         bigserial
@@ -450,7 +443,7 @@ create table if not exists public.test_score
 alter table public.test_score
     owner to "user";
 
-create table if not exists public.trainer
+create table public.trainer
 (
     is_deleted   boolean      not null,
     birthdate    timestamp(6),
@@ -464,7 +457,8 @@ create table if not exists public.trainer
     id           uuid         not null
         primary key,
     updated_by   uuid,
-    code         varchar(255) not null,
+    code         varchar(255) not null
+        unique,
     name         varchar(255) not null,
     phone        varchar(255) not null
 );
@@ -472,7 +466,7 @@ create table if not exists public.trainer
 alter table public.trainer
     owner to "user";
 
-create table if not exists public.schedule
+create table public.schedule
 (
     is_deleted          boolean      not null,
     created_date        timestamp(6) not null,
@@ -503,7 +497,7 @@ create table if not exists public.schedule
 alter table public.schedule
     owner to "user";
 
-create table if not exists public.attendance
+create table public.attendance
 (
     is_deleted   boolean      not null,
     created_date timestamp(6) not null,
@@ -523,7 +517,7 @@ create table if not exists public.attendance
 alter table public.attendance
     owner to "user";
 
-create table if not exists public.unit
+create table public.unit
 (
     duration    integer,
     id          serial
