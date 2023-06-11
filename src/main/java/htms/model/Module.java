@@ -17,9 +17,11 @@ public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(length = 1000)
     private String description;
     private Integer moduleNo;
     @URL
+    @Column(length = 1000)
     private String link;
 
     @ManyToOne

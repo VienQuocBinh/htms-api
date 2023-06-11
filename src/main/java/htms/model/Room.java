@@ -17,6 +17,7 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
+    private Integer maxCapacity;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<Schedule> schedules;

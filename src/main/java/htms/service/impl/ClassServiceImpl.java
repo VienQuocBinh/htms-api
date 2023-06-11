@@ -2,7 +2,6 @@ package htms.service.impl;
 
 import htms.api.request.ClassRequest;
 import htms.api.response.ClassResponse;
-import htms.common.constance.ClassStatus;
 import htms.model.Class;
 import htms.repository.ClassRepository;
 import htms.service.ClassService;
@@ -23,8 +22,6 @@ public class ClassServiceImpl implements ClassService {
     public ClassResponse createClass(ClassRequest request) {
         var clazz = Class.builder()
                 .name("Class SE1615")
-                .status(ClassStatus.PENDING)
-                .maxQuantity(29)
                 .build();
         classRepository.save(clazz);
         return modelMapper.map(clazz, ClassResponse.class);

@@ -13,7 +13,6 @@ public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private Character optionChar; // A/B/C/D
     private Boolean isRightAnswer;
 
     @ManyToOne

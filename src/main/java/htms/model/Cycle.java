@@ -16,12 +16,9 @@ public class Cycle {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(length = 1000)
     private String description;
     private Integer duration; // months
-//    private Date startDate;
-//    private Date endDate;
-//    private Date vacationStartDate;
-//    private Date vacationEndDate;
 
     @OneToMany(mappedBy = "cycle", fetch = FetchType.LAZY)
     private List<ProgramPerClass> programPerClasses;

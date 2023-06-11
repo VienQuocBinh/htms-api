@@ -17,6 +17,7 @@ public class Program {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(length = 1000)
     private String description;
     @NotNull
     private String code;
@@ -28,4 +29,6 @@ public class Program {
     private List<ProgramPerClass> programPerClasses;
     @OneToOne
     private Syllabus syllabus;
+    @OneToMany(mappedBy = "program", fetch = FetchType.LAZY)
+    private List<QuestionBank> questionBanks;
 }

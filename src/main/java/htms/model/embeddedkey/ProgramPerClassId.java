@@ -20,9 +20,7 @@ public class ProgramPerClassId implements Serializable {
     @ManyToOne
     @JoinColumn(name = "program_id")
     private Program program;
-    //    @ManyToOne
-//    @JoinColumn(name = "cycle_id")
-//    private Cycle cycle;
+
     @ManyToOne
     @JoinColumn(name = "class_id")
     private Class clazz;

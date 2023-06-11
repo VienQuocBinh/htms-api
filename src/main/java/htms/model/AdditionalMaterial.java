@@ -15,13 +15,12 @@ public class AdditionalMaterial {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String file;
+    @Column(length = 1000)
+    private String link;
+    @Column(length = 1000)
     private String description;
 
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "program_id", referencedColumnName = "program_id"),
-            @JoinColumn(name = "class_id", referencedColumnName = "class_id")
-    })
-    private ProgramPerClass programPerClass;
+    @JoinColumn(name = "class_id")
+    private Class clazz;
 }

@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.UUID;
-
 @Entity
 @Getter
 @Setter
@@ -18,8 +16,6 @@ public class TestScore {
     private Long id;
     @Length(max = 10)
     private Double score;
-    @org.hibernate.validator.constraints.UUID
-    private UUID cycleId;
 
     @ManyToOne
     @JoinColumn(name = "trainee_id")

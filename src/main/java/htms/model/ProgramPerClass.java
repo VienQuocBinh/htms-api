@@ -16,17 +16,15 @@ import java.util.List;
 public class ProgramPerClass {
     @EmbeddedId
     private ProgramPerClassId id;
+    private Integer minQuantity;
+    private Integer maxQuantity;
     private Date programStartDate;
     private Date programEndDate;
 
-    //    @OneToMany(mappedBy = "programPerClass", fetch = FetchType.LAZY)
-//    private List<Class> classes;
     @OneToMany(mappedBy = "programPerClass", fetch = FetchType.LAZY)
     private List<Test> tests;
     @OneToMany(mappedBy = "id.programPerClass", fetch = FetchType.LAZY)
     private List<Enrollment> enrollments;
-    @OneToMany(mappedBy = "programPerClass")
-    private List<AdditionalMaterial> additionalMaterials;
     @ManyToOne
     @JoinColumn(name = "cycle_id")
     private Cycle cycle;

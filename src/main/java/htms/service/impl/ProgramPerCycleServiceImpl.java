@@ -1,7 +1,7 @@
 package htms.service.impl;
 
 import htms.api.request.ProgramPerCycleRequest;
-import htms.api.response.ProgramPerCycleResponse;
+import htms.api.response.ProgramPerClassResponse;
 import htms.model.ProgramPerClass;
 import htms.model.embeddedkey.ProgramPerClassId;
 import htms.repository.ClassRepository;
@@ -25,14 +25,14 @@ public class ProgramPerCycleServiceImpl implements ProgramPerCycleService {
     private final ModelMapper mapper;
 
     @Override
-    public List<ProgramPerCycleResponse> getList() {
+    public List<ProgramPerClassResponse> getList() {
         return programPerCycleRepository.findAll()
-                .stream().map(element -> mapper.map(element, ProgramPerCycleResponse.class))
+                .stream().map(element -> mapper.map(element, ProgramPerClassResponse.class))
                 .toList();
     }
 
     @Override
-    public ProgramPerCycleResponse create(ProgramPerCycleRequest request) {
+    public ProgramPerClassResponse create(ProgramPerCycleRequest request) {
         var programPerCycle = ProgramPerClass.builder()
                 .id(ProgramPerClassId.builder()
 //                        .cycle(cycleRepository.findById(request.getCycleId()).get())
@@ -43,6 +43,6 @@ public class ProgramPerCycleServiceImpl implements ProgramPerCycleService {
                 .programEndDate(request.getProgramEndDate())
                 .build();
         programPerCycleRepository.save(programPerCycle);
-        return mapper.map(programPerCycle, ProgramPerCycleResponse.class);
+        return mapper.map(programPerCycle, ProgramPerClassResponse.class);
     }
 }

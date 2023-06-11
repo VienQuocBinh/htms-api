@@ -1,6 +1,6 @@
 package htms.common.constance;
 
-public enum ClassReasonType {
+public enum ClassApprovalType {
     REJECT,
     APPROVE,
     PENDING

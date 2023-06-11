@@ -43,15 +43,74 @@ create table if not exists public.changed_schedule
 alter table public.changed_schedule
     owner to "user";
 
+create table if not exists public.class
+(
+    is_deleted       boolean      not null,
+    created_date     timestamp(6) not null,
+    updated_date     timestamp(6),
+    created_by       uuid         not null,
+    id               uuid         not null
+        primary key,
+    updated_by       uuid,
+    code             varchar(255),
+    general_schedule varchar(255),
+    name             varchar(255)
+);
+
+alter table public.class
+    owner to "user";
+
+create table if not exists public.additional_material
+(
+    class_id    uuid
+        constraint fk6w3gnovpbf04evr3w3vatyhbg
+            references public.class,
+    id          uuid not null
+        primary key,
+    description varchar(1000),
+    link        varchar(1000)
+);
+
+alter table public.additional_material
+    owner to "user";
+
+create table if not exists public.class_approval
+(
+    id            serial
+        primary key,
+    approval_date timestamp(6),
+    created_date  timestamp(6) not null,
+    created_by    uuid,
+    content       varchar(255),
+    type          varchar(255)
+        constraint class_approval_type_check
+            check ((type)::text = ANY
+                   ((ARRAY ['REJECT'::character varying, 'APPROVE'::character varying, 'PENDING'::character varying])::text[]))
+);
+
+alter table public.class_approval
+    owner to "user";
+
+create table if not exists public.class_id
+(
+    id       integer not null
+        primary key
+        constraint fknsoyaax7r2dn7f1ep4rkagsws
+            references public.class_approval,
+    clazz_id uuid
+        constraint fkt191sx4m4f9nmo9lxvjgbf646
+            references public.class
+);
+
+alter table public.class_id
+    owner to "user";
+
 create table if not exists public.cycle
 (
-    end_date            timestamp(6),
-    start_date          timestamp(6),
-    vacation_end_date   timestamp(6),
-    vacation_start_date timestamp(6),
-    id                  uuid not null
+    duration    integer,
+    id          uuid not null
         primary key,
-    description         varchar(255)
+    description varchar(1000)
 );
 
 alter table public.cycle
@@ -83,71 +142,6 @@ create table if not exists public.profile
 alter table public.profile
     owner to "user";
 
-create table if not exists public.program
-(
-    department_id uuid
-        constraint fkbx2a0ta1c2ppgqcm9fa1ufftf
-            references public.department,
-    id            uuid         not null
-        primary key,
-    code          varchar(255) not null,
-    description   varchar(255)
-);
-
-alter table public.program
-    owner to "user";
-
-create table if not exists public.program_per_cycle
-(
-    program_end_date   timestamp(6),
-    program_start_date timestamp(6),
-    cycle_id           uuid not null
-        constraint fkos1g39css99qo4qi85yg3o73n
-            references public.cycle,
-    program_id         uuid not null
-        constraint fkk3oh2iax8p215dki1sx45qf2x
-            references public.program,
-    primary key (cycle_id, program_id)
-);
-
-alter table public.program_per_cycle
-    owner to "user";
-
-create table if not exists public.class
-(
-    max_quantity integer,
-    min_quantity integer,
-    end_date     timestamp(6),
-    start_date   timestamp(6),
-    cycle_id     uuid,
-    id           uuid not null
-        primary key,
-    program_id   uuid,
-    code         varchar(255),
-    name         varchar(255),
-    reason       varchar(255),
-    status       varchar(255)
-        constraint class_status_check
-            check ((status)::text = ANY
-                   ((ARRAY ['PENDING'::character varying, 'ACCEPTED'::character varying, 'REJECTED'::character varying])::text[])),
-    constraint fk9n6uknlyt5djr4cvqcxey9v84
-        foreign key (cycle_id, program_id) references public.program_per_cycle
-);
-
-alter table public.class
-    owner to "user";
-
-create table if not exists public.question_bank
-(
-    id         uuid not null
-        primary key,
-    subject_id uuid,
-    password   varchar(255)
-);
-
-alter table public.question_bank
-    owner to "user";
-
 create table if not exists public.question
 (
     id                  serial
@@ -156,9 +150,6 @@ create table if not exists public.question
         constraint question_mark_check
             check ((mark >= (0)::double precision) AND (mark <= (10)::double precision)),
     single_answer_input char not null,
-    question_bank_id    uuid
-        constraint fkejbwnygbsv82ocl8dq6o2k6yq
-            references public.question_bank,
     title               varchar(255)
 );
 
@@ -170,7 +161,6 @@ create table if not exists public.option
     id              integer not null
         primary key,
     is_right_answer boolean,
-    option_char     char,
     question_id     integer
         constraint fkgtlhwmagte7l2ssfsgw47x9ka
             references public.question
@@ -233,9 +223,10 @@ alter table public.permission
 
 create table if not exists public.room
 (
-    id   uuid not null
+    max_capacity integer,
+    id           uuid not null
         primary key,
-    name varchar(255)
+    name         varchar(255)
 );
 
 alter table public.room
@@ -246,8 +237,8 @@ create table if not exists public.syllabus
     total_sessions smallint,
     id             uuid not null
         primary key,
-    description    varchar(255),
-    pass_criteria  varchar(255)
+    description    varchar(1000),
+    pass_criteria  varchar(1000)
 );
 
 alter table public.syllabus
@@ -277,8 +268,8 @@ create table if not exists public.material
     syllabus_id uuid
         constraint fkfmuye2g2ot4vg2md2d7lhc5lc
             references public.syllabus,
-    description varchar(255),
-    link        varchar(255),
+    description varchar(1000),
+    link        varchar(1000),
     name        varchar(255) not null
 );
 
@@ -293,11 +284,63 @@ create table if not exists public.module
     syllabus_id uuid
         constraint fk99595argxkb49s31xoikat3ti
             references public.syllabus,
-    description varchar(255),
-    link        varchar(255)
+    description varchar(1000),
+    link        varchar(1000)
 );
 
 alter table public.module
+    owner to "user";
+
+create table if not exists public.program
+(
+    department_id uuid
+        constraint fkbx2a0ta1c2ppgqcm9fa1ufftf
+            references public.department,
+    id            uuid         not null
+        primary key,
+    syllabus_id   uuid
+        unique
+        constraint fk7m7244f62m5x8hphhvxuul53p
+            references public.syllabus,
+    description   varchar(1000),
+    code          varchar(255) not null
+);
+
+alter table public.program
+    owner to "user";
+
+create table if not exists public.program_per_class
+(
+    max_quantity       integer,
+    min_quantity       integer,
+    program_end_date   timestamp(6),
+    program_start_date timestamp(6),
+    class_id           uuid not null
+        constraint fkd7tmelg563ys0ha3kxd9mcj7h
+            references public.class,
+    cycle_id           uuid
+        constraint fket8bm9311ffbrmo24co9fuych
+            references public.cycle,
+    program_id         uuid not null
+        constraint fk9xx8fdah7ed49h90tq0mewlw4
+            references public.program,
+    primary key (class_id, program_id)
+);
+
+alter table public.program_per_class
+    owner to "user";
+
+create table if not exists public.question_bank
+(
+    id         uuid not null
+        primary key,
+    program_id uuid
+        constraint fknl05vr0525tkdrmeg3bye3n8b
+            references public.program,
+    password   varchar(255)
+);
+
+alter table public.question_bank
     owner to "user";
 
 create table if not exists public.session
@@ -320,15 +363,15 @@ create table if not exists public.test
     id         bigserial
         primary key,
     time       bigint       not null,
-    cycle_id   uuid,
+    class_id   uuid,
     program_id uuid,
     agenda     varchar(255),
     type       varchar(255)
         constraint test_type_check
             check ((type)::text = ANY
                    ((ARRAY ['ESSAY'::character varying, 'MULTIPLE_CHOICE'::character varying])::text[])),
-    constraint fkb0bedmglp9mxekokmuqxufabj
-        foreign key (cycle_id, program_id) references public.program_per_cycle
+    constraint fki7c24gn4c51r0h0u5omvduw9p
+        foreign key (class_id, program_id) references public.program_per_class
 );
 
 alter table public.test
@@ -377,15 +420,15 @@ create table if not exists public.enrollment
 (
     is_cancelled    boolean      not null,
     enrollment_date timestamp(6) not null,
-    cycle_id        uuid         not null,
+    class_id        uuid         not null,
     program_id      uuid         not null,
     trainee_id      uuid         not null
         constraint fkgbr3ng3rd30tmhyw0gc32oxli
             references public.trainee,
     cancel_reason   varchar(255),
-    primary key (cycle_id, program_id, trainee_id),
-    constraint fk1qu88r9jgfk0qrtybqvgw8p76
-        foreign key (cycle_id, program_id) references public.program_per_cycle
+    primary key (class_id, program_id, trainee_id),
+    constraint fksony2gkfnslqnguy987qwu4d0
+        foreign key (class_id, program_id) references public.program_per_class
 );
 
 alter table public.enrollment
@@ -399,7 +442,6 @@ create table if not exists public.test_score
     test_id    bigint
         constraint fkpapokkjbrc8brpowyr2u1rpyg
             references public.test,
-    cycle_id   uuid,
     trainee_id uuid
         constraint fktpkhxuxe5l12ra7auyxvkjomp
             references public.trainee
@@ -490,7 +532,7 @@ create table if not exists public.unit
     session_id  uuid
         constraint fk3ltxu5g3m8paauww2nigsjh07
             references public.session,
-    description varchar(255),
+    description varchar(1000),
     name        varchar(255)
 );
 

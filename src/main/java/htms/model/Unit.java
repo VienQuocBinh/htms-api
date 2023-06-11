@@ -14,6 +14,7 @@ public class Unit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    @Column(length = 1000)
     private String description;
     private Integer duration;
     private Integer unitNo;
