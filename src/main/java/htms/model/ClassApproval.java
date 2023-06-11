@@ -20,7 +20,7 @@ import java.util.UUID;
 public class ClassApproval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String content;
     @Enumerated(EnumType.STRING)
     private ClassApprovalType type;
@@ -32,6 +32,6 @@ public class ClassApproval {
     private Date approvalDate;
 
     @ManyToOne
-    @JoinTable(name = "class_id")
+    @JoinColumn(name = "class_id")
     private Class clazz;
 }

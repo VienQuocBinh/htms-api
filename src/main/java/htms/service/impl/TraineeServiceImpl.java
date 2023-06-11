@@ -17,13 +17,11 @@ public class TraineeServiceImpl implements TraineeService {
     private final ModelMapper mapper;
 
     @Override
-    public List<TraineeResponse> getTraineesByClassId(UUID classId) {
+    public List<TraineeResponse> getTraineesByClassId(UUID classId, UUID programId) {
         // todo: handle exceptions
-//        var list = traineeRepository.findAllByClassId(classId).orElseThrow();
-//        return list.stream()
-//                .map(trainees -> mapper.map(trainees, TraineeResponse.class))
-//                .toList();
-
-        return null;
+        var list = traineeRepository.findAllByClassAndProgram(classId, programId).orElseThrow();
+        return list.stream()
+                .map(trainees -> mapper.map(trainees, TraineeResponse.class))
+                .toList();
     }
 }

@@ -20,6 +20,7 @@ public class Program {
     @Column(length = 1000)
     private String description;
     @NotNull
+    @Column(unique = true)
     private String code;
 
     @ManyToOne

@@ -24,6 +24,7 @@ public class ClassServiceImpl implements ClassService {
                 .name("Class SE1615")
                 .build();
         classRepository.save(clazz);
+        
         return modelMapper.map(clazz, ClassResponse.class);
     }
 

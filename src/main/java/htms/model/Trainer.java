@@ -24,6 +24,7 @@ public class Trainer extends BaseEntityAuditing {
     @NotNull
     private String name;
     @NotNull
+    @Column(unique = true)
     private String code;
     @NotNull
     private String phone;

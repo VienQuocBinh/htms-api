@@ -21,6 +21,7 @@ public class Class extends BaseEntityAuditing {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
+    @Column(unique = true)
     private String code;
     private String generalSchedule; // Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}
 
