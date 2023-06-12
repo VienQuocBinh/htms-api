@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.avast.gradle.docker-compose' version '0.14.2'
 }
 
 group = 'htms'
@@ -16,6 +17,14 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+dockerCompose {
+    local {
+        useComposeFiles =["${projectDir}/src/main/resources/docker-compose.yaml"]
+        projectName = 'htms-group'
+        isRequiredBy(bootRun)
+    }
 }
 
 dependencies {
