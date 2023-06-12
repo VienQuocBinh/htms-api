@@ -1,6 +1,6 @@
 package htms.model;
 
-import htms.common.constance.ClassApprovalType;
+import htms.common.constance.ClassApprovalStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -21,9 +21,9 @@ public class ClassApproval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String content;
+    private String comment;
     @Enumerated(EnumType.STRING)
-    private ClassApprovalType type;
+    private ClassApprovalStatus status;
     @CreatedDate
     @Column(updatable = false, nullable = false)
     private Date createdDate;
