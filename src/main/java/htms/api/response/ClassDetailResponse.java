@@ -1,7 +1,7 @@
 package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import htms.common.constance.ClassStatus;
+import htms.common.constants.ClassStatus;
 import lombok.*;
 
 import java.util.Date;

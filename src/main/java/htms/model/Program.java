@@ -22,6 +22,8 @@ public class Program {
     @NotNull
     @Column(unique = true)
     private String code;
+    @Builder.Default
+    private Boolean isRoot = false;
 
     @ManyToOne
     @JoinColumn(name = "department_id")

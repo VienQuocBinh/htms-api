@@ -1,6 +1,6 @@
 package htms.model;
 
-import htms.common.constance.AssessmentSchemeCategory;
+import htms.common.constants.AssessmentSchemeCategory;
 import jakarta.persistence.*;
 import lombok.*;
 

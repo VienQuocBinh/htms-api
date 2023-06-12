@@ -31,5 +31,4 @@ public interface TraineeRepository extends JpaRepository<Trainee, UUID> {
             """)
     Optional<List<Trainee>> findAllByClassAndProgram(@Param("classId") UUID classId,
                                                      @Param("programId") UUID programId);
-//
 }

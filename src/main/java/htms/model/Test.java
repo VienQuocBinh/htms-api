@@ -1,6 +1,6 @@
 package htms.model;
 
-import htms.common.constance.TestType;
+import htms.common.constants.TestType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

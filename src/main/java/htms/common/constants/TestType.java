@@ -1,4 +1,4 @@
-package htms.common.constance;
+package htms.common.constants;
 
 public enum TestType {
     ESSAY,
