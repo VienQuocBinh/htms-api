@@ -1,0 +1,12 @@
+version: '3'
+services:
+  htms-db:
+    image: postgres
+    hostname: htms
+    container_name: htms
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: 'htms'
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: '123456'
