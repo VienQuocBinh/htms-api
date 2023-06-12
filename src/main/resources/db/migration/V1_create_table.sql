@@ -85,10 +85,10 @@ create table public.class_approval
         constraint fk47jaj62s2g40sxnc379ce0sxh
             references public.class,
     created_by    uuid,
-    content       varchar(255),
-    type          varchar(255)
-        constraint class_approval_type_check
-            check ((type)::text = ANY
+    comment       varchar(255),
+    status        varchar(255)
+        constraint class_approval_status_check
+            check ((status)::text = ANY
                    ((ARRAY ['REJECT'::character varying, 'APPROVE'::character varying, 'PENDING'::character varying])::text[]))
 );
 

@@ -168,9 +168,9 @@ values (false, '1988-06-05 07:00:00.000000', '2023-06-06 20:50:27.953000', '2023
         '4d2196da-097f-4fc5-9bb2-a40ef2ac7b2e', '4d2196da-097f-4fc5-9bb2-a40ef2ac7b2e',
         'ff5a3c78-2642-4d4d-a793-b2cabdabde17', null, 'John', '0986563256', 'John');
 
-insert into public.cycle (id, description)
-values ('d99ae531-4845-4b8b-b826-829b5c5f032b', 'Spring 2023'),
-       ('a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'Summer 2023');
+insert into public.cycle (id, description, duration)
+values ('d99ae531-4845-4b8b-b826-829b5c5f032b', 'Spring 2023', 18),
+       ('a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'Summer 2023', 18);
 insert into public.program (department_id, id, syllabus_id, description, code)
 values ('e71ac0a8-fe10-40f9-a831-94bc0703641d', '73574861-62eb-4965-9ebc-cecbb50ea11f', null, 'Chương trình học về da',
         'SP23'),
