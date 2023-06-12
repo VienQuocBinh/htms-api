@@ -15,5 +15,5 @@ public class ProgramResponse {
     private String description;
     private String code;
     private DepartmentResponse department;
-    private List<ProgramPerCycleResponse> programPerCycleList;
+    private List<ProgramPerClassResponse> programPerCycleList;
 }

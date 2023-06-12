@@ -17,15 +17,19 @@ public class Program {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(length = 1000)
     private String description;
     @NotNull
+    @Column(unique = true)
     private String code;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
     @OneToMany(mappedBy = "id.program")
-    private List<ProgramPerCycle> programPerCycles;
-    @OneToMany(mappedBy = "id.program")
-    private List<Enrollment> enrollments;
+    private List<ProgramPerClass> programPerClasses;
+    @OneToOne
+    private Syllabus syllabus;
+    @OneToMany(mappedBy = "program", fetch = FetchType.LAZY)
+    private List<QuestionBank> questionBanks;
 }

@@ -22,7 +22,9 @@ public class Material {
     private String name;
     @Nullable
     @URL
+    @Column(length = 1000)
     private String link;
+    @Column(length = 1000)
     private String description;
 
     @ManyToOne

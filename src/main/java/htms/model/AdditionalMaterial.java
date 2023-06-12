@@ -3,7 +3,6 @@ package htms.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,13 +11,16 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Room {
+public class AdditionalMaterial {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String name;
-    private Integer maxCapacity;
+    @Column(length = 1000)
+    private String link;
+    @Column(length = 1000)
+    private String description;
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
-    private List<Schedule> schedules;
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    private Class clazz;
 }

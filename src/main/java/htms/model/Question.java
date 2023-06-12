@@ -28,7 +28,7 @@ public class Question {
     private List<Test> tests;
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<Option> options;
-    @ManyToOne
-    @JoinColumn(name = "question_bank_id")
-    private QuestionBank questionBank;
+//    @ManyToOne
+//    @JoinColumn(name = "question_bank_id")
+//    private QuestionBank questionBank;
 }

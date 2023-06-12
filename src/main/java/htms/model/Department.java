@@ -21,6 +21,7 @@ public class Department {
     @NotNull
     @Length(min = 4, max = 100)
     private String name;
+    @Column(unique = true)
     private String code;
 
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)

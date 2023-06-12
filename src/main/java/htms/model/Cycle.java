@@ -3,7 +3,6 @@ package htms.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,14 +16,10 @@ public class Cycle {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(length = 1000)
     private String description;
-    private Date startDate;
-    private Date endDate;
-    private Date vacationStartDate;
-    private Date vacationEndDate;
+    private Integer duration; // months
 
-    @OneToMany(mappedBy = "id.cycle", fetch = FetchType.LAZY)
-    private List<ProgramPerCycle> programPerCycles;
-    @OneToMany(mappedBy = "id.cycle", fetch = FetchType.LAZY)
-    private List<Enrollment> enrollments;
+    @OneToMany(mappedBy = "cycle", fetch = FetchType.LAZY)
+    private List<ProgramPerClass> programPerClasses;
 }

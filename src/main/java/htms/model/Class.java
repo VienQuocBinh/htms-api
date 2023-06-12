@@ -1,36 +1,45 @@
 package htms.model;
 
-import htms.common.constance.ClassStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
-import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Class {
+public class Class extends BaseEntityAuditing {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
-    @Enumerated(EnumType.STRING)
-    private ClassStatus status;
-    private Integer minQuantity;
-    private Integer maxQuantity;
-    private Date startDate;
-    private Date endDate;
+    @Column(unique = true)
     private String code;
-    private String reason;
+    private String generalSchedule; // Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}
 
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "cycle_id", referencedColumnName = "cycle_id"),
-            @JoinColumn(name = "program_id", referencedColumnName = "program_id")
-    })
-    private ProgramPerCycle programPerCycle;
+    @OneToMany(mappedBy = "clazz")
+    private List<Schedule> schedules;
+    @OneToMany(mappedBy = "clazz")
+    private List<ClassApproval> classApprovals;
+    @OneToMany(mappedBy = "clazz")
+    private List<AdditionalMaterial> additionalMaterials;
+
+    public Class(ClassBuilder<?, ?> builder) {
+        super(builder);
+        this.id = builder.id;
+        this.name = builder.name;
+        this.code = builder.code;
+        this.generalSchedule = builder.generalSchedule;
+        this.schedules = builder.schedules;
+        this.classApprovals = builder.classApprovals;
+        this.additionalMaterials = builder.additionalMaterials;
+    }
 }

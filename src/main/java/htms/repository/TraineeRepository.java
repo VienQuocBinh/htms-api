@@ -12,14 +12,24 @@ import java.util.UUID;
 
 @Repository
 public interface TraineeRepository extends JpaRepository<Trainee, UUID> {
-    @Query("""
+    /**
+     * Get all trainees in a given class base on the enrollment which is not cancelled
+     *
+     * @param classId {@link UUID}
+     * @return {@code Optional<List<Trainee>>}
+     */
+    @Query(value = """
             select t from Trainee t\s
             join Enrollment e on e.id.trainee.id = t.id\s
-            join ProgramPerCycle ppc on e.id.cycle.id = ppc.id.cycle.id\s
-            and e.id.program.id = ppc.id.program.id\s
-            join Class c on c.programPerCycle.id.cycle.id = ppc.id.cycle.id\s
-            and c.programPerCycle.id.program.id = ppc.id.program.id\s
-            where c.id = :class_id""")
-    Optional<List<Trainee>> findAllByClassId(@Param("class_id") UUID classId);
-
+            join ProgramPerClass ppc on e.id.programPerClass.id.program.id = ppc.id.program.id
+             and e.id.programPerClass.id.clazz.id = ppc.id.clazz.id\s
+            join Class c on c.id = ppc.id.clazz.id\s
+            where ppc.id.clazz.id = :classId\s
+            and ppc.id.program.id = :programId\s
+            and e.isCancelled = false
+            order by e.enrollmentDate asc
+            """)
+    Optional<List<Trainee>> findAllByClassAndProgram(@Param("classId") UUID classId,
+                                                     @Param("programId") UUID programId);
+//
 }
