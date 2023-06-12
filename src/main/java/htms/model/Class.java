@@ -24,6 +24,7 @@ public class Class extends BaseEntityAuditing {
     @Column(unique = true)
     private String code;
     private String generalSchedule; // Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}
+    private Integer quantity; // real quantity
 
     @OneToMany(mappedBy = "clazz")
     private List<Schedule> schedules;

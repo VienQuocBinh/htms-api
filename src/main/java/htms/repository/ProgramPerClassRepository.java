@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProgramPerCycleRepository extends JpaRepository<ProgramPerClass, ProgramPerClassId> {
+public interface ProgramPerClassRepository extends JpaRepository<ProgramPerClass, ProgramPerClassId> {
 }

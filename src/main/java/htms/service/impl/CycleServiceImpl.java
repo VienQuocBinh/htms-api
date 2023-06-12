@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,14 @@ public class CycleServiceImpl implements CycleService {
         return cycleRepository.findAll()
                 .stream().map(element -> modelMapper.map(element, CycleResponse.class))
                 .toList();
+    }
+
+    @Override
+    public CycleResponse getCycleDetails(UUID id) {
+        // todo: handle exceptions
+        return modelMapper.map(
+                cycleRepository.findById(id).orElseThrow(),
+                CycleResponse.class);
     }
 
     @Override

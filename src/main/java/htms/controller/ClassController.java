@@ -27,7 +27,7 @@ public class ClassController {
     }
 
     @PostMapping
-    public ResponseEntity<ClassResponse> createClass(ClassRequest request) {
+    public ResponseEntity<ClassResponse> createClass(@RequestBody ClassRequest request) {
         return ResponseEntity.status(201).body(classService.createClass(request));
     }
 }
