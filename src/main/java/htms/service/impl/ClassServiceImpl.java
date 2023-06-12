@@ -11,6 +11,7 @@ import htms.repository.ClassApprovalRepository;
 import htms.repository.ClassRepository;
 import htms.service.ClassService;
 import htms.service.ProgramPerClassService;
+import htms.util.ClassUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
     private final ClassApprovalRepository classApprovalRepository;
     private final ClassMapper classMapper;
+    private final ClassUtil classUtil;
     private ProgramPerClassService programPerClassService;
 
     // DI using setter to avoid circular dependency
@@ -41,11 +43,13 @@ public class ClassServiceImpl implements ClassService {
         // todo: generate class code, assign created by
         var clazz = Class.builder()
                 .name(request.getName())
-                .code("TEST")
+                .code(classUtil.generateClassCode(request.getProgramId(), request.getStartDate()))
                 .createdBy(UUID.randomUUID())
                 .generalSchedule(request.getGeneralSchedule())
+                .quantity(0)
                 .build();
         classRepository.save(clazz);
+
         // create program per class
         var programPerClass = programPerClassService.create(ProgramPerClassRequest.builder()
                 .programId(request.getProgramId())

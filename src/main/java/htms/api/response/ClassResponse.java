@@ -16,6 +16,7 @@ public class ClassResponse {
     private UUID id;
     private String name;
     private String code;
+    private String generalSchedule;
     private UUID createdBy;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
     private Date createdDate;

@@ -24,4 +24,14 @@ public class ClassMapper {
         response.setEndDate(programPerClass.getProgramEndDate());
         return response;
     }
+
+    public Class toModel(ClassResponse classResponse) {
+        return Class.builder()
+                .id(classResponse.getId())
+                .name(classResponse.getName())
+                .code(classResponse.getCode())
+                .generalSchedule(classResponse.getGeneralSchedule())
+                .quantity(0)
+                .build();
+    }
 }

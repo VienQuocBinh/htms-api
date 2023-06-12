@@ -2,7 +2,7 @@ package htms.service.impl;
 
 import htms.api.request.ProgramPerClassRequest;
 import htms.api.response.ProgramPerClassResponse;
-import htms.model.Class;
+import htms.common.mapper.ClassMapper;
 import htms.model.Cycle;
 import htms.model.Program;
 import htms.model.ProgramPerClass;
@@ -23,6 +23,7 @@ import java.util.List;
 public class ProgramPerClassServiceImpl implements ProgramPerClassService {
     private final ProgramPerClassRepository programPerClassRepository;
     private final ModelMapper mapper;
+    private final ClassMapper classMapper;
     private final ProgramService programService;
     private final CycleService cycleService;
     private final ClassService classService;
@@ -42,9 +43,10 @@ public class ProgramPerClassServiceImpl implements ProgramPerClassService {
                                 .map(
                                         programService.getProgramDetails(request.getProgramId()),
                                         Program.class))
-                        .clazz(mapper.map(
-                                classService.getClassDetail(request.getClassId()),
-                                Class.class))
+//                        .clazz(mapper.map(
+//                                classService.getClassDetail(request.getClassId()),
+//                                Class.class))
+                        .clazz(classMapper.toModel(classService.getClassDetail(request.getClassId())))
                         .build())
                 .cycle(mapper
                         .map(

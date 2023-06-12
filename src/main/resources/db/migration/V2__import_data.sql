@@ -1,8 +1,8 @@
 insert into public.role (id, name)
 values (1, 'admin');
-insert into public.department (id, name)
-values ('e71ac0a8-fe10-40f9-a831-94bc0703641d', 'Khoa Nhi'),
-       ('ef0aee96-d60f-422c-9418-0487d35e530e', 'Khoa Nội');
+insert into public.department (id, name, code)
+values ('e71ac0a8-fe10-40f9-a831-94bc0703641d', 'Khoa Nhi', 'KNI'),
+       ('ef0aee96-d60f-422c-9418-0487d35e530e', 'Khoa Nội', 'KNO');
 insert into public.account (is_deleted, created_date, role_id, updated_date, created_by, department_id, id, updated_by,
                             email, title)
 values (false, '2023-06-06 20:48:46.541000', 1, '2023-06-06 20:48:46.541000', 'f858aa18-9569-4cfd-b038-8d5ee807f94d',
