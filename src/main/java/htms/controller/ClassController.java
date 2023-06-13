@@ -1,5 +1,6 @@
 package htms.controller;
 
+import htms.api.domain.CreateClassFormData;
 import htms.api.request.ClassRequest;
 import htms.api.response.ClassResponse;
 import htms.service.ClassService;
@@ -24,6 +25,11 @@ public class ClassController {
     @GetMapping("/{id}")
     public ResponseEntity<ClassResponse> getClassDetail(@PathVariable UUID id) {
         return ResponseEntity.ok(classService.getClassDetail(id));
+    }
+
+    @GetMapping("/form")
+    public ResponseEntity<CreateClassFormData> getCreateClassFormData() {
+        return ResponseEntity.ok(classService.getCreateClassFormData());
     }
 
     @PostMapping

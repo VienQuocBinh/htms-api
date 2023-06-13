@@ -1,14 +1,19 @@
 package htms.service.impl;
 
+import htms.api.domain.CreateClassFormData;
 import htms.api.request.ClassRequest;
 import htms.api.request.ProgramPerClassRequest;
 import htms.api.response.ClassResponse;
+import htms.api.response.CycleResponse;
+import htms.api.response.ProgramResponse;
 import htms.common.constants.ClassApprovalStatus;
 import htms.common.mapper.ClassMapper;
 import htms.model.Class;
 import htms.model.ClassApproval;
 import htms.repository.ClassApprovalRepository;
 import htms.repository.ClassRepository;
+import htms.repository.CycleRepository;
+import htms.repository.ProgramRepository;
 import htms.service.ClassService;
 import htms.service.ProgramPerClassService;
 import htms.util.ClassUtil;
@@ -29,6 +34,8 @@ public class ClassServiceImpl implements ClassService {
     private final ClassApprovalRepository classApprovalRepository;
     private final ClassMapper classMapper;
     private final ClassUtil classUtil;
+    private final ProgramRepository programRepository;
+    private final CycleRepository cycleRepository;
     private ProgramPerClassService programPerClassService;
 
     // DI using setter to avoid circular dependency
@@ -76,6 +83,22 @@ public class ClassServiceImpl implements ClassService {
         return classRepository.findAll()
                 .stream().map((element) -> modelMapper.map(element, ClassResponse.class))
                 .toList();
+    }
+
+    @Override
+    public CreateClassFormData getCreateClassFormData() {
+        var programs = programRepository.findAll();
+        var cycles = cycleRepository.findAll();
+        return CreateClassFormData.builder()
+                .programs(programs.stream()
+                        .map((element) -> modelMapper.map(
+                                element,
+                                ProgramResponse.class)).toList())
+                .cycles(cycles.stream()
+                        .map((element) -> modelMapper.map(
+                                element,
+                                CycleResponse.class)).toList())
+                .build();
     }
 
     @Override

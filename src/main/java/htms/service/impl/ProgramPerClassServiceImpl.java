@@ -43,9 +43,6 @@ public class ProgramPerClassServiceImpl implements ProgramPerClassService {
                                 .map(
                                         programService.getProgramDetails(request.getProgramId()),
                                         Program.class))
-//                        .clazz(mapper.map(
-//                                classService.getClassDetail(request.getClassId()),
-//                                Class.class))
                         .clazz(classMapper.toModel(classService.getClassDetail(request.getClassId())))
                         .build())
                 .cycle(mapper

@@ -18,7 +18,7 @@ public class ProgramMapper {
                 .stream()
                 .map((element) -> mapper.map(element, ProgramPerClassResponse.class))
                 .toList();
-        response.setProgramPerCycleList(ppc);
+        response.setProgramPerClasses(ppc);
         return response;
     }
 }

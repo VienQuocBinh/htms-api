@@ -1,5 +1,6 @@
 package htms.api.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
@@ -15,5 +16,6 @@ public class ProgramResponse {
     private String description;
     private String code;
     private DepartmentResponse department;
-    private List<ProgramPerClassResponse> programPerCycleList;
+    @JsonProperty("programPerClassList")
+    private List<ProgramPerClassResponse> programPerClasses;
 }
