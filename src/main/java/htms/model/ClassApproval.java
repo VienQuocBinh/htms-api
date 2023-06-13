@@ -20,6 +20,7 @@ import java.util.UUID;
 public class ClassApproval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
     private Long id;
     private String comment;
     @Enumerated(EnumType.STRING)
