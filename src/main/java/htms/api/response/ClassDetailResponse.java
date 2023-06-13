@@ -1,7 +1,7 @@
 package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import htms.common.constance.ClassStatus;
+import htms.common.constants.ClassApprovalStatus;
 import lombok.*;
 
 import java.util.Date;
@@ -15,7 +15,7 @@ import java.util.UUID;
 public class ClassDetailResponse {
     private UUID id;
     private String name;
-    private ClassStatus status;
+    private ClassApprovalStatus status;
     private Integer minQuantity;
     private Integer maxQuantity;
     private String code;

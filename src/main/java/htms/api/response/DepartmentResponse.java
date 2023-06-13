@@ -12,6 +12,7 @@ import java.util.UUID;
 public class DepartmentResponse {
     private UUID id;
     private String name;
+    private String code;
 //    private List<Account> accounts;
 //    private List<Program> programs;
 }

@@ -1,7 +1,7 @@
 package htms.model;
 
-import htms.common.constance.PermissionType;
-import htms.common.constance.Resource;
+import htms.common.constants.PermissionType;
+import htms.common.constants.Resource;
 import jakarta.persistence.*;
 import lombok.*;
 

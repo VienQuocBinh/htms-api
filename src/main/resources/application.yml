@@ -12,7 +12,7 @@ spring:
     hibernate:
       #disable this to run flyway. If need to change anything to database, please create new flyway script to run
       ddl-auto: none
-    show-sql: true
+    show-sql: false
 server:
   port: '8080'
   servlet:

@@ -1,6 +1,6 @@
 package htms.model;
 
-import htms.common.constance.ClassApprovalStatus;
+import htms.common.constants.ClassApprovalStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;

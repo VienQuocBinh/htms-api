@@ -1,8 +1,11 @@
 package htms.model;
 
+import htms.common.constants.EnrollmentStatus;
 import htms.model.embeddedkey.EnrollmentId;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -22,4 +25,6 @@ public class Enrollment implements Serializable {
     private Date enrollmentDate;
     private boolean isCancelled;
     private String cancelReason;
+    @Enumerated(EnumType.STRING)
+    private EnrollmentStatus status;
 }

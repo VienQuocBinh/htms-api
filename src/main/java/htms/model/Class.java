@@ -24,6 +24,7 @@ public class Class extends BaseEntityAuditing {
     @Column(unique = true)
     private String code;
     private String generalSchedule; // Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}
+    private Integer quantity; // real quantity
 
     @OneToMany(mappedBy = "clazz")
     private List<Schedule> schedules;
@@ -37,6 +38,7 @@ public class Class extends BaseEntityAuditing {
         this.id = builder.id;
         this.name = builder.name;
         this.code = builder.code;
+        this.quantity = builder.quantity;
         this.generalSchedule = builder.generalSchedule;
         this.schedules = builder.schedules;
         this.classApprovals = builder.classApprovals;
