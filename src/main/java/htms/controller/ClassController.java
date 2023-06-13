@@ -1,6 +1,8 @@
 package htms.controller;
 
+import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
+import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;
 import htms.api.response.ClassesApprovalResponse;
 import htms.common.constants.ClassApprovalStatus;
@@ -44,5 +46,14 @@ public class ClassController {
             @Valid @RequestParam(required = false, defaultValue = "DESC") SortDirection direction
     ){
         return ResponseEntity.ok(classService.searchClasses(q.orElse(""), status, sortBy, direction));
+    }
+
+    @PostMapping("/approve")
+    public ResponseEntity<ClassApprovalResponse> approveClassRequest(@Valid @RequestBody ApprovalRequest request) {
+        return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.APPROVE));
+    }
+    @PostMapping("/reject")
+    public ResponseEntity<ClassApprovalResponse> rejectClassRequest(@Valid @RequestBody ApprovalRequest request) {
+        return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.REJECT));
     }
 }

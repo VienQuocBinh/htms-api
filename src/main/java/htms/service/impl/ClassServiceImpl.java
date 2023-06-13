@@ -1,29 +1,35 @@
 package htms.service.impl;
 
+import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
 import htms.api.request.ProgramPerClassRequest;
+import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;
 import htms.api.response.ClassesApprovalResponse;
 import htms.common.constants.ClassApprovalStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
-import htms.common.constants.ClassApprovalStatus;
 import htms.common.mapper.ClassMapper;
 import htms.model.Class;
 import htms.model.ClassApproval;
 import htms.model.GroupedApprovalStatus;
+import htms.model.ProgramPerClass;
+import htms.repository.AccountRepository;
 import htms.repository.ClassApprovalRepository;
 import htms.repository.ClassRepository;
 import htms.repository.ProgramPerClassRepository;
 import htms.service.ClassService;
 import htms.service.ProgramPerClassService;
 import htms.util.ClassUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -34,11 +40,11 @@ import java.util.stream.Collectors;
 public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
     private final ClassApprovalRepository classApprovalRepository;
-    private final ProgramPerClassRepository programPerClassRepository;
     private final ModelMapper modelMapper;
     private final ClassMapper classMapper;
     private final ClassUtil classUtil;
     private ProgramPerClassService programPerClassService;
+    private final ProgramPerClassRepository programPerClassRepository;
 
     // DI using setter to avoid circular dependency
     @Autowired
@@ -89,10 +95,10 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public ClassResponse getClassDetail(UUID id) {
-        // todo: handle exceptions
-        return modelMapper.map(
-                classRepository.findById(id).orElseThrow(),
-                ClassResponse.class);
+        var clazz = classRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        var programOfClass = programPerClassRepository.findProgramPerClassById_Clazz_Id(clazz.getId()).orElseThrow(EntityNotFoundException::new);
+        var classApproval = classApprovalRepository.getClassApprovalByClazzIdOrderByCreatedDateDesc(clazz.getId()).orElseThrow(EntityNotFoundException::new);
+        return classMapper.toResponse(clazz, classApproval, programOfClass);
     }
 
     @Override
@@ -117,6 +123,24 @@ public class ClassServiceImpl implements ClassService {
             model.setStatus(approvalStatus.get().getStatus());
             return model;
         }).toList();
+    }
+
+    @Override
+    public ClassApprovalResponse makeApproval(ApprovalRequest request, ClassApprovalStatus status) {
+        var clazz = classRepository.findById(request.getId()).orElseThrow(EntityNotFoundException::new);
+        var newApproval = ClassApproval.builder()
+                .clazz(clazz)
+                //TODO: replace hardcode UUID to real ID getFrom client
+                .createdBy(UUID.fromString("3bdb9fdd-40a0-4bd4-93aa-3462c2164d08"))
+                .approvalDate(Date.from(Instant.now()))
+                .createdDate(Date.from(Instant.now()))
+                .comment(request.getComment())
+                .status(status)
+                .build();
+        var savedApproval = classApprovalRepository.save(newApproval);
+        var response = modelMapper.map(savedApproval, ClassApprovalResponse.class);
+        response.setId(clazz.getId());
+        return response;
     }
 
     private List<ClassApproval> getLatestClassApprovals() {

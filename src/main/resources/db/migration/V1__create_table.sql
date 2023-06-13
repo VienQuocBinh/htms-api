@@ -52,8 +52,7 @@ create table public.class_approval
 (
     approval_date timestamp(6),
     created_date  timestamp(6) not null,
-    id            bigserial
-        primary key,
+    id            serial primary key,
     class_id      uuid
         constraint fk47jaj62s2g40sxnc379ce0sxh
             references public.class,
