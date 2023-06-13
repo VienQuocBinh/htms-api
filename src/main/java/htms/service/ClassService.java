@@ -1,5 +1,7 @@
 package htms.service;
 
+import htms.api.domain.CreateClassFormData;
+import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
 import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;

@@ -1,5 +1,7 @@
 package htms.controller;
 
+import htms.api.domain.CreateClassFormData;
+import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
 import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;
@@ -42,13 +44,14 @@ public class ClassController {
     public ResponseEntity<ClassResponse> createClass(@RequestBody ClassRequest request) {
         return ResponseEntity.status(201).body(classService.createClass(request));
     }
+
     @GetMapping("/search")
     public ResponseEntity<List<ClassesApprovalResponse>> searchClasses(
             @Valid @RequestParam(required = false) Optional<String> q,
             @Valid @RequestParam(required = false, defaultValue = "PENDING") ClassApprovalStatus status,
             @Valid @RequestParam(required = false, defaultValue = "CREATED_DATE") SortBy sortBy,
             @Valid @RequestParam(required = false, defaultValue = "DESC") SortDirection direction
-    ){
+    ) {
         return ResponseEntity.ok(classService.searchClasses(q.orElse(""), status, sortBy, direction));
     }
 
@@ -56,6 +59,7 @@ public class ClassController {
     public ResponseEntity<ClassApprovalResponse> approveClassRequest(@Valid @RequestBody ApprovalRequest request) {
         return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.APPROVE));
     }
+
     @PostMapping("/reject")
     public ResponseEntity<ClassApprovalResponse> rejectClassRequest(@Valid @RequestBody ApprovalRequest request) {
         return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.REJECT));
