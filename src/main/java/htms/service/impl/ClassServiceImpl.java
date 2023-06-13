@@ -4,22 +4,17 @@ import htms.api.domain.CreateClassFormData;
 import htms.api.request.ClassRequest;
 import htms.api.request.ProgramPerClassRequest;
 import htms.api.response.ClassResponse;
+import htms.api.response.ClassesApprovalResponse;
 import htms.api.response.CycleResponse;
 import htms.api.response.ProgramResponse;
-import htms.api.response.ClassesApprovalResponse;
 import htms.common.constants.ClassApprovalStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
-import htms.common.constants.ClassApprovalStatus;
 import htms.common.mapper.ClassMapper;
 import htms.model.Class;
 import htms.model.ClassApproval;
 import htms.model.GroupedApprovalStatus;
-import htms.repository.ClassApprovalRepository;
-import htms.repository.ClassRepository;
-import htms.repository.CycleRepository;
-import htms.repository.ProgramRepository;
-import htms.repository.ProgramPerClassRepository;
+import htms.repository.*;
 import htms.service.ClassService;
 import htms.service.ProgramPerClassService;
 import htms.util.ClassUtil;
@@ -41,7 +36,6 @@ public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
     private final ClassApprovalRepository classApprovalRepository;
     private final ProgramPerClassRepository programPerClassRepository;
-    private final ModelMapper modelMapper;
     private final ClassMapper classMapper;
     private final ClassUtil classUtil;
     private final ProgramRepository programRepository;
@@ -122,7 +116,7 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public List<ClassesApprovalResponse> searchClasses(String q, ClassApprovalStatus status, SortBy sortBy, SortDirection direction) {
         List<Class> classes = List.of();
-        if (sortBy.equals(SortBy.CREATED_DATE)){
+        if (sortBy.equals(SortBy.CREATED_DATE)) {
             classes = direction == SortDirection.DESC ? classRepository.findAllByOrderByCreatedDateDesc() : classRepository.findAllByOrderByCreatedDateAsc();
         }
         if (classes.isEmpty()) {
