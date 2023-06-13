@@ -3,6 +3,7 @@
 The app for Nhi Dong 2 hospital training management office to manage their training process of each doctor.
 
 ### BE Server Test Swagger: http://localhost:8080/htms/swagger-ui/index.html
+### BE Server Swagger: http://18.143.40.6:8080/htms/swagger-ui/index.html
 ### Swagger Editor: https://editor.swagger.io/?fbclid=IwAR2NjU1ua2Y697XLtlYuTNbeQygUjPiwTEYdAw8P2-F8Gcsk1UMZ9ftuCks
 
 ## Requirements

@@ -1,6 +1,8 @@
 package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import htms.common.constants.ClassStatus;
 import htms.common.constants.ClassApprovalStatus;
 import lombok.*;
 
@@ -12,6 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClassResponse {
     private UUID id;
     private String name;
