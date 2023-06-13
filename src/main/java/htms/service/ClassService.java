@@ -1,7 +1,7 @@
 package htms.service;
 
-import htms.api.domain.CreateClassFormData;
 import htms.api.request.ClassRequest;
+import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;
 import htms.api.response.ClassesApprovalResponse;
 import htms.common.constants.ClassApprovalStatus;
@@ -21,4 +21,6 @@ public interface ClassService {
     ClassResponse getClassDetail(UUID id);
 
     List<ClassesApprovalResponse> searchClasses(String q, ClassApprovalStatus status, SortBy sortBy, SortDirection direction);
+
+    ClassApprovalResponse makeApproval(ApprovalRequest request, ClassApprovalStatus status);
 }

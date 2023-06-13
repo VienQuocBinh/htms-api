@@ -1,5 +1,7 @@
 package htms.repository;
 
+import htms.model.Class;
+import htms.model.Program;
 import htms.model.ProgramPerClass;
 import htms.model.embeddedkey.ProgramPerClassId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +13,6 @@ import java.util.UUID;
 @Repository
 public interface ProgramPerClassRepository extends JpaRepository<ProgramPerClass, ProgramPerClassId> {
     Optional<Long> countAllById_Program_Id(UUID programId);
+
+    Optional<ProgramPerClass> findProgramPerClassById_Clazz_Id(UUID classId);
 }

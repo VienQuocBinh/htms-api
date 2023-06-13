@@ -28,7 +28,7 @@ public class Class extends BaseEntityAuditing {
 
     @OneToMany(mappedBy = "clazz")
     private List<Schedule> schedules;
-    @OneToMany(mappedBy = "clazz")
+    @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL)
     private List<ClassApproval> classApprovals;
     @OneToMany(mappedBy = "clazz")
     private List<AdditionalMaterial> additionalMaterials;
