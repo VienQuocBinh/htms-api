@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,13 +26,24 @@ public class Class extends BaseEntityAuditing {
     private String code;
     private String generalSchedule; // Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}
     private Integer quantity; // real quantity
+    private Date startDate;
+    private Date endDate;
 
-    @OneToMany(mappedBy = "clazz")
+    @OneToMany(mappedBy = "clazz", fetch = FetchType.LAZY)
     private List<Schedule> schedules;
-    @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "clazz", fetch = FetchType.LAZY)
     private List<ClassApproval> classApprovals;
-    @OneToMany(mappedBy = "clazz")
-    private List<AdditionalMaterial> additionalMaterials;
+//    @OneToMany(mappedBy = "clazz")
+//    private List<AdditionalMaterial> additionalMaterials;
+
+    @ManyToOne
+    @JoinColumn(name = "cycle_id")
+    private Cycle cycle;
+    @OneToMany(mappedBy = "id.clazz", fetch = FetchType.LAZY)
+    private List<Enrollment> enrollments;
+    @ManyToOne
+    @JoinColumn(name = "trainer_id")
+    private Trainer trainer;
 
     public Class(ClassBuilder<?, ?> builder) {
         super(builder);
@@ -42,6 +54,6 @@ public class Class extends BaseEntityAuditing {
         this.generalSchedule = builder.generalSchedule;
         this.schedules = builder.schedules;
         this.classApprovals = builder.classApprovals;
-        this.additionalMaterials = builder.additionalMaterials;
+//        this.additionalMaterials = builder.additionalMaterials;
     }
 }

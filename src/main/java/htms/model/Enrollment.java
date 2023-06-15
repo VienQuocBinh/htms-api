@@ -23,7 +23,7 @@ public class Enrollment implements Serializable {
     private EnrollmentId id;
     @NotNull
     private Date enrollmentDate;
-    private boolean isCancelled;
+    private Boolean isCancelled;
     private String cancelReason;
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;

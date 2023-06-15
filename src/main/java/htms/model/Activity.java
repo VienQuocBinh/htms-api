@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cycle {
+public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -21,10 +21,14 @@ public class Cycle {
     private String name;
     @Column(length = 1000)
     private String description;
-    private Integer duration; // months
+    @Column(length = 1000)
+    private String materialLink;
 
-    @OneToMany(mappedBy = "cycle", fetch = FetchType.LAZY)
-    private List<Class> classes;
-    @OneToMany(mappedBy = "cycle", fetch = FetchType.LAZY)
-    private List<Topic> topics;
+    @ManyToOne
+    @JoinColumn(name = "topic_id")
+    private Topic topic;
+    @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY)
+    private List<Assignment> assignments;
+    @OneToOne(mappedBy = "activity")
+    private Test test;
 }
