@@ -1,8 +1,29 @@
 insert into public.role (id, name)
-values (1, 'admin');
+values (1, 'Admin'),
+       (2, 'Trainer'),
+       (3, 'Trainee');
+insert into public.room (max_capacity, id, name)
+values (30, 'b49d2b9c-d8a1-473d-bafe-2207f62a034b', 'NVH601'),
+       (31, '66bcd96c-cd47-4f20-9e03-115333153e57', 'NVH409'),
+       (32, '35f2fc98-1331-4917-81cd-651a312a6316', '202'),
+       (29, '26df01e1-03c6-42c6-bcdc-43047d081c14', '221');
 insert into public.department (id, name, code)
 values ('e71ac0a8-fe10-40f9-a831-94bc0703641d', 'Khoa Nhi', 'KNI'),
        ('ef0aee96-d60f-422c-9418-0487d35e530e', 'Khoa Nội', 'KNO');
+insert into public.permission (id, role_id, permission, resource)
+values (1, 1, 'FULL_CONTROL', 'CLASS'),
+       (2, 1, 'FULL_CONTROL', 'MATERIAL');
+insert into public.cycle (duration, id, description, name)
+values (18, 'a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'Học kỳ mùa hè năm 2023', 'Summer 2023'),
+       (18, 'd99ae531-4845-4b8b-b826-829b5c5f032b', 'Học kỳ mùa xuân năm 2023', 'Spring 2023');
+insert into public.program (is_active, max_quantity, min_quantity, department_id, id, syllabus_id, description, code,
+                            name)
+values (true, 30, 5, 'e71ac0a8-fe10-40f9-a831-94bc0703641d', '73574861-62eb-4965-9ebc-cecbb50ea11f', null,
+        'Chương trình học về da', 'DA23', 'Chương trình học về da'),
+       (true, 30, 4, 'ef0aee96-d60f-422c-9418-0487d35e530e', 'c2c6401d-b0ab-42b8-af7d-980260fcd963', null,
+        'Chương trình học Hệ tim', 'TIM23', 'Chương trình học Hệ tim');
+
+
 insert into public.account (is_deleted, created_date, role_id, updated_date, created_by, department_id, id, updated_by,
                             email, title)
 values (false, '2023-06-06 20:48:46.541000', 1, '2023-06-06 20:48:46.541000', 'f858aa18-9569-4cfd-b038-8d5ee807f94d',
@@ -51,10 +72,66 @@ values (false, '2023-06-06 20:48:46.541000', 1, '2023-06-06 20:48:46.541000', 'f
        (false, '2023-06-11 20:45:59.000000', 1, '2023-06-11 20:46:07.000000', 'ccaeb39b-5532-4ead-a7f3-a962993a475f',
         'ef0aee96-d60f-422c-9418-0487d35e530e', 'ccaeb39b-5532-4ead-a7f3-a962993a475f', null, 'jiui@gmail.com', 'BS'),
        (false, '2023-06-11 20:45:59.000000', 1, '2023-06-11 20:46:07.000000', '8bf9ad57-66bf-4669-a4d3-7df25ccc39ad',
-        'ef0aee96-d60f-422c-9418-0487d35e530e', '8bf9ad57-66bf-4669-a4d3-7df25ccc39ad', null, 'weds@gmail.com', 'BS');
-insert into public.permission (id, role_id, permission, resource)
-values (1, 1, 'FULL_CONTROL', 'CLASS'),
-       (2, 1, 'FULL_CONTROL', 'MATERIAL');
+        'ef0aee96-d60f-422c-9418-0487d35e530e', '8bf9ad57-66bf-4669-a4d3-7df25ccc39ad', null, 'weds@gmail.com',
+        'BS');
+
+insert into public.trainer (is_deleted, birthdate, created_date, updated_date, account_id, created_by, id, updated_by,
+                            code, name, phone)
+values (false, '1988-06-05 07:00:00.000000', '2023-06-06 20:50:27.953000', '2023-06-06 20:50:27.953000',
+        '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08', '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08',
+        '3ae6a7fb-87a4-423e-8f38-d1313e710a00', null, 'KHANHKT', 'KhanhKT', '0986574526'),
+       (false, '2023-06-05 07:00:00.000000', '2023-06-06 20:49:56.500000', '2023-06-06 20:49:56.500000',
+        '4d2196da-097f-4fc5-9bb2-a40ef2ac7b2e', '4d2196da-097f-4fc5-9bb2-a40ef2ac7b2e',
+        'ff5a3c78-2642-4d4d-a793-b2cabdabde17', null, 'John', 'John', '0986563256');
+
+
+insert into public.class (is_deleted, quantity, created_date, end_date, start_date, updated_date, created_by, cycle_id,
+                          id, program_id, trainer_id, updated_by, code, general_schedule, name)
+values (false, 0, '2023-06-11 21:19:23.000000', '2024-06-17 12:20:32.000000', '2023-06-17 12:20:41.000000',
+        '2023-06-11 21:19:23.000000', '4d2196da-097f-4fc5-9bb2-a40ef2ac7b2e', 'a64edcb5-a30b-47c5-a053-332cd2a10f6b',
+        '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca', '73574861-62eb-4965-9ebc-cecbb50ea11f',
+        'ff5a3c78-2642-4d4d-a793-b2cabdabde17', null, 'BS0124',
+        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'BS0124'),
+       (false, 0, '2023-06-11 21:19:23.000000', '2024-06-17 12:20:32.000000', '2023-06-17 12:20:41.000000',
+        '2023-06-11 21:19:23.000000', '69dad776-6bce-41b8-8a6b-b373413df412', 'a64edcb5-a30b-47c5-a053-332cd2a10f6b',
+        '9bf2cc4b-4edc-453d-84ba-331aacfaf097', '73574861-62eb-4965-9ebc-cecbb50ea11f',
+        '3ae6a7fb-87a4-423e-8f38-d1313e710a00', null, 'ĐD0223',
+        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'ĐD0223'),
+       (false, 0, '2023-06-11 21:19:23.000000', '2024-06-17 12:20:32.000000', '2023-06-17 12:20:41.000000',
+        '2023-06-11 21:19:23.000000', '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08', 'a64edcb5-a30b-47c5-a053-332cd2a10f6b',
+        '9d95667e-e48f-48c3-ab3b-83c65232002f', '73574861-62eb-4965-9ebc-cecbb50ea11f',
+        'ff5a3c78-2642-4d4d-a793-b2cabdabde17', null, 'BS0123',
+        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'BS0123'),
+       (false, 0, '2023-06-11 21:19:23.000000', '2024-06-17 12:20:32.000000', '2023-06-17 12:20:41.000000',
+        '2023-06-11 21:19:23.000000', 'ef240b62-723d-4495-8841-fa01720db164', 'd99ae531-4845-4b8b-b826-829b5c5f032b',
+        '281484f9-1711-40d6-ad73-d5c34ede8284', 'c2c6401d-b0ab-42b8-af7d-980260fcd963',
+        '3ae6a7fb-87a4-423e-8f38-d1313e710a00', null, 'BS0523',
+        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'BS0523'),
+       (false, 0, '2023-06-11 21:19:23.000000', '2024-06-17 12:20:32.000000', '2023-06-17 12:20:41.000000',
+        '2023-06-11 21:19:23.000000', '1fea9213-7c14-4cb0-961e-8edb7efc371d', 'd99ae531-4845-4b8b-b826-829b5c5f032b',
+        '498ba41b-88b4-457d-83d5-f263e3c40ac6', 'c2c6401d-b0ab-42b8-af7d-980260fcd963',
+        '3ae6a7fb-87a4-423e-8f38-d1313e710a00', null, 'ĐD0323',
+        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'ĐD0323');
+insert into public.class_approval (created_date, id, class_id, created_by, comment, status)
+values ('2023-06-12 22:21:49.000000', 1, '9d95667e-e48f-48c3-ab3b-83c65232002f', '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08',
+        null, 'PENDING'),
+       ('2023-06-13 09:21:49.000000', 4, '9d95667e-e48f-48c3-ab3b-83c65232002f', '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08',
+        'Cần phải thay đổi', 'REJECT'),
+       ('2023-06-13 12:21:49.000000', 5, '9d95667e-e48f-48c3-ab3b-83c65232002f', '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08',
+        null, 'PENDING'),
+       ('2023-06-13 17:21:49.000000', 6, '9d95667e-e48f-48c3-ab3b-83c65232002f', '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08',
+        'LGTM', 'APPROVE'),
+       ('2023-06-13 07:21:52.000000', 7, '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca', '4d2196da-097f-4fc5-9bb2-a40ef2ac7b2e',
+        null, 'PENDING'),
+       ('2023-06-13 07:23:18.000000', 8, '9bf2cc4b-4edc-453d-84ba-331aacfaf097', '69dad776-6bce-41b8-8a6b-b373413df412',
+        null, 'PENDING'),
+       ('2023-06-13 11:23:18.000000', 9, '9bf2cc4b-4edc-453d-84ba-331aacfaf097', '69dad776-6bce-41b8-8a6b-b373413df412',
+        'Cần phải thay đổi', 'REJECT'),
+       ('2023-06-11 21:19:23.000000', 10, '498ba41b-88b4-457d-83d5-f263e3c40ac6',
+        '1fea9213-7c14-4cb0-961e-8edb7efc371d', null, 'PENDING'),
+       ('2023-06-11 21:19:23.000000', 11, '281484f9-1711-40d6-ad73-d5c34ede8284',
+        'ef240b62-723d-4495-8841-fa01720db164', null, 'PENDING');
+
 insert into public.profile (is_deleted, created_date, updated_date, created_by, id, updated_by, status)
 values (false, '2023-06-06 22:02:58.000000', '2023-06-06 22:03:03.000000', '03a1ed7d-11aa-4206-bb41-024023c00a78',
         '03a1ed7d-11aa-4206-bb41-024023c00a78', null, 'ACTIVE'),
@@ -96,6 +173,7 @@ values (false, '2023-06-06 22:02:58.000000', '2023-06-06 22:03:03.000000', '03a1
         '9d477f13-e240-4156-b538-e9f4957c33c4', null, 'ACTIVE'),
        (false, '2023-06-06 22:02:58.000000', '2023-06-06 22:03:03.000000', '90bbc40a-6d3e-40ec-8e01-1a4352c0ee3b',
         '90bbc40a-6d3e-40ec-8e01-1a4352c0ee3b', null, 'ACTIVE');
+
 
 insert into public.trainee (is_deleted, birthdate, created_date, updated_date, account_id, created_by, id, profile_id,
                             updated_by, code, name, phone)
@@ -159,97 +237,3 @@ values (false, '2023-06-06 22:04:11.000000', '2023-06-06 22:04:14.000000', null,
        (false, '2023-06-06 22:04:11.000000', '2023-06-06 22:04:14.000000', null, '59d6faeb-11c7-4934-b2e5-1e52014776e8',
         '524a14d5-2cd4-48fb-b66a-fd195823a1b6', '524a14d5-2cd4-48fb-b66a-fd195823a1b6',
         'ff8e73e0-34c5-4a13-ab6f-780a9d2da6b0', null, 'CYIO', 'Yancy Grogan', '2398353951');
-insert into public.trainer (is_deleted, birthdate, created_date, updated_date, account_id, created_by, id, updated_by,
-                            name, phone, code)
-values (false, '1988-06-05 07:00:00.000000', '2023-06-06 20:50:27.953000', '2023-06-06 20:50:27.953000',
-        '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08', '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08',
-        '3ae6a7fb-87a4-423e-8f38-d1313e710a00', null, 'KhanhKT', '0986574526', 'KHANHKT'),
-       (false, '2023-06-05 07:00:00.000000', '2023-06-06 20:49:56.500000', '2023-06-06 20:49:56.500000',
-        '4d2196da-097f-4fc5-9bb2-a40ef2ac7b2e', '4d2196da-097f-4fc5-9bb2-a40ef2ac7b2e',
-        'ff5a3c78-2642-4d4d-a793-b2cabdabde17', null, 'John', '0986563256', 'John');
-
-insert into public.cycle (id, description, duration)
-values ('d99ae531-4845-4b8b-b826-829b5c5f032b', 'Spring 2023', 18),
-       ('a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'Summer 2023', 18);
-insert into public.program (department_id, id, syllabus_id, description, code)
-values ('e71ac0a8-fe10-40f9-a831-94bc0703641d', '73574861-62eb-4965-9ebc-cecbb50ea11f', null, 'Chương trình học về da',
-        'SP23'),
-       ('ef0aee96-d60f-422c-9418-0487d35e530e', 'c2c6401d-b0ab-42b8-af7d-980260fcd963', null, 'Chương trình học Hệ tim',
-        'SU23');
-insert into public.room (id, name, max_capacity)
-values ('b49d2b9c-d8a1-473d-bafe-2207f62a034b', 'NVH601', 30),
-       ('66bcd96c-cd47-4f20-9e03-115333153e57', 'NVH409', 31),
-       ('35f2fc98-1331-4917-81cd-651a312a6316', '202', 32),
-       ('26df01e1-03c6-42c6-bcdc-43047d081c14', '221', 29);
-
-insert into public.class (is_deleted, created_date, updated_date, created_by, id, updated_by, code, general_schedule,
-                          name)
-values (false, '2023-06-11 21:19:23.000000', null, '3bdb9fdd-40a0-4bd4-93aa-3462c2164d08',
-        '9d95667e-e48f-48c3-ab3b-83c65232002f', null, 'BS0123',
-        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'BS0123'),
-       (false, '2023-06-11 21:19:23.000000', null, '4d2196da-097f-4fc5-9bb2-a40ef2ac7b2e',
-        '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca', null, 'BS0124',
-        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'BS0124'),
-       (false, '2023-06-11 21:19:23.000000', null, '69dad776-6bce-41b8-8a6b-b373413df412',
-        '9bf2cc4b-4edc-453d-84ba-331aacfaf097', null, 'ĐD0223',
-        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'ĐD0223'),
-       (false, '2023-06-11 21:19:23.000000', null, '1fea9213-7c14-4cb0-961e-8edb7efc371d',
-        '498ba41b-88b4-457d-83d5-f263e3c40ac6', null, 'ĐD0323',
-        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'ĐD0323'),
-       (false, '2023-06-11 21:19:23.000000', null, 'ef240b62-723d-4495-8841-fa01720db164',
-        '281484f9-1711-40d6-ad73-d5c34ede8284', null, 'BS0523',
-        'Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}', 'BS0523');
-insert into public.program_per_class (max_quantity, min_quantity, program_end_date, program_start_date, class_id,
-                                      cycle_id, program_id)
-values (30, 4, '2023-12-11 21:18:39.000000', '2023-06-11 21:18:41.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'c2c6401d-b0ab-42b8-af7d-980260fcd963'),
-       (30, 4, '2023-12-11 21:18:39.000000', '2023-06-11 21:18:41.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'c2c6401d-b0ab-42b8-af7d-980260fcd963'),
-       (30, 4, '2023-12-11 21:18:39.000000', '2023-06-11 21:18:41.000000', '9bf2cc4b-4edc-453d-84ba-331aacfaf097',
-        'a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'c2c6401d-b0ab-42b8-af7d-980260fcd963'),
-       (30, 4, '2023-12-11 21:18:39.000000', '2023-06-11 21:18:41.000000', '498ba41b-88b4-457d-83d5-f263e3c40ac6',
-        'a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'c2c6401d-b0ab-42b8-af7d-980260fcd963'),
-       (30, 4, '2023-12-11 21:18:39.000000', '2023-06-11 21:18:41.000000', '281484f9-1711-40d6-ad73-d5c34ede8284',
-        'a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'c2c6401d-b0ab-42b8-af7d-980260fcd963');
-
-insert into public.enrollment (is_cancelled, enrollment_date, class_id, program_id, trainee_id, cancel_reason)
-values (false, '2022-07-06 00:23:57.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', 'e4a2ea60-6c3f-4d2b-bf52-ec4c4ec396cc', null),
-       (false, '2022-07-05 19:26:50.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', 'df512170-cfc5-418f-8503-8dcb40d638e2', null),
-       (false, '2023-03-17 12:10:11.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '82c72928-2a83-4053-a62f-3ae816fb32da', null),
-       (false, '2022-08-22 15:50:48.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '5028a606-554d-4c9b-9f43-a0f232a39f80', null),
-       (false, '2023-03-21 02:14:43.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', 'fce12db6-ebcc-4d60-bc6b-a357e8a96114', null),
-       (false, '2022-08-17 13:10:32.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', 'db29c64c-7b2f-4263-abd6-aa8f200bd3bb', null),
-       (false, '2022-07-22 13:52:40.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', 'bae2f78d-4aa0-4b61-8d73-44fa9162e005', null),
-       (false, '2022-09-02 17:20:11.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', 'af913561-6f22-4f54-9810-5e4b631c4024', null),
-       (false, '2022-12-17 07:18:06.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '82899e18-5dec-420e-b4e4-bf1be6dee534', null),
-       (false, '2022-10-01 02:17:23.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '844502b8-a9de-4b71-be43-d29913af93d7', null),
-       (false, '2022-11-08 00:22:03.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', 'c143f141-9606-4a11-b050-caad6123c87e', null),
-       (false, '2022-10-23 11:32:03.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '5fec4601-ba75-4f34-a5b9-8dd85bc61244', null),
-       (false, '2023-02-26 15:44:03.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '673e3d95-bdac-426f-ab4b-4acb0a85554b', null),
-       (false, '2022-09-02 20:12:38.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '399d6a3a-125e-4fb3-8727-894cb10b1e27', null),
-       (false, '2022-06-24 18:59:10.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '886e52c3-77bd-4288-ae2c-9c17336c77a8', null),
-       (false, '2022-09-17 20:07:47.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '00bcab59-5ddd-4528-b811-d85a8f0e27f7', null),
-       (false, '2022-06-28 00:17:36.000000', '9d95667e-e48f-48c3-ab3b-83c65232002f',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '77d3f183-3e43-42c7-b1ac-1fb3c600a751', null),
-       (false, '2022-12-30 11:19:48.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '524a14d5-2cd4-48fb-b66a-fd195823a1b6', null),
-       (false, '2022-08-18 13:52:50.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', '56b8a133-02cc-4897-a81d-e877d1703cd4', null),
-       (false, '2022-09-01 08:08:36.000000', '65f6e65a-7cdf-4fd6-9ce5-c5f80f42f6ca',
-        'c2c6401d-b0ab-42b8-af7d-980260fcd963', 'fde8a680-93cc-4f80-9b5d-c70641a17127', null);

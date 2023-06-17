@@ -34,11 +34,10 @@ public class Program {
     private Department department;
     @OneToOne
     private Syllabus syllabus;
-    //    @OneToMany(mappedBy = "id.program")
-//    private List<ProgramPerClass> programPerClasses;
     @OneToMany(mappedBy = "program", fetch = FetchType.LAZY)
     private List<QuestionBank> questionBanks;
-
     @OneToMany(mappedBy = "id.program")
     private List<ProgramContent> programContents;
+    @OneToMany(mappedBy = "program", fetch = FetchType.LAZY)
+    private List<Class> classes;
 }
