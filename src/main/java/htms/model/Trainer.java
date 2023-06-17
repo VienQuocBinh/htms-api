@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,6 +35,10 @@ public class Trainer extends BaseEntityAuditing {
     private Account account;
     @OneToOne(mappedBy = "trainer")
     private Schedule schedule;
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
+    private List<Class> classes;
+    @OneToMany(mappedBy = "id.trainer")
+    private List<ProgramContent> programContents;
 
     public Trainer(BaseEntityAuditingBuilder<?, ?> builder, UUID id, @NotNull String name, @NotNull String phone, Date birthdate, Account account) {
         super(builder);

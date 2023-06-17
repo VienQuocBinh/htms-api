@@ -1,7 +1,7 @@
 package htms.model.embeddedkey;
 
-import htms.model.Class;
 import htms.model.Program;
+import htms.model.Trainer;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,12 +16,12 @@ import java.io.Serializable;
 @Builder
 @EqualsAndHashCode
 @Embeddable
-public class ProgramPerClassId implements Serializable {
+public class ProgramContentId implements Serializable {
     @ManyToOne
     @JoinColumn(name = "program_id")
     private Program program;
-
     @ManyToOne
-    @JoinColumn(name = "class_id")
-    private Class clazz;
+    @JoinColumn(name = "trainer_id")
+    private Trainer trainer;
+
 }

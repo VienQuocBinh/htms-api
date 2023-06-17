@@ -2,7 +2,6 @@ package htms.service.impl;
 
 import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
-import htms.api.request.ProgramPerClassRequest;
 import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;
 import htms.api.response.ClassesApprovalResponse;
@@ -13,19 +12,13 @@ import htms.common.mapper.ClassMapper;
 import htms.model.Class;
 import htms.model.ClassApproval;
 import htms.model.GroupedApprovalStatus;
-import htms.model.ProgramPerClass;
-import htms.repository.AccountRepository;
 import htms.repository.ClassApprovalRepository;
 import htms.repository.ClassRepository;
-import htms.repository.ProgramPerClassRepository;
 import htms.service.ClassService;
-import htms.service.ProgramPerClassService;
 import htms.util.ClassUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -43,14 +36,6 @@ public class ClassServiceImpl implements ClassService {
     private final ModelMapper modelMapper;
     private final ClassMapper classMapper;
     private final ClassUtil classUtil;
-    private ProgramPerClassService programPerClassService;
-    private final ProgramPerClassRepository programPerClassRepository;
-
-    // DI using setter to avoid circular dependency
-    @Autowired
-    public void setProgramPerClassService(@Lazy ProgramPerClassService programPerClassService) {
-        this.programPerClassService = programPerClassService;
-    }
 
     @Override
     public ClassResponse createClass(ClassRequest request) {
@@ -65,16 +50,6 @@ public class ClassServiceImpl implements ClassService {
                 .build();
         classRepository.save(clazz);
 
-        // create program per class
-        var programPerClass = programPerClassService.create(ProgramPerClassRequest.builder()
-                .programId(request.getProgramId())
-                .classId(clazz.getId())
-                .cycleId(request.getCycleId())
-                .programStartDate(request.getStartDate())
-                .programEndDate(request.getEndDate())
-                .minQuantity(request.getMinQuantity())
-                .maxQuantity(request.getMaxQuantity())
-                .build());
         // create class approval with PENDING status
         // todo: assign created by
         var classApproval = ClassApproval.builder()
@@ -83,7 +58,7 @@ public class ClassServiceImpl implements ClassService {
                 .build();
         classApprovalRepository.save(classApproval);
 
-        return classMapper.toResponse(clazz, classApproval, programPerClass);
+        return classMapper.toResponse(clazz, classApproval);
     }
 
     @Override
@@ -96,15 +71,16 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ClassResponse getClassDetail(UUID id) {
         var clazz = classRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        var programOfClass = programPerClassRepository.findProgramPerClassById_Clazz_Id(clazz.getId()).orElseThrow(EntityNotFoundException::new);
+//        var programOfClass = programPerClassRepository.findProgramPerClassById_Clazz_Id(clazz.getId()).orElseThrow(EntityNotFoundException::new);
         var classApproval = classApprovalRepository.getClassApprovalByClazzIdOrderByCreatedDateDesc(clazz.getId()).orElseThrow(EntityNotFoundException::new);
-        return classMapper.toResponse(clazz, classApproval, programOfClass);
+//        return classMapper.toResponse(clazz, classApproval, programOfClass);
+        return classMapper.toResponse(clazz, classApproval);
     }
 
     @Override
     public List<ClassesApprovalResponse> searchClasses(String q, ClassApprovalStatus status, SortBy sortBy, SortDirection direction) {
         List<Class> classes = List.of();
-        if (sortBy.equals(SortBy.CREATED_DATE)){
+        if (sortBy.equals(SortBy.CREATED_DATE)) {
             classes = direction == SortDirection.DESC ? classRepository.findAllByOrderByCreatedDateDesc() : classRepository.findAllByOrderByCreatedDateAsc();
         }
         if (classes.isEmpty()) {
@@ -132,7 +108,6 @@ public class ClassServiceImpl implements ClassService {
                 .clazz(clazz)
                 //TODO: replace hardcode UUID to real ID getFrom client
                 .createdBy(UUID.fromString("3bdb9fdd-40a0-4bd4-93aa-3462c2164d08"))
-                .approvalDate(Date.from(Instant.now()))
                 .createdDate(Date.from(Instant.now()))
                 .comment(request.getComment())
                 .status(status)

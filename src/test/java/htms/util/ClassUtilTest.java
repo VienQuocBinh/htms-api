@@ -1,6 +1,5 @@
 package htms.util;
 
-import htms.repository.ProgramPerClassRepository;
 import htms.service.ProgramService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -9,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class ClassUtilTest {
-    @Mock
-    private ProgramPerClassRepository programPerClassRepository;
     @Mock
     private ProgramService programService;
     @InjectMocks
