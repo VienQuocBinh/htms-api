@@ -33,9 +33,6 @@ public class Class extends BaseEntityAuditing {
     private List<Schedule> schedules;
     @OneToMany(mappedBy = "clazz", fetch = FetchType.LAZY)
     private List<ClassApproval> classApprovals;
-//    @OneToMany(mappedBy = "clazz")
-//    private List<AdditionalMaterial> additionalMaterials;
-
     @ManyToOne
     @JoinColumn(name = "cycle_id")
     private Cycle cycle;
@@ -44,6 +41,9 @@ public class Class extends BaseEntityAuditing {
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
+    @ManyToOne
+    @JoinColumn(name = "program_id")
+    private Program program;
 
     public Class(ClassBuilder<?, ?> builder) {
         super(builder);
@@ -54,6 +54,5 @@ public class Class extends BaseEntityAuditing {
         this.generalSchedule = builder.generalSchedule;
         this.schedules = builder.schedules;
         this.classApprovals = builder.classApprovals;
-//        this.additionalMaterials = builder.additionalMaterials;
     }
 }

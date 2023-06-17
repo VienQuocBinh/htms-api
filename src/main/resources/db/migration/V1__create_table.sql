@@ -350,6 +350,9 @@ create table public.class
     id               uuid         not null
         constraint class_pkey
             primary key,
+    program_id       uuid
+        constraint fkcxcigxg6kx0x8l68uf5wonnot
+            references public.program,
     trainer_id       uuid
         constraint fkpbf3k6sdqcs2v1vjqdc8rthqh
             references public.trainer,
@@ -619,3 +622,4 @@ create table public.unit
 
 alter table public.unit
     owner to "user";
+
