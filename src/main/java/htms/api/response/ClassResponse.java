@@ -2,11 +2,11 @@ package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import htms.common.constants.ClassStatus;
 import htms.common.constants.ClassApprovalStatus;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -23,14 +23,15 @@ public class ClassResponse {
     private UUID createdBy;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
     private Date createdDate;
-    // program per class
     private ClassApprovalStatus status;
     private Integer minQuantity;
     private Integer maxQuantity;
-    private UUID programId;
-    private UUID cycleId;
+    private ProgramResponse program;
+    private CycleResponse cycle;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone = "Asia/Bangkok")
     private Date startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy ", timezone = "Asia/Bangkok")
     private Date endDate;
+    // Additional properties
+    private List<TraineeResponse> trainees;
 }

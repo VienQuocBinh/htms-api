@@ -10,5 +10,6 @@ import java.util.UUID;
 @Repository
 public interface ClassRepository extends JpaRepository<Class, UUID> {
     List<Class> findAllByOrderByCreatedDateAsc();
+
     List<Class> findAllByOrderByCreatedDateDesc();
 }
