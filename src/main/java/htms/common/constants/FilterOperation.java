@@ -8,7 +8,7 @@ public enum FilterOperation {
     GREATER_THAN("gt"),
     GREATER_THAN_OR_EQUAL_TO("gte"),
     LESS_THAN("lt"),
-    LESSTHAN_OR_EQUAL_TO("lte"),
+    LESS_THAN_OR_EQUAL_TO("lte"),
     IN("in"),
     NOT_IN("nin"),
     BETWEEN("btn"),
@@ -31,7 +31,7 @@ public enum FilterOperation {
     public static FilterOperation fromValue(String value) {
         for (FilterOperation op : FilterOperation.values()) {
 
-            //Case insensitive operation name
+            // Case-insensitive operation name
             if (String.valueOf(op.value).equalsIgnoreCase(value)) {
                 return op;
             }

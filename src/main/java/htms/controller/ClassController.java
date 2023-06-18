@@ -77,7 +77,7 @@ public class ClassController {
         List<FilterCondition> andConditions = filterBuilderService.createFilterCondition(filterAnd);
         List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(filterOr);
 
-        Specification<Class> specification = filterCriteriaBuilder.buildSpecification(andConditions, orConditions);
+        Specification<Class> specification = filterCriteriaBuilder.addCondition(andConditions, orConditions);
         Page<Class> pg = classRepository.findAll(specification, pageable);
         response.setPageStats(pg,
                 pg.getContent()
