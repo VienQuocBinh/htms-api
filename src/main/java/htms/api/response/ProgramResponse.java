@@ -1,5 +1,6 @@
 package htms.api.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.util.List;
@@ -10,10 +11,12 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProgramResponse {
     private UUID id;
     private String description;
     private String code;
     private DepartmentResponse department;
-    private List<ProgramPerClassResponse> programPerCycleList;
+    private TrainerResponse trainer;
+    private List<TopicDetail> topics;
 }

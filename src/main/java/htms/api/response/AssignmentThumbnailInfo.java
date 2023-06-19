@@ -2,28 +2,30 @@ package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import htms.common.constants.AssignmentStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.UUID;
 
-@Getter
-@Setter
+
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TrainerResponse {
+public class AssignmentThumbnailInfo {
     private UUID id;
     private String name;
-    private String phone;
-    private Date birthdate;
-    private UUID accountId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
-    private Date createdDate;
-    private UUID createdBy;
+    private Date startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
-    private Date updatedDate;
-    private UUID updatedBy;
-    private boolean isDeleted;
+    private Date dueDate;
+    @Enumerated(EnumType.STRING)
+    private AssignmentStatus status;
 }
