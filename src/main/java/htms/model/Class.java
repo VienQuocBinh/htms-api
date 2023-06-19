@@ -51,8 +51,14 @@ public class Class extends BaseEntityAuditing {
         this.name = builder.name;
         this.code = builder.code;
         this.quantity = builder.quantity;
+        this.startDate = builder.startDate;
+        this.endDate = builder.endDate;
         this.generalSchedule = builder.generalSchedule;
         this.schedules = builder.schedules;
         this.classApprovals = builder.classApprovals;
+        this.cycle = builder.cycle;
+        this.enrollments = builder.enrollments;
+        this.trainer = builder.trainer;
+        this.program = builder.program;
     }
 }

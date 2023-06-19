@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,10 +17,9 @@ public class TraineeServiceImpl implements TraineeService {
     private final ModelMapper mapper;
 
     @Override
-    public List<TraineeResponse> getTraineesByClassId(UUID classId, UUID programId) {
+    public List<TraineeResponse> getTraineesByClassId(UUID classId) {
         // todo: handle exceptions
-//        var list = traineeRepository.findAllByClassAndProgram(classId, programId).orElseThrow();
-        var list = new ArrayList<>();
+        var list = traineeRepository.findAllByClassAndProgram(classId).orElseThrow();
         return list.stream()
                 .map(trainees -> mapper.map(trainees, TraineeResponse.class))
                 .toList();
