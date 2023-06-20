@@ -4,34 +4,28 @@ import htms.api.domain.CreateClassFormData;
 import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
 import htms.api.request.EnrollmentRequest;
+import htms.api.request.ProfileUpdateRequest;
 import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;
 import htms.api.response.ClassesApprovalResponse;
-import htms.api.response.ProgramResponse;
 import htms.common.constants.ClassApprovalStatus;
-import htms.common.constants.EnrollmentStatus;
+import htms.common.constants.ProfileStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
-import htms.common.mapper.ClassMapper;
 import htms.model.Class;
 import htms.model.*;
 import htms.repository.ClassApprovalRepository;
 import htms.repository.ClassRepository;
-import htms.repository.ProgramRepository;
 import htms.service.*;
 import htms.util.ClassUtil;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -43,16 +37,14 @@ public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
     private final ClassApprovalRepository classApprovalRepository;
     private final ModelMapper modelMapper;
-    private final ClassMapper classMapper;
     private final ClassUtil classUtil;
-    private final ProgramRepository programRepository;
     private TraineeService traineeService;
     private TrainerService trainerService;
     private ProgramService programService;
     private CycleService cycleService;
     private EnrollmentService enrollmentService;
-    @PersistenceContext
-    private EntityManager entityManager;
+    private ClassApprovalService classApprovalService;
+    private ProfileService profileService;
 
     @Autowired
     public void setTraineeService(TraineeService traineeService) {
@@ -77,6 +69,16 @@ public class ClassServiceImpl implements ClassService {
     @Autowired
     public void setEnrollmentService(EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
+    }
+
+    @Autowired
+    public void setClassApprovalService(ClassApprovalService classApprovalService) {
+        this.classApprovalService = classApprovalService;
+    }
+
+    @Autowired
+    public void setProfileService(ProfileService profileService) {
+        this.profileService = profileService;
     }
 
     @Override
@@ -105,28 +107,31 @@ public class ClassServiceImpl implements ClassService {
         classRepository.save(clazz);
 
         // create class approval with PENDING status
-        // todo: assign created by
-        var currentLatestId = classApprovalRepository.getLatestId();
-        var classApproval = ClassApproval.builder()
-                .status(ClassApprovalStatus.PENDING)
-                .clazz(clazz);
-        // if the data table is already has data, then create with id = latestId + 1
-        if (currentLatestId.isPresent()) {
-            Long currentId = (Long) entityManager.createNativeQuery("SELECT setval('class_approval_id_seq', " + currentLatestId.get() + ", true);")
-                    .getSingleResult();
-            classApproval.id(currentId + 1);
-        }
-        classApprovalRepository.save(classApproval.build());
-
-        // Assign trainees to the class, create enrollment status PENDING
-        request.getTraineeIds().forEach(traineeId -> enrollmentService.create(EnrollmentRequest.builder()
-                .classId(clazz.getId())
-                .traineeId(traineeId)
-                .build()));
+        classApprovalService.create(
+                ApprovalRequest.builder()
+                        .comment("Lớp đang chờ duyệt")
+                        .id(clazz.getId())
+                        .build(),
+                ClassApprovalStatus.PENDING);
+        // Assign trainees to the class, create enrollment status APPROVE, update profile status STUDYING
+        request.getTraineeIds().forEach(traineeId -> {
+            enrollmentService.create(EnrollmentRequest.builder()
+                    .classId(clazz.getId())
+                    .traineeId(traineeId)
+                    .build());
+            UUID profileId = traineeService.getTrainee(traineeId).getProfile().getId();
+            profileService.updateProfile(ProfileUpdateRequest.builder()
+                    .id(profileId)
+                    .status(ProfileStatus.STUDYING)
+                    .build());
+        });
 
         // todo: generate schedule based on generalSchedule
 
-        return classMapper.toResponse(clazz, classApproval.build());
+        ClassResponse response = modelMapper.map(clazz, ClassResponse.class);
+        // Set list of trainees of a class
+        response.setTrainees(traineeService.getTraineesByClassId(clazz.getId()));
+        return response;
     }
 
     @Override
@@ -136,33 +141,18 @@ public class ClassServiceImpl implements ClassService {
                 .toList();
     }
 
-    /**
-     * Get class details including list of trainees with the same enrollment status of the approval
-     *
-     * @param id {@link String}
-     * @return {@link List}
-     */
     @Override
     public ClassResponse getClassDetail(UUID id) {
         // todo: handle exceptions
         var clazz = classRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
-        var program = programRepository.findById(clazz.getProgram().getId())
-                .orElseThrow();
         var classApproval = classApprovalRepository
                 .getClassApprovalByClazzIdOrderByCreatedDateDesc(clazz.getId())
                 .orElseThrow(EntityNotFoundException::new);
         var response = modelMapper.map(clazz, ClassResponse.class);
-        response.setProgram(modelMapper.map(program, ProgramResponse.class));
         response.setStatus(classApproval.getStatus());
-        // Get list of trainees have the same enrollment status with the approval status
-        switch (classApproval.getStatus()) {
-            case PENDING -> response.setTrainees(traineeService.getTraineesByClassId(id, EnrollmentStatus.PENDING));
-            case APPROVE -> response.setTrainees(traineeService.getTraineesByClassId(id, EnrollmentStatus.APPROVE));
-            case REJECT -> response.setTrainees(traineeService.getTraineesByClassId(id, EnrollmentStatus.REJECT));
-            default -> {
-            }
-        }
+        // Get list of trainees in the class
+        response.setTrainees(traineeService.getTraineesByClassId(id));
         return response;
     }
 
@@ -198,13 +188,13 @@ public class ClassServiceImpl implements ClassService {
                 .clazz(clazz)
                 //TODO: replace hardcode UUID to real ID getFrom client
                 .createdBy(UUID.fromString("3bdb9fdd-40a0-4bd4-93aa-3462c2164d08"))
-                .createdDate(Date.from(Instant.now()))
                 .comment(request.getComment())
                 .status(status)
                 .build();
         var savedApproval = classApprovalRepository.save(newApproval);
         var response = modelMapper.map(savedApproval, ClassApprovalResponse.class);
         response.setId(clazz.getId());
+
         return response;
     }
 
@@ -227,6 +217,4 @@ public class ClassServiceImpl implements ClassService {
                 .cycles(cycleService.getCycles());
         return createClassFormData.build();
     }
-
-
 }

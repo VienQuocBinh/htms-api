@@ -10,7 +10,11 @@ import java.util.UUID;
 public interface EnrollmentService {
     List<EnrollmentResponse> getEnrollmentByClassIdAndStatus(UUID classId, EnrollmentStatus status);
 
+    /**
+     * Create new Enrollment with APPROVE status
+     *
+     * @param request {@link EnrollmentRequest}
+     * @return {@link EnrollmentResponse}
+     */
     EnrollmentResponse create(EnrollmentRequest request);
-
-    List<EnrollmentResponse> updateEnrollmentStatusByClassId(UUID classId, UUID traineeId, EnrollmentStatus status);
 }

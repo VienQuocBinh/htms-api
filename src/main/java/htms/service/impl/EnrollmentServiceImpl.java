@@ -35,12 +35,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .toList();
     }
 
-    /**
-     * Create new Enrollment with PENDING status
-     *
-     * @param request {@link EnrollmentRequest}
-     * @return {@link EnrollmentResponse}
-     */
+
     @Override
     @Transactional(rollbackFor = {SQLException.class})
     public EnrollmentResponse create(EnrollmentRequest request) {
@@ -56,14 +51,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .map(enrollmentRepository.save(Enrollment.builder()
                         .id(id)
                         .enrollmentDate(new Date())
-                        .status(EnrollmentStatus.PENDING)
+                        .status(EnrollmentStatus.APPROVE)
                         .build()), EnrollmentResponse.class);
-    }
-
-    @Override
-    @Transactional(rollbackFor = {SQLException.class})
-    public List<EnrollmentResponse> updateEnrollmentStatusByClassId(UUID classId, UUID traineeId, EnrollmentStatus status) {
-
-        return null;
     }
 }

@@ -18,6 +18,12 @@ public interface ClassService {
 
     List<ClassResponse> getClasses();
 
+    /**
+     * Get class details including list of APPROVED trainees
+     *
+     * @param id {@link String}
+     * @return {@link List}
+     */
     ClassResponse getClassDetail(UUID id);
 
     List<ClassesApprovalResponse> searchClasses(String q, ClassApprovalStatus status, SortBy sortBy, SortDirection direction);

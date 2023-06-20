@@ -52,7 +52,7 @@ public class ClassController {
 
     @PostMapping
     public ResponseEntity<ClassResponse> createClass(@RequestBody ClassRequest request) {
-        // todo: add list trainee
+        // todo: generate schedules
         return ResponseEntity.status(201).body(classService.createClass(request));
     }
 
@@ -108,6 +108,7 @@ public class ClassController {
     }
 
     @GetMapping("/class/{id}/enrollment")
+    @Operation(summary = "Get the PENDING enrollments for the given class")
     public ResponseEntity<List<EnrollmentResponse>> getClassEnrollments(@PathVariable UUID id) {
         return ResponseEntity.ok(enrollmentService.getEnrollmentByClassIdAndStatus(id, EnrollmentStatus.PENDING));
     }

@@ -1,6 +1,5 @@
 package htms.repository;
 
-import htms.common.constants.EnrollmentStatus;
 import htms.model.Trainee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,9 +24,7 @@ public interface TraineeRepository extends JpaRepository<Trainee, UUID> {
             join Class c on c.id = e.id.clazz.id
             where c.id = :classId\s
             and e.isCancelled = false
-            and e.status = :status\s
             order by e.enrollmentDate asc\s
             """)
-    Optional<List<Trainee>> findAllByClassAndEnrollmentStatus(@Param("classId") UUID classId,
-                                                              @Param("status") EnrollmentStatus status);
+    Optional<List<Trainee>> findAllByClassAndEnrollmentStatus(@Param("classId") UUID classId);
 }

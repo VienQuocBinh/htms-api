@@ -22,8 +22,6 @@ public class ClassRequest {
     private UUID programId;
     @org.hibernate.validator.constraints.UUID
     private UUID cycleId;
-    //    private Integer minQuantity;
-//    private Integer maxQuantity;
     private Integer quantity;
     private Date startDate;
     private Date endDate;
