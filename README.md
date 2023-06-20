@@ -4,6 +4,7 @@ The app for Nhi Dong 2 hospital training management office to manage their train
 
 ### BE Server Test Swagger: http://localhost:8080/htms/swagger-ui/index.html
 ### BE Server Swagger: http://18.143.40.6:8080/htms/swagger-ui/index.html
+### API Specification: https://www.postman.com/htms-capstone/workspace/htms/overview
 ### Swagger Editor: https://editor.swagger.io/?fbclid=IwAR2NjU1ua2Y697XLtlYuTNbeQygUjPiwTEYdAw8P2-F8Gcsk1UMZ9ftuCks
 
 ## Requirements
