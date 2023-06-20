@@ -18,10 +18,9 @@ import java.util.UUID;
 public class TraineeController {
     private final TraineeService traineeService;
 
-    @GetMapping("/class/{classId}/program/{programId}")
+    @GetMapping("/class/{id}")
     public ResponseEntity<List<TraineeResponse>> getTraineeByClass(
-            @PathVariable UUID classId,
-            @PathVariable UUID programId) {
-        return ResponseEntity.ok(traineeService.getTraineesByClassId(classId, programId));
+            @PathVariable UUID id) {
+        return ResponseEntity.ok(traineeService.getTraineesByClassId(id));
     }
 }

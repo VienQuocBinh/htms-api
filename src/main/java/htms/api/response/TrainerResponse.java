@@ -16,6 +16,7 @@ import java.util.UUID;
 public class TrainerResponse {
     private UUID id;
     private String name;
+    private String code;
     private String phone;
     private Date birthdate;
     private UUID accountId;

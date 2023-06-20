@@ -11,11 +11,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClassRequest {
-    @org.hibernate.validator.constraints.UUID
-    private UUID departmentId;
     private String name;
     private String generalSchedule;
-    // program per class information
+    @org.hibernate.validator.constraints.UUID
+    private UUID departmentId;
+    @org.hibernate.validator.constraints.UUID
+    private UUID trainerId;
     @org.hibernate.validator.constraints.UUID
     private UUID programId;
     @org.hibernate.validator.constraints.UUID

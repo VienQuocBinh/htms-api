@@ -19,4 +19,7 @@ public interface ClassApprovalRepository extends JpaRepository<ClassApproval, Lo
 
     @Query("select ca from ClassApproval ca where ca.clazz.id = :id order by ca.createdDate desc LIMIT 1")
     Optional<ClassApproval> getClassApprovalByClazzIdOrderByCreatedDateDesc(@Param("id") UUID id);
+
+    @Query("SELECT MAX(c.id) FROM ClassApproval c")
+    Optional<Long> getLatestId();
 }
