@@ -1,20 +1,21 @@
 package htms.controller;
 
+import htms.api.domain.CreateClassFormData;
 import htms.api.domain.FilterCondition;
 import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
-import htms.api.response.ClassApprovalResponse;
-import htms.api.response.ClassResponse;
-import htms.api.response.ClassesApprovalResponse;
-import htms.api.response.PageResponse;
+import htms.api.response.*;
 import htms.common.constants.ClassApprovalStatus;
+import htms.common.constants.EnrollmentStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
 import htms.model.Class;
 import htms.repository.ClassRepository;
 import htms.service.ClassService;
+import htms.service.EnrollmentService;
 import htms.service.impl.FilterBuilderService;
 import htms.service.impl.GenericFilterCriteriaBuilder;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -36,6 +37,7 @@ public class ClassController {
     private final FilterBuilderService filterBuilderService;
     private final ClassRepository classRepository;
     private final ModelMapper modelMapper;
+    private final EnrollmentService enrollmentService;
 
     @GetMapping
     public ResponseEntity<List<ClassResponse>> getClasses() {
@@ -43,12 +45,14 @@ public class ClassController {
     }
 
     @GetMapping("/{id}")
+    @Operation(description = "Returns the class detail including list of trainees who have the same enrollment status with the class approval")
     public ResponseEntity<ClassResponse> getClassDetail(@PathVariable UUID id) {
         return ResponseEntity.ok(classService.getClassDetail(id));
     }
 
     @PostMapping
     public ResponseEntity<ClassResponse> createClass(@RequestBody ClassRequest request) {
+        // todo: add list trainee
         return ResponseEntity.status(201).body(classService.createClass(request));
     }
 
@@ -96,5 +100,15 @@ public class ClassController {
     @PostMapping("/reject")
     public ResponseEntity<ClassApprovalResponse> rejectClassRequest(@Valid @RequestBody ApprovalRequest request) {
         return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.REJECT));
+    }
+
+    @GetMapping("/form")
+    public ResponseEntity<CreateClassFormData> initCreateClassFormData() {
+        return ResponseEntity.ok(classService.initCreateClassFormData());
+    }
+
+    @GetMapping("/class/{id}/enrollment")
+    public ResponseEntity<List<EnrollmentResponse>> getClassEnrollments(@PathVariable UUID id) {
+        return ResponseEntity.ok(enrollmentService.getEnrollmentByClassIdAndStatus(id, EnrollmentStatus.PENDING));
     }
 }

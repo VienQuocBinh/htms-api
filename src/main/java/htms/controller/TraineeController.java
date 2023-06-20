@@ -1,8 +1,10 @@
 package htms.controller;
 
 import htms.api.response.TraineeResponse;
+import htms.common.constants.EnrollmentStatus;
 import htms.service.TraineeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +22,8 @@ public class TraineeController {
 
     @GetMapping("/class/{id}")
     public ResponseEntity<List<TraineeResponse>> getTraineeByClass(
-            @PathVariable UUID id) {
-        return ResponseEntity.ok(traineeService.getTraineesByClassId(id));
+            @PathVariable UUID id,
+            @Param("status") EnrollmentStatus status) {
+        return ResponseEntity.ok(traineeService.getTraineesByClassId(id, status));
     }
 }

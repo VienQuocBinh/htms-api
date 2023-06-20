@@ -1,5 +1,6 @@
 package htms.service;
 
+import htms.api.domain.CreateClassFormData;
 import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
 import htms.api.response.ClassApprovalResponse;
@@ -22,4 +23,6 @@ public interface ClassService {
     List<ClassesApprovalResponse> searchClasses(String q, ClassApprovalStatus status, SortBy sortBy, SortDirection direction);
 
     ClassApprovalResponse makeApproval(ApprovalRequest request, ClassApprovalStatus status);
+
+    CreateClassFormData initCreateClassFormData();
 }

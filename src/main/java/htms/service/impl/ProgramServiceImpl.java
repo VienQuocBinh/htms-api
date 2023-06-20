@@ -2,7 +2,6 @@ package htms.service.impl;
 
 import htms.api.request.ProgramRequest;
 import htms.api.response.ProgramResponse;
-import htms.common.mapper.ProgramMapper;
 import htms.model.Program;
 import htms.repository.ProgramRepository;
 import htms.service.ProgramService;
@@ -17,13 +16,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProgramServiceImpl implements ProgramService {
     private final ProgramRepository programRepository;
-    private final ProgramMapper programMapper;
     private final ModelMapper mapper;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<ProgramResponse> getPrograms() {
         return programRepository.findAll()
-                .stream().map(programMapper::toResponse)
+                .stream()
+                .map((element) -> modelMapper.map(element, ProgramResponse.class))
                 .toList();
     }
 
@@ -31,7 +31,7 @@ public class ProgramServiceImpl implements ProgramService {
     public ProgramResponse getProgramDetails(UUID id) {
         // todo: handle exceptions
         return programRepository.findById(id)
-                .map(programMapper::toResponse)
+                .map((element) -> mapper.map(element, ProgramResponse.class))
                 .orElseThrow();
     }
 

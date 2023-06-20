@@ -1,6 +1,7 @@
 package htms.service.impl;
 
 import htms.api.response.TraineeResponse;
+import htms.common.constants.EnrollmentStatus;
 import htms.repository.TraineeRepository;
 import htms.service.TraineeService;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,17 @@ public class TraineeServiceImpl implements TraineeService {
     private final ModelMapper mapper;
 
     @Override
-    public List<TraineeResponse> getTraineesByClassId(UUID classId) {
+    public List<TraineeResponse> getTraineesByClassId(UUID classId, EnrollmentStatus status) {
         // todo: handle exceptions
-        var list = traineeRepository.findAllByClassAndProgram(classId).orElseThrow();
+        var list = traineeRepository.findAllByClassAndEnrollmentStatus(classId, status).orElseThrow();
         return list.stream()
+                .map(trainees -> mapper.map(trainees, TraineeResponse.class))
+                .toList();
+    }
+
+    @Override
+    public List<TraineeResponse> getTrainees() {
+        return traineeRepository.findAll().stream()
                 .map(trainees -> mapper.map(trainees, TraineeResponse.class))
                 .toList();
     }
