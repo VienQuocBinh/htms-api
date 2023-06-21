@@ -10,6 +10,8 @@ import htms.common.constants.EnrollmentStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
 import htms.model.Class;
+import htms.model.ClassApproval;
+import htms.repository.ClassApprovalRepository;
 import htms.repository.ClassRepository;
 import htms.service.ClassService;
 import htms.service.EnrollmentService;
@@ -38,6 +40,7 @@ public class ClassController {
     private final ClassRepository classRepository;
     private final ModelMapper modelMapper;
     private final EnrollmentService enrollmentService;
+    private final ClassApprovalRepository classApprovalRepository;
 
     @GetMapping
     public ResponseEntity<List<ClassResponse>> getClasses() {
@@ -92,6 +95,32 @@ public class ClassController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/page/approval")
+    public ResponseEntity<PageResponse<ClassApprovalResponse>> getSearchAppCriteriaPage(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "filterOr", required = false) String filterOr,
+            @RequestParam(value = "filterAnd", required = false) String filterAnd,
+            @RequestParam(value = "orders", required = false) String orders
+    ) {
+        PageResponse<ClassApprovalResponse> response = new PageResponse<>();
+        Pageable pageable = filterBuilderService.getPageable(size, page, orders);
+
+        GenericFilterCriteriaBuilder<ClassApproval> filterCriteriaBuilder = new GenericFilterCriteriaBuilder<>();
+        List<FilterCondition> andConditions = filterBuilderService.createFilterCondition(filterAnd);
+        List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(filterOr);
+
+        Specification<ClassApproval> specification = filterCriteriaBuilder.addCondition(andConditions, orConditions);
+        Page<ClassApproval> pg = classApprovalRepository.findAll(specification, pageable);
+        response.setPageStats(pg,
+                pg.getContent()
+                        .stream()
+                        .map((element) -> modelMapper.map(
+                                element,
+                                ClassApprovalResponse.class)).toList());
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/approve")
     public ResponseEntity<ClassApprovalResponse> approveClassRequest(@Valid @RequestBody ApprovalRequest request) {
         return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.APPROVE));
@@ -108,7 +137,6 @@ public class ClassController {
     }
 
     @GetMapping("/class/{id}/enrollment")
-    @Operation(summary = "Get the PENDING enrollments for the given class")
     public ResponseEntity<List<EnrollmentResponse>> getClassEnrollments(@PathVariable UUID id) {
         return ResponseEntity.ok(enrollmentService.getEnrollmentByClassIdAndStatus(id, EnrollmentStatus.PENDING));
     }

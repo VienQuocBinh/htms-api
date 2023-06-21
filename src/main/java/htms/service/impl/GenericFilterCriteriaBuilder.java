@@ -1,16 +1,16 @@
 package htms.service.impl;
 
 import htms.api.domain.FilterCondition;
+import htms.util.FieldCastingUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -67,9 +67,31 @@ public class GenericFilterCriteriaBuilder<T> {
 
     private Map<String, Function<FilterCondition, Specification<T>>> createFilterSpecifications() {
         Map<String, Function<FilterCondition, Specification<T>>> filterSpecifications = new HashMap<>();
-
-        filterSpecifications.put("EQUAL", condition -> (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(condition.getField()), condition.getValue()));
+        FieldCastingUtil fieldCastingUtil = new FieldCastingUtil();
+        filterSpecifications.put("EQUAL", condition -> (root, query, criteriaBuilder) -> {
+            var value = condition.getValue();
+            var conditionField = condition.getField();
+            // If the field type is Date then build the criteria for Date
+            if (conditionField.toUpperCase().contains("DATE")) {
+                // Cast string value to LocalDate value
+                value = fieldCastingUtil.castStringToFieldType(String.valueOf(value), Date.class);
+                // compare only date part
+                return criteriaBuilder.equal(
+                        criteriaBuilder.function("date_trunc", LocalDate.class, criteriaBuilder.literal("day"), root.get(conditionField)),
+                        value);
+            }
+            // Cast the value to appropriate type
+            Field[] fields = root.getModel().getJavaType().getDeclaredFields(); // get list of root class fields
+            // Cast string value to the type of root field has the same name
+            for (Field field : fields) {
+                if (field.getName().equals(conditionField)) {
+                    var type = field.getType();  // Get the field data type
+                    value = fieldCastingUtil.castStringToFieldType(String.valueOf(value), type);
+                    break;
+                }
+            }
+            return criteriaBuilder.equal(root.get(condition.getField()), value);
+        });
         filterSpecifications.put("NOT_EQUAL", condition -> (root, query, criteriaBuilder) ->
                 criteriaBuilder.notEqual(root.get(condition.getField()), condition.getValue()));
         filterSpecifications.put("GREATER_THAN", condition -> (root, query, criteriaBuilder) ->
@@ -85,7 +107,28 @@ public class GenericFilterCriteriaBuilder<T> {
         filterSpecifications.put("JOIN", condition -> (root, query, criteriaBuilder) ->
         {
             List<String> joinClause = Stream.of(condition.getField().split("\\.")).toList();
-            return criteriaBuilder.equal(root.join(joinClause.get(0)).get(joinClause.get(1)), condition.getValue());
+            // get the root data type
+            var rootModel = root.getModel().getJavaType();
+            Field childField;
+            try {
+                childField = rootModel.getDeclaredField(joinClause.get(0));
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+
+            Field[] childFields = childField.getType().getDeclaredFields(); // get list of child fields
+            var value = condition.getValue();
+            // Cast string value to the type of root field has the same name
+            for (Field field : childFields) {
+                if (field.getName().equals(joinClause.get(1))) {
+                    // Get the field data type
+                    var type = field.getType();
+                    // Cast string value to appropriate data type
+                    value = fieldCastingUtil.castStringToFieldType(String.valueOf(condition.getValue()), type);
+                    break;
+                }
+            }
+            return criteriaBuilder.equal(root.join(joinClause.get(0)).get(joinClause.get(1)), value);
         });
         return filterSpecifications;
     }

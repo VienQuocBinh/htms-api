@@ -91,7 +91,7 @@ public class ClassServiceImpl implements ClassService {
                 .code(classUtil.generateClassCode(request.getProgramId(), request.getStartDate()))
                 .createdBy(UUID.randomUUID())
                 .generalSchedule(request.getGeneralSchedule())
-                .quantity(0)
+                .quantity(request.getQuantity())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .trainer(Trainer.builder()
