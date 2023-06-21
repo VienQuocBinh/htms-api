@@ -24,8 +24,7 @@ public interface TraineeRepository extends JpaRepository<Trainee, UUID> {
             join Class c on c.id = e.id.clazz.id
             where c.id = :classId\s
             and e.isCancelled = false
-            and e.status = 'PENDING'
             order by e.enrollmentDate asc\s
             """)
-    Optional<List<Trainee>> findAllByClassAndProgram(@Param("classId") UUID classId);
+    Optional<List<Trainee>> findAllByClassAndEnrollmentStatus(@Param("classId") UUID classId);
 }

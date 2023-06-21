@@ -3,6 +3,7 @@ package htms.api.request;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -21,8 +22,8 @@ public class ClassRequest {
     private UUID programId;
     @org.hibernate.validator.constraints.UUID
     private UUID cycleId;
-    private Integer minQuantity;
-    private Integer maxQuantity;
+    private Integer quantity;
     private Date startDate;
     private Date endDate;
+    private List<UUID> traineeIds; // request trainees to assign to the class
 }

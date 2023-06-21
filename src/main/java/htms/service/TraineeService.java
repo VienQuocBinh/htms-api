@@ -7,4 +7,8 @@ import java.util.UUID;
 
 public interface TraineeService {
     List<TraineeResponse> getTraineesByClassId(UUID classId);
+
+    List<TraineeResponse> getTrainees();
+
+    TraineeResponse getTrainee(UUID traineeId);
 }

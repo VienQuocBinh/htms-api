@@ -20,5 +20,4 @@ public class ProgramResponse {
     private Integer maxQuantity;
     private Boolean isActive;
     private DepartmentResponse department;
-//    private List<ProgramPerClassResponse> programPerCycleList;
 }

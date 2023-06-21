@@ -43,6 +43,15 @@ public class Trainee extends BaseEntityAuditing {
     private List<Enrollment> enrollments;
 
     protected Trainee(TraineeBuilder<?, ?> builder) {
-        super(builder);
+        this.id = builder.id;
+        this.name = builder.name;
+        this.code = builder.code;
+        this.phone = builder.phone;
+        this.birthdate = builder.birthdate;
+        this.account = builder.account;
+        this.profile = builder.profile;
+        this.attendances = builder.attendances;
+        this.scores = builder.scores;
+        this.enrollments = builder.enrollments;
     }
 }
