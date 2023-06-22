@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(title = "TRAINING MANAGEMENT SYSTEM", description = "Nhi Dong 2 hospital training management system", version = "1.0"),
         servers = {
                 @Server(description = "DEV ENV", url = "http://localhost:8080/htms"),
-                @Server(description = "PROD ENV", url = "http://18.143.40.6:8080/htms")
+                @Server(description = "PROD ENV", url = "http://18.138.196.252:8080/htms")
         }
 )
 public class OpenApiConfiguration {

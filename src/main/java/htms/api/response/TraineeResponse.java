@@ -21,4 +21,8 @@ public class TraineeResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date birthdate;
     private ProfileResponse profile;
+    // Additional properties
+    // account properties
+    private String title;
+    private String email;
 }

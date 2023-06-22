@@ -19,8 +19,6 @@ public class AccountResponse {
     private String title;
     private Department department;
     private Role role;
-    //    private Trainee trainee;
-//    private Trainer trainer;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
     private Date createdDate;
     private UUID createdBy;

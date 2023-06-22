@@ -23,10 +23,10 @@ public class AccountServiceImpl implements AccountService {
     private final ModelMapper modelMapper;
 
     @Override
-    public Account getAccountById(UUID id) {
+    public AccountResponse getAccountById(UUID id) {
         // TODO: implement exception handler
-        return accountRepository.findById(id)
-                .orElseThrow();
+        return modelMapper.map(accountRepository.findById(id)
+                .orElseThrow(), AccountResponse.class);
     }
 
     @Override

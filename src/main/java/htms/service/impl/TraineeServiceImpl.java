@@ -5,10 +5,12 @@ import htms.api.response.PageResponse;
 import htms.api.response.TraineeResponse;
 import htms.model.Trainee;
 import htms.repository.TraineeRepository;
+import htms.service.AccountService;
 import htms.service.TraineeService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,6 +25,12 @@ public class TraineeServiceImpl implements TraineeService {
     private final TraineeRepository traineeRepository;
     private final FilterBuilderService filterBuilderService;
     private final ModelMapper mapper;
+    private AccountService accountService;
+
+    @Autowired
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @Override
     public List<TraineeResponse> getTraineesByClassId(UUID classId) {
@@ -43,12 +51,17 @@ public class TraineeServiceImpl implements TraineeService {
         Specification<Trainee> specification = filterCriteriaBuilder.addCondition(andConditions, orConditions);
         Page<Trainee> pg = traineeRepository.findAll(specification, pageable);
         PageResponse<TraineeResponse> response = new PageResponse<>();
-        response.setPageStats(pg,
-                pg.getContent()
-                        .stream()
-                        .map((element) -> mapper.map(
-                                element,
-                                TraineeResponse.class)).toList());
+        var items = pg.getContent().stream().map((element) ->
+                {
+                    TraineeResponse traineeResponse = mapper.map(element, TraineeResponse.class);
+                    var account = accountService.getAccountById(element.getAccount().getId());
+                    traineeResponse.setEmail(account.getEmail());
+                    traineeResponse.setTitle(account.getTitle());
+                    return traineeResponse;
+                })
+                .toList();
+
+        response.setPageStats(pg, items);
         return response;
     }
 
