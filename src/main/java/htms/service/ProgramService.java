@@ -12,4 +12,8 @@ public interface ProgramService {
     ProgramResponse getProgramDetails(UUID id);
 
     ProgramResponse createProgram(ProgramRequest request);
+
+    List<ProgramResponse> getProgramsTheTraineeIsTaking(UUID traineeId);
+
+    ProgramResponse getProgramContent(UUID programId, UUID trainerId);
 }
