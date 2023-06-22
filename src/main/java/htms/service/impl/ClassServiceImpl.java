@@ -184,18 +184,13 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ClassApprovalResponse makeApproval(ApprovalRequest request, ClassApprovalStatus status) {
         var clazz = classRepository.findById(request.getId()).orElseThrow(EntityNotFoundException::new);
-        var newApproval = ClassApproval.builder()
-                .clazz(clazz)
-                //TODO: replace hardcode UUID to real ID getFrom client
-                .createdBy(UUID.fromString("3bdb9fdd-40a0-4bd4-93aa-3462c2164d08"))
-                .comment(request.getComment())
-                .status(status)
-                .build();
-        var savedApproval = classApprovalRepository.save(newApproval);
-        var response = modelMapper.map(savedApproval, ClassApprovalResponse.class);
-        response.setId(clazz.getId());
 
-        return response;
+        return classApprovalService.create(
+                ApprovalRequest.builder()
+                        .comment(request.getComment())
+                        .id(clazz.getId())
+                        .build(),
+                status);
     }
 
     private List<ClassApproval> getLatestClassApprovals() {

@@ -19,7 +19,7 @@ import java.util.UUID;
 @Data
 public class ClassApprovalResponse {
     @JsonProperty("classId")
-    private UUID id;
+    private UUID clazzId;
     private String comment;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
     private Date createdDate;
