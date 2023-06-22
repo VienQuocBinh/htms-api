@@ -2,6 +2,7 @@ package htms.repository;
 
 import htms.model.Trainee;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface TraineeRepository extends JpaRepository<Trainee, UUID> {
+public interface TraineeRepository extends JpaRepository<Trainee, UUID>, JpaSpecificationExecutor<Trainee> {
     /**
      * Get all trainees in a given class base on the enrollment which is not cancelled
      *
@@ -26,5 +27,5 @@ public interface TraineeRepository extends JpaRepository<Trainee, UUID> {
             and e.isCancelled = false
             order by e.enrollmentDate asc\s
             """)
-    Optional<List<Trainee>> findAllByClassAndEnrollmentStatus(@Param("classId") UUID classId);
+    Optional<List<Trainee>> findAllByClassId(@Param("classId") UUID classId);
 }
