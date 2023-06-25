@@ -25,11 +25,15 @@ public class TraineeController {
     public ResponseEntity<PageResponse<TraineeResponse>> getTraineesPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
-            @RequestParam(value = "filterOr", required = false) String filterOr,
-            @RequestParam(value = "filterAnd", required = false) String filterAnd,
+//            @RequestParam(value = "filterOr", required = false) String filterOr,
+//            @RequestParam(value = "filterAnd", required = false) String filterAnd,
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "departmentId", required = false) UUID departmentId,
             @RequestParam(value = "orders", required = false) String orders
     ) {
-        var response = traineeService.getTraineesPage(page, size, filterOr, filterAnd, orders);
+//        var response = traineeService.getTraineesPage(page, size, filterOr, filterAnd, orders);
+        var response = traineeService.getTraineesPage(page, size, q, title, departmentId, orders);
 
         return ResponseEntity.ok(response);
     }

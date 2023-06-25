@@ -23,7 +23,6 @@ public class ClassResponse {
     private UUID createdBy;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
     private Date createdDate;
-    private ClassApprovalStatus status;
     private Integer quantity;
     private TrainerResponse trainer;
     private ProgramResponse program;
@@ -34,4 +33,6 @@ public class ClassResponse {
     private Date endDate;
     // Additional properties
     private List<TraineeResponse> trainees;
+    private ClassApprovalStatus status;
+
 }

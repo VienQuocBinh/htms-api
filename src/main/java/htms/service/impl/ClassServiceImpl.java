@@ -165,7 +165,7 @@ public class ClassServiceImpl implements ClassService {
         if (classes.isEmpty()) {
             return List.of();
         }
-        var approvals = getLatestClassApprovals();
+        var approvals = classApprovalService.getLatestClassApprovals();
         approvals = approvals.stream().filter(classApproval -> classApproval.getStatus().equals(status)).toList();
         Set<UUID> approvalsClassIdSet = approvals.stream().map(classApproval -> classApproval.getClazz().getId()).collect(Collectors.toSet());
         classes = classes.stream().filter(aClass -> (aClass.getCode().contains(q) || aClass.getName().contains(q)) && approvalsClassIdSet.contains(aClass.getId())).toList();
@@ -191,17 +191,6 @@ public class ClassServiceImpl implements ClassService {
                         .id(clazz.getId())
                         .build(),
                 status);
-    }
-
-    private List<ClassApproval> getLatestClassApprovals() {
-        //group approvals by class_id and get latest created_date for each class_id
-        var groupedMaxClassApprovals = classApprovalRepository.getLatestClassApprovalsGroupedByClazzId();
-        var classIdGroup = groupedMaxClassApprovals.stream().map(GroupedApprovalStatus::getClassId).toList();
-        var dateTimeGroup = groupedMaxClassApprovals.stream().map(GroupedApprovalStatus::getFilteredDate).toList();
-        //filter the table get the approvals from the list above
-        return classApprovalRepository.findAll().stream()
-                .filter(classApproval -> classIdGroup.contains(classApproval.getClazz().getId()) && dateTimeGroup.contains(classApproval.getCreatedDate()))
-                .toList();
     }
 
     @Override

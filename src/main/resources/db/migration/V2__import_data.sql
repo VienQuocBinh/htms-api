@@ -14,8 +14,12 @@ insert into public.permission (id, role_id, permission, resource)
 values (1, 1, 'FULL_CONTROL', 'CLASS'),
        (2, 1, 'FULL_CONTROL', 'MATERIAL');
 insert into public.cycle (duration, id, description, name)
-values (18, 'a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'Học kỳ mùa hè năm 2023', 'Summer 2023'),
-       (18, 'd99ae531-4845-4b8b-b826-829b5c5f032b', 'Học kỳ mùa xuân năm 2023', 'Spring 2023');
+values (18, 'a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'Chương trình đào tạo bác sỹ Y học Dự phòng',
+        'Chương trình đào tạo Bác sỹ Y học Dự phòng'),
+       (18, 'd99ae531-4845-4b8b-b826-829b5c5f032b', 'Chương trình đào tạo Cử nhân dinh dưỡng',
+        'Chương trình đào tạo Cử nhân dinh dưỡng'),
+       (18, '426a3a28-aa82-4189-8748-54f0a2bf23ce', 'Chương trình đào tạo Bác sỹ Răng Hàm Mặt',
+        'Chương trình đào tạo Bác sỹ Răng Hàm Mặt');
 insert into public.program (is_active, max_quantity, min_quantity, department_id, id, syllabus_id, description, code,
                             name)
 values (true, 30, 5, 'e71ac0a8-fe10-40f9-a831-94bc0703641d', '73574861-62eb-4965-9ebc-cecbb50ea11f', null,

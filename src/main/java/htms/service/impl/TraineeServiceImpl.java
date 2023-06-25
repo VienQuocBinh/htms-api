@@ -1,8 +1,8 @@
 package htms.service.impl;
 
-import htms.api.domain.FilterCondition;
 import htms.api.response.PageResponse;
 import htms.api.response.TraineeResponse;
+import htms.common.specification.TraineeSpecification;
 import htms.model.Trainee;
 import htms.repository.TraineeRepository;
 import htms.service.AccountService;
@@ -42,14 +42,28 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public PageResponse<TraineeResponse> getTraineesPage(int page, int size, String filterOr, String filterAnd, String orders) {
+    public PageResponse<TraineeResponse> getTraineesPage(int page, int size, String q, String title, UUID departmentId, String orders) {
         Pageable pageable = filterBuilderService.getPageable(size, page, orders);
+        /* Older versions
         GenericFilterCriteriaBuilder<Trainee> filterCriteriaBuilder = new GenericFilterCriteriaBuilder<>();
-        List<FilterCondition> andConditions = filterBuilderService.createFilterCondition(filterAnd);
-        List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(filterOr);
-
+        List<FilterCondition> andConditions = filterBuilderService.createFilterCondition(departmentId);
+        List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(title);
         Specification<Trainee> specification = filterCriteriaBuilder.addCondition(andConditions, orConditions);
+*/
+        Specification<Trainee> specification = Specification.where(null);
+        if (q != null) {
+            specification = TraineeSpecification.hasNameLike(q)
+                    .or(TraineeSpecification.hasCodeLike(q));
+        }
+        if (departmentId != null) {
+            specification = specification.and(TraineeSpecification.hasDepartmentEqual(departmentId));
+        }
+        if (title != null) {
+            specification = specification.and(TraineeSpecification.hasTitleEqual(title));
+        }
+
         Page<Trainee> pg = traineeRepository.findAll(specification, pageable);
+
         PageResponse<TraineeResponse> response = new PageResponse<>();
         var items = pg.getContent().stream().map((element) ->
                 {

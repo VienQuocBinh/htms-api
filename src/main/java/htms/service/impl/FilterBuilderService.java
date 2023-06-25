@@ -51,8 +51,8 @@ public class FilterBuilderService {
             }
         } catch (Exception exception) {
             // todo: handle exception
-            return null;
-            //throw new BadRequestException("Cannot create condition filter " + ex.getMessage())
+            throw new IllegalArgumentException("Cannot create pageable " + exception.getMessage());
+//            throw new BadRequestException("Cannot create condition filter " + ex.getMessage())
         }
     }
 
@@ -81,7 +81,7 @@ public class FilterBuilderService {
 
         } catch (Exception ex) {
             // todo: handle exception
-            return null;
+            throw new IllegalArgumentException("Cannot create condition filter " + ex.getMessage());
             //throw new BadRequestException("Cannot create condition filter " + ex.getMessage())
         }
 

@@ -5,6 +5,7 @@ import htms.api.response.ClassApprovalResponse;
 import htms.common.constants.ClassApprovalStatus;
 import htms.model.Class;
 import htms.model.ClassApproval;
+import htms.model.GroupedApprovalStatus;
 import htms.repository.ClassApprovalRepository;
 import htms.service.ClassApprovalService;
 import jakarta.persistence.EntityManager;
@@ -12,6 +13,8 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +41,17 @@ public class ClassApprovalServiceImpl implements ClassApprovalService {
         return modelMapper.map(
                 classApprovalRepository.save(classApproval.build()),
                 ClassApprovalResponse.class);
+    }
+
+    @Override
+    public List<ClassApproval> getLatestClassApprovals() {
+        //group approvals by class_id and get latest created_date for each class_id
+        var groupedMaxClassApprovals = classApprovalRepository.getLatestClassApprovalsGroupedByClazzId();
+        var classIdGroup = groupedMaxClassApprovals.stream().map(GroupedApprovalStatus::getClassId).toList();
+        var dateTimeGroup = groupedMaxClassApprovals.stream().map(GroupedApprovalStatus::getFilteredDate).toList();
+        //filter the table get the approvals from the list above
+        return classApprovalRepository.findAll().stream()
+                .filter(classApproval -> classIdGroup.contains(classApproval.getClazz().getId()) && dateTimeGroup.contains(classApproval.getCreatedDate()))
+                .toList();
     }
 }
