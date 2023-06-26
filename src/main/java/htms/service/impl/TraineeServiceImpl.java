@@ -1,13 +1,24 @@
 package htms.service.impl;
 
+import htms.api.request.AccountRequest;
+import htms.api.request.ProfileRequest;
+import htms.api.response.AccountResponse;
 import htms.api.response.PageResponse;
+import htms.api.response.ProfileResponse;
 import htms.api.response.TraineeResponse;
+import htms.common.constants.ProfileStatus;
+import htms.common.constants.TraineeFileCellIndex;
 import htms.common.specification.TraineeSpecification;
+import htms.model.Account;
+import htms.model.Profile;
 import htms.model.Trainee;
 import htms.repository.TraineeRepository;
 import htms.service.AccountService;
+import htms.service.ProfileService;
+import htms.service.ReadFileService;
 import htms.service.TraineeService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +26,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,11 +39,18 @@ public class TraineeServiceImpl implements TraineeService {
     private final TraineeRepository traineeRepository;
     private final FilterBuilderService filterBuilderService;
     private final ModelMapper mapper;
+    private final ReadFileService readFileService;
     private AccountService accountService;
+    private ProfileService profileService;
 
     @Autowired
     public void setAccountService(AccountService accountService) {
         this.accountService = accountService;
+    }
+
+    @Autowired
+    public void setProfileService(ProfileService profileService) {
+        this.profileService = profileService;
     }
 
     @Override
@@ -69,8 +90,8 @@ public class TraineeServiceImpl implements TraineeService {
                 {
                     TraineeResponse traineeResponse = mapper.map(element, TraineeResponse.class);
                     var account = accountService.getAccountById(element.getAccount().getId());
-                    traineeResponse.setEmail(account.getEmail());
-                    traineeResponse.setTitle(account.getTitle());
+                    traineeResponse.setAccountEmail(account.getEmail());
+                    traineeResponse.setAccountTitle(account.getTitle());
                     return traineeResponse;
                 })
                 .toList();
@@ -85,5 +106,64 @@ public class TraineeServiceImpl implements TraineeService {
         return mapper.map(traineeRepository.findById(traineeId)
                         .orElseThrow(EntityNotFoundException::new),
                 TraineeResponse.class);
+    }
+
+    /**
+     * Save the trainee data from CSV file
+     *
+     * @param file {@link MultipartFile}
+     * @return {@code List<TraineeResponse>}
+     */
+    @Override
+    @Transactional(rollbackOn = {SQLException.class})
+    public List<TraineeResponse> saveTraineesFromFile(MultipartFile file) {
+        List<String[]> rows = readFileService.readDataFromCsv(file);
+        List<AccountRequest> accountRequests = new ArrayList<>();
+        List<ProfileRequest> profileRequests = new ArrayList<>();
+        List<Trainee> trainees = new ArrayList<>();
+        // Read all rows from the file
+        for (String[] row : rows) {
+            accountRequests.add(AccountRequest.builder()
+                    .email(row[TraineeFileCellIndex.EMAIL.getValue()])
+                    .title("BS") // Title: BS
+                    .roleId(3L) // role Trainee
+                    .build());
+            profileRequests.add(ProfileRequest.builder()
+                    .status(ProfileStatus.PENDING)
+                    .build()
+            );
+            // todo: assign create by id
+            trainees.add(Trainee.builder()
+                    .code(row[TraineeFileCellIndex.CODE.getValue()])
+                    .name(row[TraineeFileCellIndex.NAME.getValue()])
+                    .phone(row[TraineeFileCellIndex.PHONE_NUMBER.getValue()])
+                    .createdBy(UUID.randomUUID())
+                    .build());
+        }
+        // Create Account for each Trainee
+        List<AccountResponse> accounts = accountService.createAccounts(accountRequests);
+        // Create Profile for each Trainee
+        List<ProfileResponse> profiles = profileService.createProfiles(profileRequests);
+        // Set Profile and Account info for each Trainee
+        for (Trainee trainee : trainees) {
+            trainee.setAccount(Account.builder()
+                    .id(accounts.get(trainees.indexOf(trainee)).getId())
+                    .title(accounts.get(trainees.indexOf(trainee)).getTitle())
+                    .email(accounts.get(trainees.indexOf(trainee)).getEmail())
+                    .build());
+
+            trainee.setProfile(Profile.builder()
+                    .id(profiles.get(trainees.indexOf(trainee)).getId())
+                    .status(profiles.get(trainees.indexOf(trainee)).getStatus())
+                    .build());
+        }
+        // Create trainee
+        traineeRepository.saveAll(trainees);
+        return trainees
+                .stream()
+                .map((element) -> mapper.map(
+                        element,
+                        TraineeResponse.class))
+                .toList();
     }
 }

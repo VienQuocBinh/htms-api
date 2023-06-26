@@ -2,6 +2,7 @@ package htms.service;
 
 import htms.api.response.PageResponse;
 import htms.api.response.TraineeResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,4 +14,6 @@ public interface TraineeService {
     PageResponse<TraineeResponse> getTraineesPage(int page, int size, String q, String title, UUID departmentId, String orders);
 
     TraineeResponse getTrainee(UUID traineeId);
+
+    List<TraineeResponse> saveTraineesFromFile(MultipartFile file);
 }

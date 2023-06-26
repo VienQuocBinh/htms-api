@@ -3,9 +3,12 @@ package htms.controller;
 import htms.api.response.PageResponse;
 import htms.api.response.TraineeResponse;
 import htms.service.TraineeService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,5 +39,11 @@ public class TraineeController {
         var response = traineeService.getTraineesPage(page, size, q, title, departmentId, orders);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "Import trainee from CSV file")
+    public ResponseEntity<List<TraineeResponse>> importFromFile(@RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(traineeService.saveTraineesFromFile(file));
     }
 }
