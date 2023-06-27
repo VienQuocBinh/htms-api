@@ -33,8 +33,8 @@ public class Trainer extends BaseEntityAuditing {
 
     @OneToOne
     private Account account;
-    @OneToOne(mappedBy = "trainer")
-    private Schedule schedule;
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
+    private List<Schedule> schedules;
     @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
     private List<Class> classes;
     @OneToMany(mappedBy = "id.trainer")

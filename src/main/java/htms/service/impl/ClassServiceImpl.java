@@ -45,6 +45,7 @@ public class ClassServiceImpl implements ClassService {
     private EnrollmentService enrollmentService;
     private ClassApprovalService classApprovalService;
     private ProfileService profileService;
+    private ScheduleService scheduleService;
 
     @Autowired
     public void setTraineeService(TraineeService traineeService) {
@@ -69,6 +70,11 @@ public class ClassServiceImpl implements ClassService {
     @Autowired
     public void setEnrollmentService(EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
+    }
+
+    @Autowired
+    public void setScheduleService(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
     }
 
     @Autowired
@@ -126,7 +132,12 @@ public class ClassServiceImpl implements ClassService {
                     .build());
         });
 
-        // todo: generate schedule based on generalSchedule
+        // todo: get room id
+        scheduleService.createSchedulesOfClass(
+                clazz.getId(),
+                clazz.getTrainer().getId(),
+                UUID.fromString("b49d2b9c-d8a1-473d-bafe-2207f62a034b"),
+                request.getGeneralSchedule(), clazz.getStartDate(), clazz.getEndDate());
 
         ClassResponse response = modelMapper.map(clazz, ClassResponse.class);
         // Set list of trainees of a class

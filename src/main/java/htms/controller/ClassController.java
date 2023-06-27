@@ -53,7 +53,6 @@ public class ClassController {
 
     @PostMapping
     public ResponseEntity<ClassResponse> createClass(@RequestBody ClassRequest request) {
-        // todo: generate schedules
         return ResponseEntity.status(201).body(classService.createClass(request));
     }
 
