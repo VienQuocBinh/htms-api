@@ -23,6 +23,8 @@ public class ClassRequest {
     @org.hibernate.validator.constraints.UUID
     private UUID cycleId;
     private Integer quantity;
+    private Integer minQuantity;
+    private Integer maxQuantity;
     private Date startDate;
     private Date endDate;
     private List<UUID> traineeIds; // request trainees to assign to the class

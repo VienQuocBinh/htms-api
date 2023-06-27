@@ -98,6 +98,8 @@ public class ClassServiceImpl implements ClassService {
                 .createdBy(UUID.randomUUID())
                 .generalSchedule(request.getGeneralSchedule())
                 .quantity(request.getQuantity())
+                .minQuantity(request.getMinQuantity())
+                .maxQuantity(request.getMaxQuantity())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .trainer(Trainer.builder()
@@ -131,7 +133,6 @@ public class ClassServiceImpl implements ClassService {
                     .status(ProfileStatus.STUDYING)
                     .build());
         });
-
         // todo: get room id
         scheduleService.createSchedulesOfClass(
                 clazz.getId(),
