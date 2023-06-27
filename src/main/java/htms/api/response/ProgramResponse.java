@@ -3,6 +3,7 @@ package htms.api.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -20,4 +21,6 @@ public class ProgramResponse {
     private Integer maxQuantity;
     private Boolean isActive;
     private DepartmentResponse department;
+    private TrainerResponse trainer;
+    private List<TopicResponse> topics;
 }
