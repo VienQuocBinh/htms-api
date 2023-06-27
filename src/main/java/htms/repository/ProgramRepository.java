@@ -21,6 +21,6 @@ public interface ProgramRepository extends JpaRepository<Program, UUID> {
     where e.id.trainee.id = :traineeId
     and e.status = 'APPROVE'
 """)
-    Optional<List<Program>> getCurrentTakingClassesOfATrainee(@Param("traineeId") UUID traineeId);
+    Optional<List<Program>> getCurrentTakingProrgamsOfATrainee(@Param("traineeId") UUID traineeId);
 
 }

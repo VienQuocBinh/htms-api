@@ -2,8 +2,9 @@ package htms.service.impl;
 
 import htms.api.request.ProgramRequest;
 import htms.api.response.ProgramResponse;
-import htms.api.response.TopicDetail;
+import htms.api.response.TopicResponse;
 import htms.api.response.TrainerResponse;
+
 import htms.model.Program;
 import htms.repository.ClassRepository;
 import htms.repository.ProgramContentRepository;
