@@ -4,7 +4,6 @@ import htms.api.request.ProgramRequest;
 import htms.api.response.ProgramResponse;
 import htms.api.response.TopicResponse;
 import htms.api.response.TrainerResponse;
-
 import htms.model.Program;
 import htms.repository.ClassRepository;
 import htms.repository.ProgramContentRepository;
@@ -69,7 +68,7 @@ public class ProgramServiceImpl implements ProgramService {
     public ProgramResponse getProgramContent(UUID programId, UUID trainerId) {
         var content = contentRepository.findById_Program_IdAndId_Trainer_Id(programId, trainerId).stream().findFirst().orElseThrow(EntityNotFoundException::new);
         var response = mapper.map(content.getId().getProgram(), ProgramResponse.class);
-        response.setTopics(content.getTopics().stream().map(topic -> mapper.map(topic, TopicDetail.class)).toList());
+        response.setTopics(content.getTopics().stream().map(topic -> mapper.map(topic, TopicResponse.class)).toList());
         response.setTrainer(mapper.map(content.getId().getTrainer(), TrainerResponse.class));
         return response;
     }
