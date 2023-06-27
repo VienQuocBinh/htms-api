@@ -43,6 +43,7 @@ public class Trainee extends BaseEntityAuditing {
     private List<Enrollment> enrollments;
 
     protected Trainee(TraineeBuilder<?, ?> builder) {
+        super(builder);
         this.id = builder.id;
         this.name = builder.name;
         this.code = builder.code;

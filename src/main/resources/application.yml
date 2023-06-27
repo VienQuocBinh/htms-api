@@ -6,6 +6,13 @@ spring:
     password: '123456'
   jpa:
     properties:
+      javax:
+        persistence:
+          schema-generation:
+            create-source: metadata
+            scripts:
+              action: update
+              create-target: update.sql
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true

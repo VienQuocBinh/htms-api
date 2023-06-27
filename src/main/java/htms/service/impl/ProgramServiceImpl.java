@@ -4,7 +4,6 @@ import htms.api.request.ProgramRequest;
 import htms.api.response.ProgramResponse;
 import htms.api.response.TopicResponse;
 import htms.api.response.TrainerResponse;
-import htms.common.mapper.ProgramMapper;
 import htms.model.Program;
 import htms.repository.ClassRepository;
 import htms.repository.ProgramContentRepository;
@@ -23,7 +22,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProgramServiceImpl implements ProgramService {
     private final ProgramRepository programRepository;
-    private final ProgramMapper programMapper;
     private final ClassRepository classRepository;
     private final ProgramContentRepository contentRepository;
     private final ModelMapper mapper;
@@ -60,7 +58,7 @@ public class ProgramServiceImpl implements ProgramService {
     public List<ProgramResponse> getProgramsTheTraineeIsTaking(UUID traineeId) {
         var classes = classRepository.findAllCurrentTakingClassesByTrainee(traineeId).orElse(Collections.emptyList());
         return classes.stream().map(c -> {
-            var model = programMapper.toResponse(c.getProgram());
+            var model = mapper.map(c.getProgram(), ProgramResponse.class);
             model.setTrainer(mapper.map(c.getTrainer(), TrainerResponse.class));
             return model;
         }).toList();
@@ -68,8 +66,8 @@ public class ProgramServiceImpl implements ProgramService {
 
     @Override
     public ProgramResponse getProgramContent(UUID programId, UUID trainerId) {
-        var content = contentRepository.findById_Program_IdAndId_Trainer_Id(programId, trainerId).orElseThrow(EntityNotFoundException::new);
-        var response = programMapper.toResponse(content.getId().getProgram());
+        var content = contentRepository.findById_Program_IdAndId_Trainer_Id(programId, trainerId).stream().findFirst().orElseThrow(EntityNotFoundException::new);
+        var response = mapper.map(content.getId().getProgram(), ProgramResponse.class);
         response.setTopics(content.getTopics().stream().map(topic -> mapper.map(topic, TopicResponse.class)).toList());
         response.setTrainer(mapper.map(content.getId().getTrainer(), TrainerResponse.class));
         return response;

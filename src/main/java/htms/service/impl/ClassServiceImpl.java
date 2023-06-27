@@ -45,6 +45,7 @@ public class ClassServiceImpl implements ClassService {
     private EnrollmentService enrollmentService;
     private ClassApprovalService classApprovalService;
     private ProfileService profileService;
+    private ScheduleService scheduleService;
 
     @Autowired
     public void setTraineeService(TraineeService traineeService) {
@@ -72,6 +73,11 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Autowired
+    public void setScheduleService(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
+    }
+
+    @Autowired
     public void setClassApprovalService(ClassApprovalService classApprovalService) {
         this.classApprovalService = classApprovalService;
     }
@@ -92,6 +98,8 @@ public class ClassServiceImpl implements ClassService {
                 .createdBy(UUID.randomUUID())
                 .generalSchedule(request.getGeneralSchedule())
                 .quantity(request.getQuantity())
+                .minQuantity(request.getMinQuantity())
+                .maxQuantity(request.getMaxQuantity())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .trainer(Trainer.builder()
@@ -125,8 +133,12 @@ public class ClassServiceImpl implements ClassService {
                     .status(ProfileStatus.STUDYING)
                     .build());
         });
-
-        // todo: generate schedule based on generalSchedule
+        // todo: get room id
+        scheduleService.createSchedulesOfClass(
+                clazz.getId(),
+                clazz.getTrainer().getId(),
+                UUID.fromString("b49d2b9c-d8a1-473d-bafe-2207f62a034b"),
+                request.getGeneralSchedule(), clazz.getStartDate(), clazz.getEndDate());
 
         ClassResponse response = modelMapper.map(clazz, ClassResponse.class);
         // Set list of trainees of a class
@@ -165,7 +177,7 @@ public class ClassServiceImpl implements ClassService {
         if (classes.isEmpty()) {
             return List.of();
         }
-        var approvals = getLatestClassApprovals();
+        var approvals = classApprovalService.getLatestClassApprovals();
         approvals = approvals.stream().filter(classApproval -> classApproval.getStatus().equals(status)).toList();
         Set<UUID> approvalsClassIdSet = approvals.stream().map(classApproval -> classApproval.getClazz().getId()).collect(Collectors.toSet());
         classes = classes.stream().filter(aClass -> (aClass.getCode().contains(q) || aClass.getName().contains(q)) && approvalsClassIdSet.contains(aClass.getId())).toList();
@@ -184,29 +196,13 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ClassApprovalResponse makeApproval(ApprovalRequest request, ClassApprovalStatus status) {
         var clazz = classRepository.findById(request.getId()).orElseThrow(EntityNotFoundException::new);
-        var newApproval = ClassApproval.builder()
-                .clazz(clazz)
-                //TODO: replace hardcode UUID to real ID getFrom client
-                .createdBy(UUID.fromString("3bdb9fdd-40a0-4bd4-93aa-3462c2164d08"))
-                .comment(request.getComment())
-                .status(status)
-                .build();
-        var savedApproval = classApprovalRepository.save(newApproval);
-        var response = modelMapper.map(savedApproval, ClassApprovalResponse.class);
-        response.setId(clazz.getId());
 
-        return response;
-    }
-
-    private List<ClassApproval> getLatestClassApprovals() {
-        //group approvals by class_id and get latest created_date for each class_id
-        var groupedMaxClassApprovals = classApprovalRepository.getLatestClassApprovalsGroupedByClazzId();
-        var classIdGroup = groupedMaxClassApprovals.stream().map(GroupedApprovalStatus::getClassId).toList();
-        var dateTimeGroup = groupedMaxClassApprovals.stream().map(GroupedApprovalStatus::getFilteredDate).toList();
-        //filter the table get the approvals from the list above
-        return classApprovalRepository.findAll().stream()
-                .filter(classApproval -> classIdGroup.contains(classApproval.getClazz().getId()) && dateTimeGroup.contains(classApproval.getCreatedDate()))
-                .toList();
+        return classApprovalService.create(
+                ApprovalRequest.builder()
+                        .comment(request.getComment())
+                        .id(clazz.getId())
+                        .build(),
+                status);
     }
 
     @Override

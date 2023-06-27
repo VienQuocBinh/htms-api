@@ -9,6 +9,7 @@ import htms.common.constants.ClassApprovalStatus;
 import htms.common.constants.EnrollmentStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
+import htms.common.specification.ClassSpecification;
 import htms.model.Class;
 import htms.repository.ClassRepository;
 import htms.service.ClassService;
@@ -52,7 +53,6 @@ public class ClassController {
 
     @PostMapping
     public ResponseEntity<ClassResponse> createClass(@RequestBody ClassRequest request) {
-        // todo: generate schedules
         return ResponseEntity.status(201).body(classService.createClass(request));
     }
 
@@ -82,41 +82,23 @@ public class ClassController {
         List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(filterOr);
 
         Specification<Class> specification = filterCriteriaBuilder.addCondition(andConditions, orConditions);
-        Page<Class> pg = classRepository.findAll(specification, pageable);
-        response.setPageStats(pg,
-                pg.getContent()
-                        .stream()
-                        .map((element) -> modelMapper.map(
-                                element,
-                                ClassResponse.class)).toList());
+
+        // pass the status to the specification
+        Specification<Class> latestClassSpecification = ClassSpecification
+                .classesWithLatestApproval(ClassApprovalStatus.PENDING);
+        Page<Class> pg = classRepository.findAll(specification.and(latestClassSpecification), pageable);
+        var items = pg.getContent()
+                .stream()
+                .map((element) -> modelMapper.map(
+                        element,
+                        ClassResponse.class)).toList();
+//        items.forEach(element -> element.setStatus(classApprovalRepository.findByClazzId(element.getId()).get().getStatus()));
+
+        response.setPageStats(pg, items);
+
         return ResponseEntity.ok(response);
     }
 
-    //    @GetMapping("/page/approval")
-//    public ResponseEntity<PageResponse<ClassApprovalResponse>> getSearchAppCriteriaPage(
-//            @RequestParam(value = "page", defaultValue = "0") int page,
-//            @RequestParam(value = "size", defaultValue = "10") int size,
-//            @RequestParam(value = "filterOr", required = false) String filterOr,
-//            @RequestParam(value = "filterAnd", required = false) String filterAnd,
-//            @RequestParam(value = "orders", required = false) String orders
-//    ) {
-//        PageResponse<ClassApprovalResponse> response = new PageResponse<>();
-//        Pageable pageable = filterBuilderService.getPageable(size, page, orders);
-//
-//        GenericFilterCriteriaBuilder<ClassApproval> filterCriteriaBuilder = new GenericFilterCriteriaBuilder<>();
-//        List<FilterCondition> andConditions = filterBuilderService.createFilterCondition(filterAnd);
-//        List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(filterOr);
-//
-//        Specification<ClassApproval> specification = filterCriteriaBuilder.addCondition(andConditions, orConditions);
-//        Page<ClassApproval> pg = classApprovalRepository.findAll(specification, pageable);
-//        response.setPageStats(pg,
-//                pg.getContent()
-//                        .stream()
-//                        .map((element) -> modelMapper.map(
-//                                element,
-//                                ClassApprovalResponse.class)).toList());
-//        return ResponseEntity.ok(response);
-//    }
     @PostMapping("/approve")
     public ResponseEntity<ClassApprovalResponse> approveClassRequest(@Valid @RequestBody ApprovalRequest request) {
         return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.APPROVE));

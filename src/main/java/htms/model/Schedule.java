@@ -37,7 +37,8 @@ public class Schedule extends BaseEntityAuditing {
     @ManyToOne
     @JoinColumn(name = "class_id")
     private Class clazz;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "trainer_id")
     private Trainer trainer;
     @OneToOne
     private ChangedSchedule changedSchedule;

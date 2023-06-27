@@ -17,8 +17,6 @@ public class ProgramResponse {
     private String name;
     private String description;
     private String code;
-    private Integer minQuantity;
-    private Integer maxQuantity;
     private Boolean isActive;
     private DepartmentResponse department;
     private TrainerResponse trainer;

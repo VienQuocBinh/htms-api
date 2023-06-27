@@ -26,8 +26,6 @@ public class Program {
     private String code;
     @Builder.Default
     private Boolean isActive = true;
-    private Integer minQuantity;
-    private Integer maxQuantity;
 
     @ManyToOne
     @JoinColumn(name = "department_id")

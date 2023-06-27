@@ -26,6 +26,8 @@ public class Class extends BaseEntityAuditing {
     private String code;
     private String generalSchedule; // Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}
     private Integer quantity; // real quantity
+    private Integer minQuantity;
+    private Integer maxQuantity;
     private Date startDate;
     private Date endDate;
 
@@ -51,6 +53,8 @@ public class Class extends BaseEntityAuditing {
         this.name = builder.name;
         this.code = builder.code;
         this.quantity = builder.quantity;
+        this.minQuantity = builder.minQuantity;
+        this.maxQuantity = builder.maxQuantity;
         this.startDate = builder.startDate;
         this.endDate = builder.endDate;
         this.generalSchedule = builder.generalSchedule;

@@ -2,6 +2,7 @@ package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.Date;
@@ -21,4 +22,10 @@ public class TraineeResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date birthdate;
     private ProfileResponse profile;
+    // Additional properties
+    // account properties
+    @JsonProperty("title")
+    private String accountTitle;
+    @JsonProperty("email")
+    private String accountEmail;
 }

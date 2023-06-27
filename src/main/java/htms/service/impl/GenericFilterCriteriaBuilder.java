@@ -9,6 +9,8 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
@@ -109,14 +111,28 @@ public class GenericFilterCriteriaBuilder<T> {
             List<String> joinClause = Stream.of(condition.getField().split("\\.")).toList();
             // get the root data type
             var rootModel = root.getModel().getJavaType();
-            Field childField;
+            Field rootField;
             try {
-                childField = rootModel.getDeclaredField(joinClause.get(0));
+                rootField = rootModel.getDeclaredField(joinClause.get(0));
             } catch (NoSuchFieldException e) {
                 throw new RuntimeException(e);
             }
+            Field[] childFields = new Field[0];
 
-            Field[] childFields = childField.getType().getDeclaredFields(); // get list of child fields
+            // Check if the root type is a parameterized type (List<>, Map<> ...)
+            if (rootField.getGenericType() instanceof ParameterizedType parameterizedType) {
+                Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                // Ensure the typeArguments array is not empty
+                if (typeArguments.length > 0) {
+                    Type elementType = typeArguments[0];
+                    if (elementType instanceof Class<?> elementClass) {
+                        childFields = elementClass.getDeclaredFields();
+                    }
+                }
+            } else {
+                // Normal type
+                childFields = rootField.getType().getDeclaredFields(); // get list of child fields
+            }
             var value = condition.getValue();
             // Cast string value to the type of root field has the same name
             for (Field field : childFields) {

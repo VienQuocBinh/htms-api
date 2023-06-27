@@ -2,6 +2,7 @@ package htms.service.impl;
 
 import htms.api.request.TrainerRequest;
 import htms.api.response.TrainerResponse;
+import htms.model.Account;
 import htms.model.Trainer;
 import htms.repository.TrainerRepository;
 import htms.service.AccountService;
@@ -27,7 +28,9 @@ public class TrainerServiceImpl implements TrainerService {
                 .name(request.getName())
                 .birthdate(request.getBirthdate())
                 .phone(request.getPhone())
-                .account(account)
+                .account(Account.builder()
+                        .id(account.getId())
+                        .build())
                 .createdBy(account.getId())
                 .build();
         trainerRepository.save(trainer);

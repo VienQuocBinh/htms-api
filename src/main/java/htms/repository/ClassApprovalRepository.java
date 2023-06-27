@@ -23,4 +23,5 @@ public interface ClassApprovalRepository extends JpaRepository<ClassApproval, Lo
 
     @Query("SELECT MAX(c.id) FROM ClassApproval c")
     Optional<Long> getLatestId();
+
 }
