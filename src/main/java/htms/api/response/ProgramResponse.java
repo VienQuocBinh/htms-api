@@ -22,5 +22,5 @@ public class ProgramResponse {
     private Boolean isActive;
     private DepartmentResponse department;
     private TrainerResponse trainer;
-    private List<TopicDetail> topics;
+    private List<TopicResponse> topics;
 }

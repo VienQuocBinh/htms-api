@@ -2,12 +2,10 @@ package htms.service.impl;
 
 import htms.api.request.ProgramRequest;
 import htms.api.response.ProgramResponse;
-import htms.api.response.TopicDetail;
+import htms.api.response.TopicResponse;
 import htms.api.response.TrainerResponse;
 import htms.common.mapper.ProgramMapper;
 import htms.model.Program;
-import htms.model.ProgramContent;
-import htms.model.embeddedkey.ProgramContentId;
 import htms.repository.ClassRepository;
 import htms.repository.ProgramContentRepository;
 import htms.repository.ProgramRepository;
@@ -15,10 +13,8 @@ import htms.service.ProgramService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -70,9 +66,9 @@ public class ProgramServiceImpl implements ProgramService {
 
     @Override
     public ProgramResponse getProgramContent(UUID programId, UUID trainerId) {
-        var content = contentRepository.findById_Program_IdAndId_Trainer_Id(programId, trainerId).stream().findFirst().orElseThrow(EntityNotFoundException::new);
+        var content = contentRepository.findById_Program_IdAndId_Trainer_Id(programId, trainerId).orElseThrow(EntityNotFoundException::new);
         var response = programMapper.toResponse(content.getId().getProgram());
-        response.setTopics(content.getTopics().stream().map(topic -> mapper.map(topic, TopicDetail.class)).toList());
+        response.setTopics(content.getTopics().stream().map(topic -> mapper.map(topic, TopicResponse.class)).toList());
         response.setTrainer(mapper.map(content.getId().getTrainer(), TrainerResponse.class));
         return response;
     }

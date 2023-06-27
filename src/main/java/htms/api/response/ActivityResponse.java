@@ -1,6 +1,5 @@
 package htms.api.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ActivityDetail {
+public class ActivityResponse {
     private UUID id;
     private String name;
     private String description;
