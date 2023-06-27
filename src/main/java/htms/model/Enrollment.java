@@ -23,7 +23,8 @@ public class Enrollment implements Serializable {
     private EnrollmentId id;
     @NotNull
     private Date enrollmentDate;
-    private Boolean isCancelled;
+    @Builder.Default
+    private Boolean isCancelled = false;
     private String cancelReason;
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;

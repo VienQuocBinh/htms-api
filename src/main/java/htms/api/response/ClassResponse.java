@@ -24,8 +24,7 @@ public class ClassResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Bangkok")
     private Date createdDate;
     private ClassApprovalStatus status;
-    private Integer minQuantity;
-    private Integer maxQuantity;
+    private Integer quantity;
     private TrainerResponse trainer;
     private ProgramResponse program;
     private CycleResponse cycle;

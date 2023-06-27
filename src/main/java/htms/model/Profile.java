@@ -1,5 +1,6 @@
 package htms.model;
 
+import htms.common.constants.ProfileStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,8 +20,8 @@ public class Profile extends BaseEntityAuditing {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ProfileStatus status;
 
     @OneToOne(mappedBy = "profile")
     private Trainee trainee;

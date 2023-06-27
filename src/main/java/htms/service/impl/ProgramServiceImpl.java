@@ -27,11 +27,13 @@ public class ProgramServiceImpl implements ProgramService {
     private final ClassRepository classRepository;
     private final ProgramContentRepository contentRepository;
     private final ModelMapper mapper;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<ProgramResponse> getPrograms() {
         return programRepository.findAll()
-                .stream().map(programMapper::toResponse)
+                .stream()
+                .map((element) -> modelMapper.map(element, ProgramResponse.class))
                 .toList();
     }
 
@@ -39,7 +41,7 @@ public class ProgramServiceImpl implements ProgramService {
     public ProgramResponse getProgramDetails(UUID id) {
         // todo: handle exceptions
         return programRepository.findById(id)
-                .map(programMapper::toResponse)
+                .map((element) -> mapper.map(element, ProgramResponse.class))
                 .orElseThrow();
     }
 
