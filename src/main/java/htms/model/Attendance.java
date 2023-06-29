@@ -1,5 +1,6 @@
 package htms.model;
 
+import htms.common.constants.AttendanceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,8 @@ public class Attendance extends BaseEntityAuditing {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Enumerated(EnumType.STRING)
+    private AttendanceStatus status;
 
     @ManyToOne
     @JoinColumn(name = "trainee_id")
@@ -33,5 +36,6 @@ public class Attendance extends BaseEntityAuditing {
         this.id = builder.id;
         this.trainee = builder.trainee;
         this.schedule = builder.schedule;
+        this.status = builder.status;
     }
 }

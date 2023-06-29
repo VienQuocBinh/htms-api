@@ -56,8 +56,9 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public List<TraineeResponse> getTraineesByClassId(UUID classId) {
         // todo: handle exceptions
-        var list = traineeRepository.findAllByClassId(classId).orElseThrow();
-        return list.stream()
+        return traineeRepository.findAllByClassId(classId)
+                .orElse(List.of())
+                .parallelStream()
                 .map(trainees -> mapper.map(trainees, TraineeResponse.class))
                 .toList();
     }
@@ -160,7 +161,7 @@ public class TraineeServiceImpl implements TraineeService {
         // Create trainee
         traineeRepository.saveAll(trainees);
         return trainees
-                .stream()
+                .parallelStream()
                 .map((element) -> mapper.map(
                         element,
                         TraineeResponse.class))

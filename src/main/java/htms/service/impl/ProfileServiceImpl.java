@@ -43,7 +43,7 @@ public class ProfileServiceImpl implements ProfileService {
                     .build());
         }
         return profileRepository.saveAll(list)
-                .stream()
+                .parallelStream()
                 .map((element) -> modelMapper.map(
                         element,
                         ProfileResponse.class)).toList();

@@ -22,6 +22,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +31,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@EnableAsync
 public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
     private final ClassApprovalRepository classApprovalRepository;
@@ -46,6 +50,7 @@ public class ClassServiceImpl implements ClassService {
     private ClassApprovalService classApprovalService;
     private ProfileService profileService;
     private ScheduleService scheduleService;
+    private AttendanceService attendanceService;
 
     @Autowired
     public void setTraineeService(TraineeService traineeService) {
@@ -87,9 +92,15 @@ public class ClassServiceImpl implements ClassService {
         this.profileService = profileService;
     }
 
+    @Autowired
+    public void setAttendanceService(AttendanceService attendanceService) {
+        this.attendanceService = attendanceService;
+    }
+
     @Override
     @Transactional(rollbackFor = {SQLException.class})
-    public ClassResponse createClass(ClassRequest request) {
+    @Async
+    public CompletableFuture<ClassResponse> createClass(ClassRequest request) {
         // create the class
         // todo: assign created by
         var clazz = Class.builder()
@@ -113,7 +124,6 @@ public class ClassServiceImpl implements ClassService {
                         .build())
                 .build();
         classRepository.save(clazz);
-
         // create class approval with PENDING status
         classApprovalService.create(
                 ApprovalRequest.builder()
@@ -133,17 +143,19 @@ public class ClassServiceImpl implements ClassService {
                     .status(ProfileStatus.STUDYING)
                     .build());
         });
-        // todo: get room id
         scheduleService.createSchedulesOfClass(
                 clazz.getId(),
                 clazz.getTrainer().getId(),
-                UUID.fromString("b49d2b9c-d8a1-473d-bafe-2207f62a034b"),
+                request.getRoomId(),
                 request.getGeneralSchedule(), clazz.getStartDate(), clazz.getEndDate());
+
+        // Create attendances for the schedule
+        attendanceService.createAttendancesOfClass(clazz.getId());
 
         ClassResponse response = modelMapper.map(clazz, ClassResponse.class);
         // Set list of trainees of a class
         response.setTrainees(traineeService.getTraineesByClassId(clazz.getId()));
-        return response;
+        return CompletableFuture.completedFuture(response);
     }
 
     @Override

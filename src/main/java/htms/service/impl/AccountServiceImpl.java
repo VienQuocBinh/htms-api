@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
                     .build());
         }
         return accountRepository.saveAll(list)
-                .stream()
+                .parallelStream()
                 .map((element) -> modelMapper.map(
                         element,
                         AccountResponse.class)).toList();

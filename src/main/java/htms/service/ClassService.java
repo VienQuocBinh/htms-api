@@ -12,9 +12,10 @@ import htms.common.constants.SortDirection;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public interface ClassService {
-    ClassResponse createClass(ClassRequest request);
+    CompletableFuture<ClassResponse> createClass(ClassRequest request);
 
     List<ClassResponse> getClasses();
 

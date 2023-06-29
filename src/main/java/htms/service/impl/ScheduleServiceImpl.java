@@ -41,7 +41,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<ScheduleResponse> getScheduleOfClass(UUID id) {
         return scheduleRepository.findAllByClazz_Id(id)
                 .orElse(List.of())
-                .stream()
+                .parallelStream()
                 .map((element) -> modelMapper.map(
                         element,
                         ScheduleResponse.class))
@@ -51,6 +51,17 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public List<ScheduleResponse> getScheduleOfTrainer(UUID id) {
         return scheduleRepository.findAllByTrainer_Id(id)
+                .orElse(List.of())
+                .stream()
+                .map((element) -> modelMapper.map(
+                        element,
+                        ScheduleResponse.class))
+                .toList();
+    }
+
+    @Override
+    public List<ScheduleResponse> getScheduleOfTrainee(UUID id) {
+        return scheduleRepository.findAllByTraineeId(id)
                 .orElse(List.of())
                 .stream()
                 .map((element) -> modelMapper.map(

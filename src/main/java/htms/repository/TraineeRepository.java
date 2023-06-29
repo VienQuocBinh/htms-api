@@ -14,7 +14,8 @@ import java.util.UUID;
 @Repository
 public interface TraineeRepository extends JpaRepository<Trainee, UUID>, JpaSpecificationExecutor<Trainee> {
     /**
-     * Get all trainees in a given class base on the enrollment which is not cancelled
+     * Get all trainees in a given class base on the enrollment which
+     * status is APPROVE and not cancelled
      *
      * @param classId {@link UUID}
      * @return {@code Optional<List<Trainee>>}
@@ -25,6 +26,7 @@ public interface TraineeRepository extends JpaRepository<Trainee, UUID>, JpaSpec
             join Class c on c.id = e.id.clazz.id
             where c.id = :classId\s
             and e.isCancelled = false
+            and e.status = 'APPROVE'
             order by e.enrollmentDate asc\s
             """)
     Optional<List<Trainee>> findAllByClassId(@Param("classId") UUID classId);

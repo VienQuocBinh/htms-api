@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,7 +53,8 @@ public class ClassController {
     }
 
     @PostMapping
-    public ResponseEntity<ClassResponse> createClass(@RequestBody ClassRequest request) {
+    @Operation(summary = "Create a new class")
+    public ResponseEntity<Future<ClassResponse>> createClass(@RequestBody ClassRequest request) {
         return ResponseEntity.status(201).body(classService.createClass(request));
     }
 
@@ -67,6 +69,7 @@ public class ClassController {
     }
 
     @GetMapping("/page")
+    @Operation(summary = "Get a page of classes for the given conditions")
     public ResponseEntity<PageResponse<ClassResponse>> getSearchCriteriaPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
@@ -110,11 +113,12 @@ public class ClassController {
     }
 
     @GetMapping("/form")
+    @Operation(summary = "Init the form data for creating a new class")
     public ResponseEntity<CreateClassFormData> initCreateClassFormData() {
         return ResponseEntity.ok(classService.initCreateClassFormData());
     }
 
-    @GetMapping("/class/{id}/enrollment")
+    @GetMapping("/{id}/enrollment")
     public ResponseEntity<List<EnrollmentResponse>> getClassEnrollments(@PathVariable UUID id) {
         return ResponseEntity.ok(enrollmentService.getEnrollmentByClassIdAndStatus(id, EnrollmentStatus.PENDING));
     }
