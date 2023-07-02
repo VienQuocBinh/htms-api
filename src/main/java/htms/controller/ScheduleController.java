@@ -1,7 +1,9 @@
 package htms.controller;
 
+import htms.api.domain.OverlappingSchedule;
 import htms.api.response.ScheduleResponse;
 import htms.service.ScheduleService;
+import htms.util.ScheduleUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +37,14 @@ public class ScheduleController {
     @Operation(summary = "Get Schedules of a trainee")
     public ResponseEntity<List<ScheduleResponse>> getScheduleOfTrainee(@PathVariable UUID id) {
         return ResponseEntity.ok(scheduleService.getScheduleOfTrainee(id));
+    }
+
+    @GetMapping("/test")
+    @Operation(summary = "Dup Schedules")
+    public ResponseEntity<OverlappingSchedule> getScheduleOfTrainee() {
+        OverlappingSchedule duplicateSchedule = ScheduleUtil.getOverlappingSchedule(
+                "Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}",
+                "Start{10:30,MON};Stop{12:00,MON};Start{17:00,MON};Stop{19:00,MON}");
+        return ResponseEntity.ok(duplicateSchedule);
     }
 }

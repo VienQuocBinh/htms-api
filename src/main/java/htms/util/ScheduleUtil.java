@@ -1,5 +1,6 @@
 package htms.util;
 
+import htms.api.domain.OverlappingSchedule;
 import htms.model.Class;
 import htms.model.Room;
 import htms.model.Schedule;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class ScheduleUtil {
@@ -98,5 +101,55 @@ public class ScheduleUtil {
             case "Sunday" -> DayOfWeek.SUNDAY;
             default -> null;
         };
+    }
+
+    public static OverlappingSchedule getOverlappingSchedule(String classGeneralSchedule, String userGeneralSchedule) {
+        List<String> overlappingDayTimes = new ArrayList<>();
+        List<String> classSchedule = extractTimesDaysPart(classGeneralSchedule); // ["10:00,MON", "11:00,MON"]
+        List<String> userSchedule = extractTimesDaysPart(userGeneralSchedule); // ["10:00,MON", "11:00,MON"]
+
+        for (int i = 0; i < classSchedule.size(); i += 2) {
+            for (int j = 0; j < userSchedule.size(); j += 2) {
+                if (hasOverlap(classSchedule.get(i), classSchedule.get(i + 1),
+                        userSchedule.get(j), userSchedule.get(j + 1))) {
+                    overlappingDayTimes.add(userSchedule.get(i) + " - " + userSchedule.get(i + 1));
+                }
+            }
+        }
+
+        return OverlappingSchedule.builder()
+                .id(UUID.randomUUID())
+                .overlappingDayTimes(overlappingDayTimes)
+                .build();
+    }
+
+    private static List<String> extractTimesDaysPart(String input) {
+        List<String> timesAndDays = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\{(.*?)}");
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            String timeAndDay = matcher.group(1);
+            timesAndDays.add(timeAndDay);
+        }
+        return timesAndDays;
+    }
+
+    private static boolean hasOverlap(String timeAndDayStart1, String timeAndDayEnd1, String timeAndDayStart2, String timeAndDayEnd2) {
+        String[] startPart1 = timeAndDayStart1.split(",");
+        String[] endPart1 = timeAndDayEnd1.split(",");
+
+        String[] startTime2 = timeAndDayStart2.split(",");
+        String[] endTime2 = timeAndDayEnd2.split(",");
+
+        String startTime1 = startPart1[0];
+        String endTime1 = endPart1[0];
+        String day1 = startPart1[1];
+
+        String startTime2Part = startTime2[0];
+        String endTime2Part = endTime2[0];
+        String day2 = startTime2[1];
+
+        return day1.equals(day2) && !(endTime1.compareTo(startTime2Part) <= 0 || endTime2Part.compareTo(startTime1) <= 0);
     }
 }
