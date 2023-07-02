@@ -17,9 +17,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      #disable this to run flyway. If need to change anything to database, please create new flyway script to run
-      ddl-auto: none
+      ddl-auto: create
     show-sql: false
+
 server:
   port: '8080'
   servlet:
