@@ -1,6 +1,6 @@
 package htms.util;
 
-import htms.api.domain.OverlappingSchedule;
+import htms.api.domain.OverlappedSchedule;
 import htms.model.Class;
 import htms.model.Room;
 import htms.model.Schedule;
@@ -103,7 +103,7 @@ public class ScheduleUtil {
         };
     }
 
-    public static OverlappingSchedule getOverlappingSchedule(String classGeneralSchedule, String userGeneralSchedule) {
+    public static OverlappedSchedule getOverlappedSchedule(String classGeneralSchedule, String userGeneralSchedule, UUID userId) {
         List<String> overlappingDayTimes = new ArrayList<>();
         List<String> classSchedule = extractTimesDaysPart(classGeneralSchedule); // ["10:00,MON", "11:00,MON"]
         List<String> userSchedule = extractTimesDaysPart(userGeneralSchedule); // ["10:00,MON", "11:00,MON"]
@@ -112,14 +112,14 @@ public class ScheduleUtil {
             for (int j = 0; j < userSchedule.size(); j += 2) {
                 if (hasOverlap(classSchedule.get(i), classSchedule.get(i + 1),
                         userSchedule.get(j), userSchedule.get(j + 1))) {
-                    overlappingDayTimes.add(userSchedule.get(i) + " - " + userSchedule.get(i + 1));
+                    overlappingDayTimes.add(userSchedule.get(j) + " - " + userSchedule.get(j + 1));
                 }
             }
         }
 
-        return OverlappingSchedule.builder()
-                .id(UUID.randomUUID())
-                .overlappingDayTimes(overlappingDayTimes)
+        return OverlappedSchedule.builder()
+                .id(userId)
+                .overlappedDayTimes(overlappingDayTimes)
                 .build();
     }
 

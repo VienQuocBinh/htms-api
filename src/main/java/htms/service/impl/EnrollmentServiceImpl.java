@@ -51,7 +51,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .map(enrollmentRepository.save(Enrollment.builder()
                         .id(id)
                         .enrollmentDate(new Date())
-                        .status(EnrollmentStatus.APPROVE)
+                        .status(EnrollmentStatus.PENDING)
                         .build()), EnrollmentResponse.class);
     }
 }

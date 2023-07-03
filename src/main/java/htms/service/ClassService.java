@@ -12,10 +12,15 @@ import htms.common.constants.SortDirection;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public interface ClassService {
-    CompletableFuture<ClassResponse> createClass(ClassRequest request);
+    /**
+     * Creates a new class, not published, waiting for approve the class contents
+     *
+     * @param request {@link ClassRequest}
+     * @return {@link ClassResponse}
+     */
+    ClassResponse createClass(ClassRequest request);
 
     List<ClassResponse> getClasses();
 
@@ -32,4 +37,6 @@ public interface ClassService {
     ClassApprovalResponse makeApproval(ApprovalRequest request, ClassApprovalStatus status);
 
     CreateClassFormData initCreateClassFormData();
+
+    List<ClassResponse> getClassesOfTrainer(UUID trainerId);
 }

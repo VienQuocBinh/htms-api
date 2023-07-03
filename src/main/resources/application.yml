@@ -19,7 +19,17 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: false
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: learning.fpt.edu@gmail.com
+    password: diemoznaoiphyzwb
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 server:
   port: '8080'
   servlet:

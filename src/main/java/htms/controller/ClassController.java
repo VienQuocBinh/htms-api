@@ -9,7 +9,6 @@ import htms.common.constants.ClassApprovalStatus;
 import htms.common.constants.EnrollmentStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
-import htms.common.specification.ClassSpecification;
 import htms.model.Class;
 import htms.repository.ClassRepository;
 import htms.service.ClassService;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Future;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,7 +52,7 @@ public class ClassController {
 
     @PostMapping
     @Operation(summary = "Create a new class")
-    public ResponseEntity<Future<ClassResponse>> createClass(@RequestBody ClassRequest request) {
+    public ResponseEntity<ClassResponse> createClass(@RequestBody ClassRequest request) {
         return ResponseEntity.status(201).body(classService.createClass(request));
     }
 
@@ -87,15 +85,15 @@ public class ClassController {
         Specification<Class> specification = filterCriteriaBuilder.addCondition(andConditions, orConditions);
 
         // pass the status to the specification
-        Specification<Class> latestClassSpecification = ClassSpecification
-                .classesWithLatestApproval(ClassApprovalStatus.PENDING);
-        Page<Class> pg = classRepository.findAll(specification.and(latestClassSpecification), pageable);
+//        Specification<Class> latestClassSpecification = ClassSpecification
+//                .classesWithLatestApproval(ClassApprovalStatus.PENDING);
+//        Page<Class> pg = classRepository.findAll(specification.and(latestClassSpecification), pageable);
+        Page<Class> pg = classRepository.findAll(specification, pageable);
         var items = pg.getContent()
                 .stream()
                 .map((element) -> modelMapper.map(
                         element,
                         ClassResponse.class)).toList();
-//        items.forEach(element -> element.setStatus(classApprovalRepository.findByClazzId(element.getId()).get().getStatus()));
 
         response.setPageStats(pg, items);
 

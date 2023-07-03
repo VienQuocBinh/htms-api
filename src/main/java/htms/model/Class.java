@@ -1,5 +1,6 @@
 package htms.model;
 
+import htms.common.constants.ClassStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,8 @@ public class Class extends BaseEntityAuditing {
     private Integer maxQuantity;
     private Date startDate;
     private Date endDate;
+    @Enumerated(EnumType.STRING)
+    private ClassStatus status;
 
     @OneToMany(mappedBy = "clazz", fetch = FetchType.LAZY)
     private List<Schedule> schedules;
@@ -64,5 +67,6 @@ public class Class extends BaseEntityAuditing {
         this.enrollments = builder.enrollments;
         this.trainer = builder.trainer;
         this.program = builder.program;
+        this.status = builder.status;
     }
 }

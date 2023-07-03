@@ -10,7 +10,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class OverlappingSchedule {
+public class OverlappedSchedule {
     private UUID id; // trainer,trainee
-    private List<String> overlappingDayTimes;
+    private List<String> overlappedDayTimes;
 }

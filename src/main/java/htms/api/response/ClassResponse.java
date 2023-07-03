@@ -2,7 +2,8 @@ package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import htms.common.constants.ClassApprovalStatus;
+import htms.api.domain.OverlappedSchedule;
+import htms.common.constants.ClassStatus;
 import lombok.*;
 
 import java.util.Date;
@@ -26,6 +27,7 @@ public class ClassResponse {
     private Integer quantity;
     private Integer minQuantity;
     private Integer maxQuantity;
+    private ClassStatus status;
     private TrainerResponse trainer;
     private ProgramResponse program;
     private CycleResponse cycle;
@@ -35,6 +37,6 @@ public class ClassResponse {
     private Date endDate;
     // Additional properties
     private List<TraineeResponse> trainees;
-    private ClassApprovalStatus status;
-
+    //    private ClassApprovalStatus status;
+    private List<OverlappedSchedule> overlappedSchedules;
 }

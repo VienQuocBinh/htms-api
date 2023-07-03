@@ -1,7 +1,8 @@
 package htms.common.constants;
 
 public enum ClassStatus {
-    PENDING,
-    ACCEPTED,
-    REJECTED
+    PLANNING, // After create
+    PENDING, // Open for enrollment
+    OPENING, // Begin studying
+    CLOSED // Ended
 }

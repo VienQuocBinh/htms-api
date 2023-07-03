@@ -1,6 +1,6 @@
 package htms.controller;
 
-import htms.api.domain.OverlappingSchedule;
+import htms.api.domain.OverlappedSchedule;
 import htms.api.response.ScheduleResponse;
 import htms.service.ScheduleService;
 import htms.util.ScheduleUtil;
@@ -41,10 +41,12 @@ public class ScheduleController {
 
     @GetMapping("/test")
     @Operation(summary = "Dup Schedules")
-    public ResponseEntity<OverlappingSchedule> getScheduleOfTrainee() {
-        OverlappingSchedule duplicateSchedule = ScheduleUtil.getOverlappingSchedule(
+    public ResponseEntity<OverlappedSchedule> getScheduleOfTrainee() {
+        OverlappedSchedule duplicateSchedule = ScheduleUtil.getOverlappedSchedule(
                 "Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}",
-                "Start{10:30,MON};Stop{12:00,MON};Start{17:00,MON};Stop{19:00,MON}");
+                "Start{10:30,MON};Stop{12:00,MON};Start{17:00,MON};Stop{19:00,MON}",
+                UUID.randomUUID());
+
         return ResponseEntity.ok(duplicateSchedule);
     }
 }

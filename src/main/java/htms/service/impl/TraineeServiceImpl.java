@@ -1,5 +1,6 @@
 package htms.service.impl;
 
+import htms.api.domain.OverlappedSchedule;
 import htms.api.request.AccountRequest;
 import htms.api.request.ProfileRequest;
 import htms.api.response.AccountResponse;
@@ -10,14 +11,16 @@ import htms.common.constants.ProfileStatus;
 import htms.common.constants.TraineeFileCellIndex;
 import htms.common.specification.TraineeSpecification;
 import htms.model.Account;
+import htms.model.Class;
 import htms.model.Profile;
 import htms.model.Trainee;
+import htms.repository.ClassRepository;
 import htms.repository.TraineeRepository;
 import htms.service.AccountService;
 import htms.service.ProfileService;
 import htms.service.ReadFileService;
 import htms.service.TraineeService;
-import jakarta.persistence.EntityNotFoundException;
+import htms.util.ScheduleUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -40,6 +43,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final FilterBuilderService filterBuilderService;
     private final ModelMapper mapper;
     private final ReadFileService readFileService;
+    private final ClassRepository classRepository;
     private AccountService accountService;
     private ProfileService profileService;
 
@@ -101,14 +105,6 @@ public class TraineeServiceImpl implements TraineeService {
         return response;
     }
 
-    @Override
-    public TraineeResponse getTrainee(UUID traineeId) {
-        // todo: handle exceptions
-        return mapper.map(traineeRepository.findById(traineeId)
-                        .orElseThrow(EntityNotFoundException::new),
-                TraineeResponse.class);
-    }
-
     /**
      * Save the trainee data from CSV file
      *
@@ -123,6 +119,7 @@ public class TraineeServiceImpl implements TraineeService {
         List<ProfileRequest> profileRequests = new ArrayList<>();
         List<Trainee> trainees = new ArrayList<>();
         // Read all rows from the file
+        // todo: generate email addresses (name+code@gmail.com. eg. binhvqse16@gmail.com)
         for (String[] row : rows) {
             accountRequests.add(AccountRequest.builder()
                     .email(row[TraineeFileCellIndex.EMAIL.getValue()])
@@ -166,5 +163,22 @@ public class TraineeServiceImpl implements TraineeService {
                         element,
                         TraineeResponse.class))
                 .toList();
+    }
+
+    @Override
+    public OverlappedSchedule getOverlappedScheduleOfTrainee(UUID id, String generalSchedule) {
+        StringBuilder traineeGeneralSchedule = new StringBuilder();
+        // Get all taking classes
+        List<Class> allCurrentTakingClassesByTrainee = classRepository.findAllCurrentTakingClassesByTrainee(id)
+                .orElse(List.of());
+        // Get general schedules
+        for (Class aClass : allCurrentTakingClassesByTrainee) {
+            traineeGeneralSchedule.append(aClass.getGeneralSchedule());
+        }
+        // Check overlapped schedules
+        return ScheduleUtil.getOverlappedSchedule(
+                generalSchedule,
+                traineeGeneralSchedule.toString(),
+                id);
     }
 }

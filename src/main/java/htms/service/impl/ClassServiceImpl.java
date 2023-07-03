@@ -1,15 +1,16 @@
 package htms.service.impl;
 
 import htms.api.domain.CreateClassFormData;
+import htms.api.domain.OverlappedSchedule;
 import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
 import htms.api.request.EnrollmentRequest;
-import htms.api.request.ProfileUpdateRequest;
 import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;
 import htms.api.response.ClassesApprovalResponse;
+import htms.api.response.TraineeResponse;
 import htms.common.constants.ClassApprovalStatus;
-import htms.common.constants.ProfileStatus;
+import htms.common.constants.ClassStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
 import htms.model.Class;
@@ -22,21 +23,19 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@EnableAsync
+//@EnableAsync
 public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
     private final ClassApprovalRepository classApprovalRepository;
@@ -99,8 +98,35 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     @Transactional(rollbackFor = {SQLException.class})
-    @Async
-    public CompletableFuture<ClassResponse> createClass(ClassRequest request) {
+//    @Async
+    public ClassResponse createClass(ClassRequest request) {
+        boolean hasOverlap = false;
+        // Check the schedule of trainer
+        OverlappedSchedule overlappedScheduleOfTrainer = trainerService.getOverlappedScheduleOfTrainer(
+                request.getTrainerId(),
+                request.getGeneralSchedule());
+
+        // Check the schedule of trainees
+        List<OverlappedSchedule> traineeOverlappedSchedules = new ArrayList<>();
+        if (!overlappedScheduleOfTrainer.getOverlappedDayTimes().isEmpty()) {
+            traineeOverlappedSchedules.add(overlappedScheduleOfTrainer);
+            hasOverlap = true;
+        }
+
+        for (UUID traineeId : request.getTraineeIds()) {
+            OverlappedSchedule overlappedScheduleOfTrainee = traineeService.getOverlappedScheduleOfTrainee(traineeId, request.getGeneralSchedule());
+            if (!overlappedScheduleOfTrainee.getOverlappedDayTimes().isEmpty()) {
+                traineeOverlappedSchedules.add(overlappedScheduleOfTrainee);
+                hasOverlap = true;
+            }
+        }
+
+        if (hasOverlap) {
+            return ClassResponse.builder()
+                    .overlappedSchedules(traineeOverlappedSchedules)
+                    .build();
+        }
+
         // create the class
         // todo: assign created by
         var clazz = Class.builder()
@@ -113,6 +139,7 @@ public class ClassServiceImpl implements ClassService {
                 .maxQuantity(request.getMaxQuantity())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
+                .status(ClassStatus.PLANNING)
                 .trainer(Trainer.builder()
                         .id(request.getTrainerId())
                         .build())
@@ -124,38 +151,45 @@ public class ClassServiceImpl implements ClassService {
                         .build())
                 .build();
         classRepository.save(clazz);
+
         // create class approval with PENDING status
-        classApprovalService.create(
-                ApprovalRequest.builder()
-                        .comment("Lớp đang chờ duyệt")
-                        .id(clazz.getId())
-                        .build(),
-                ClassApprovalStatus.PENDING);
-        // Assign trainees to the class, create enrollment status APPROVE, update profile status STUDYING
+//        classApprovalService.create(
+//                ApprovalRequest.builder()
+//                        .comment("Lớp đang chờ duyệt")
+//                        .id(clazz.getId())
+//                        .build(),
+//                ClassApprovalStatus.PENDING);
+
+        // Assign trainees to the class, create enrollment status PENDING, update profile status PENDING
+        List<TraineeResponse> trainerResponses = new ArrayList<>();
         request.getTraineeIds().forEach(traineeId -> {
             enrollmentService.create(EnrollmentRequest.builder()
                     .classId(clazz.getId())
                     .traineeId(traineeId)
                     .build());
-            UUID profileId = traineeService.getTrainee(traineeId).getProfile().getId();
-            profileService.updateProfile(ProfileUpdateRequest.builder()
-                    .id(profileId)
-                    .status(ProfileStatus.STUDYING)
-                    .build());
+//            UUID profileId = traineeService.getTrainee(traineeId).getProfile().getId();
+//            profileService.updateProfile(ProfileUpdateRequest.builder()
+//                    .id(profileId)
+//                    .status(ProfileStatus.PENDING)
+//                    .build());
+            trainerResponses.add(TraineeResponse.builder().id(traineeId).build());
         });
-        scheduleService.createSchedulesOfClass(
-                clazz.getId(),
-                clazz.getTrainer().getId(),
-                request.getRoomId(),
-                request.getGeneralSchedule(), clazz.getStartDate(), clazz.getEndDate());
+
+//        scheduleService.createSchedulesOfClass(
+//                clazz.getId(),
+//                clazz.getOverlappedScheduleOfTrainer().getId(),
+//                request.getRoomId(),
+//                request.getGeneralSchedule(), clazz.getStartDate(), clazz.getEndDate());
 
         // Create attendances for the schedule
-        attendanceService.createAttendancesOfClass(clazz.getId());
+//        attendanceService.createAttendancesOfClass(clazz.getId());
 
         ClassResponse response = modelMapper.map(clazz, ClassResponse.class);
         // Set list of trainees of a class
-        response.setTrainees(traineeService.getTraineesByClassId(clazz.getId()));
-        return CompletableFuture.completedFuture(response);
+//        response.setTrainees(traineeService.getTraineesByClassId(clazz.getId()));
+        response.setTrainees(trainerResponses);
+        return response;
+//        return CompletableFuture.completedFuture(response);
     }
 
     @Override
@@ -174,7 +208,7 @@ public class ClassServiceImpl implements ClassService {
                 .getClassApprovalByClazzIdOrderByCreatedDateDesc(clazz.getId())
                 .orElseThrow(EntityNotFoundException::new);
         var response = modelMapper.map(clazz, ClassResponse.class);
-        response.setStatus(classApproval.getStatus());
+//        response.setStatus(classApproval.getStatus());
         // Get list of trainees in the class
         response.setTrainees(traineeService.getTraineesByClassId(id));
         return response;
@@ -224,5 +258,13 @@ public class ClassServiceImpl implements ClassService {
                 .trainers(trainerService.getTrainers())
                 .cycles(cycleService.getCycles());
         return createClassFormData.build();
+    }
+
+    @Override
+    public List<ClassResponse> getClassesOfTrainer(UUID trainerId) {
+        return classRepository.findAllByTrainer_Id(trainerId)
+                .parallelStream()
+                .map((element) -> modelMapper.map(element, ClassResponse.class))
+                .toList();
     }
 }
