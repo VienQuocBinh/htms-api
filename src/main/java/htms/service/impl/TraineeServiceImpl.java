@@ -20,6 +20,7 @@ import htms.service.AccountService;
 import htms.service.ProfileService;
 import htms.service.ReadFileService;
 import htms.service.TraineeService;
+import htms.util.AccountUtil;
 import htms.util.ScheduleUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -121,8 +122,13 @@ public class TraineeServiceImpl implements TraineeService {
         // Read all rows from the file
         // todo: generate email addresses (name+code@gmail.com. eg. binhvqse16@gmail.com)
         for (String[] row : rows) {
+            String generatedEmail = AccountUtil.generateEmail(
+                    row[TraineeFileCellIndex.NAME.getValue()],
+                    row[TraineeFileCellIndex.CODE.getValue()]);
+
             accountRequests.add(AccountRequest.builder()
-                    .email(row[TraineeFileCellIndex.EMAIL.getValue()])
+//                    .email(row[TraineeFileCellIndex.EMAIL.getValue()])
+                    .email(generatedEmail)
                     .title("BS") // Title: BS
                     .roleId(3L) // role Trainee
                     .build());

@@ -34,3 +34,6 @@ server:
   port: '8080'
   servlet:
     context-path: /htms
+account:
+  password:
+    length: 10

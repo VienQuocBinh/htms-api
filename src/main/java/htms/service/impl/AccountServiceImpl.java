@@ -6,9 +6,11 @@ import htms.model.Account;
 import htms.model.Role;
 import htms.repository.AccountRepository;
 import htms.service.AccountService;
+import htms.util.AccountUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ import java.util.UUID;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final ModelMapper modelMapper;
+    @Value("${account.password.length}")
+    private String passwordLength;
 
     @Override
     public AccountResponse getAccountById(UUID id) {
@@ -51,6 +55,7 @@ public class AccountServiceImpl implements AccountService {
         for (AccountRequest accountRequest : request) {
             list.add(Account.builder()
                     .email(accountRequest.getEmail())
+                    .password(AccountUtil.generatePassword(Integer.parseInt(passwordLength)))
                     .title(accountRequest.getTitle())
                     .createdBy(UUID.randomUUID())
                     .role(Role.builder()
@@ -58,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
                             .build())
                     .build());
         }
+
         return accountRepository.saveAll(list)
                 .parallelStream()
                 .map((element) -> modelMapper.map(
