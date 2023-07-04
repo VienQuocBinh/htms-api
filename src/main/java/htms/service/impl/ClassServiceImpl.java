@@ -5,17 +5,11 @@ import htms.api.domain.OverlappedSchedule;
 import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
 import htms.api.request.EnrollmentRequest;
-import htms.api.response.ClassApprovalResponse;
-import htms.api.response.ClassResponse;
-import htms.api.response.ClassesApprovalResponse;
-import htms.api.response.TraineeResponse;
-import htms.common.constants.ClassApprovalStatus;
-import htms.common.constants.ClassStatus;
-import htms.common.constants.SortBy;
-import htms.common.constants.SortDirection;
+import htms.api.request.ProfileUpdateRequest;
+import htms.api.response.*;
+import htms.common.constants.*;
 import htms.model.Class;
 import htms.model.*;
-import htms.repository.ClassApprovalRepository;
 import htms.repository.ClassRepository;
 import htms.service.*;
 import htms.util.ClassUtil;
@@ -35,10 +29,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-//@EnableAsync
 public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
-    private final ClassApprovalRepository classApprovalRepository;
     private final ModelMapper modelMapper;
     private final ClassUtil classUtil;
     private TraineeService traineeService;
@@ -98,7 +90,6 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     @Transactional(rollbackFor = {SQLException.class})
-//    @Async
     public ClassResponse createClass(ClassRequest request) {
         boolean hasOverlap = false;
         // Check the schedule of trainer
@@ -153,12 +144,12 @@ public class ClassServiceImpl implements ClassService {
         classRepository.save(clazz);
 
         // create class approval with PENDING status
-//        classApprovalService.create(
-//                ApprovalRequest.builder()
-//                        .comment("Lớp đang chờ duyệt")
-//                        .id(clazz.getId())
-//                        .build(),
-//                ClassApprovalStatus.PENDING);
+        classApprovalService.create(
+                ApprovalRequest.builder()
+                        .comment("Lớp đang chờ duyệt")
+                        .id(clazz.getId())
+                        .build(),
+                ClassApprovalStatus.PENDING);
 
         // Assign trainees to the class, create enrollment status PENDING, update profile status PENDING
         List<TraineeResponse> trainerResponses = new ArrayList<>();
@@ -167,29 +158,15 @@ public class ClassServiceImpl implements ClassService {
                     .classId(clazz.getId())
                     .traineeId(traineeId)
                     .build());
-//            UUID profileId = traineeService.getTrainee(traineeId).getProfile().getId();
-//            profileService.updateProfile(ProfileUpdateRequest.builder()
-//                    .id(profileId)
-//                    .status(ProfileStatus.PENDING)
-//                    .build());
             trainerResponses.add(TraineeResponse.builder().id(traineeId).build());
         });
 
-//        scheduleService.createSchedulesOfClass(
-//                clazz.getId(),
-//                clazz.getOverlappedScheduleOfTrainer().getId(),
-//                request.getRoomId(),
-//                request.getGeneralSchedule(), clazz.getStartDate(), clazz.getEndDate());
-
-        // Create attendances for the schedule
-//        attendanceService.createAttendancesOfClass(clazz.getId());
 
         ClassResponse response = modelMapper.map(clazz, ClassResponse.class);
         // Set list of trainees of a class
 //        response.setTrainees(traineeService.getTraineesByClassId(clazz.getId()));
         response.setTrainees(trainerResponses);
         return response;
-//        return CompletableFuture.completedFuture(response);
     }
 
     @Override
@@ -204,11 +181,7 @@ public class ClassServiceImpl implements ClassService {
         // todo: handle exceptions
         var clazz = classRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
-        var classApproval = classApprovalRepository
-                .getClassApprovalByClazzIdOrderByCreatedDateDesc(clazz.getId())
-                .orElseThrow(EntityNotFoundException::new);
         var response = modelMapper.map(clazz, ClassResponse.class);
-//        response.setStatus(classApproval.getStatus());
         // Get list of trainees in the class
         response.setTrainees(traineeService.getTraineesByClassId(id));
         return response;
@@ -243,12 +216,53 @@ public class ClassServiceImpl implements ClassService {
     public ClassApprovalResponse makeApproval(ApprovalRequest request, ClassApprovalStatus status) {
         var clazz = classRepository.findById(request.getId()).orElseThrow(EntityNotFoundException::new);
 
-        return classApprovalService.create(
-                ApprovalRequest.builder()
-                        .comment(request.getComment())
-                        .id(clazz.getId())
-                        .build(),
-                status);
+        switch (status) {
+            case APPROVE_FOR_PUBLISHING -> clazz.setStatus(ClassStatus.PENDING);
+            case APPROVE_FOR_OPENING -> {
+                clazz.setStatus(ClassStatus.OPENING);
+                List<EnrollmentResponse> enrollmentByClassIdAndStatus = enrollmentService.getEnrollmentByClassIdAndStatus(clazz.getId(), EnrollmentStatus.PENDING);
+                for (EnrollmentResponse byClassIdAndStatus : enrollmentByClassIdAndStatus) {
+                    var traineeId = byClassIdAndStatus.getEnrollmentIdTrainee().getId();
+                    // update enrollment status to APPROVE
+                    enrollmentService.update(clazz.getId(),
+                            traineeId,
+                            EnrollmentStatus.APPROVE,
+                            null);
+                    // update profile
+                    UUID profileId = traineeService.getTrainee(traineeId).getProfile().getId();
+                    profileService.updateProfile(ProfileUpdateRequest.builder()
+                            .id(profileId)
+                            .status(ProfileStatus.STUDYING)
+                            .build());
+                }
+
+                // Create schedule, find the suitable room
+                scheduleService.createSchedulesOfClass(
+                        clazz.getId(),
+                        clazz.getTrainer().getId(),
+                        UUID.fromString("b49d2b9c-d8a1-473d-bafe-2207f62a034b"),
+                        clazz.getGeneralSchedule(),
+                        clazz.getStartDate(),
+                        clazz.getEndDate());
+
+                // Create attendances for the schedule
+                attendanceService.createAttendancesOfClass(clazz.getId());
+            }
+            case REJECT_FOR_OPENING, REJECT_FOR_PUBLISHING -> {
+                clazz.setStatus(ClassStatus.REJECT);
+                List<EnrollmentResponse> enrollmentByClassIdAndStatus = enrollmentService.getEnrollmentByClassIdAndStatus(clazz.getId(), EnrollmentStatus.PENDING);
+                for (EnrollmentResponse byClassIdAndStatus : enrollmentByClassIdAndStatus) {
+                    var traineeId = byClassIdAndStatus.getEnrollmentIdTrainee().getId();
+                    // update enrollment status to REJECT
+                    enrollmentService.update(clazz.getId(),
+                            traineeId,
+                            EnrollmentStatus.REJECT,
+                            request.getComment());
+                }
+            }
+        }
+        classRepository.save(clazz);
+        return classApprovalService.create(request, status);
     }
 
     @Override
@@ -263,6 +277,16 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public List<ClassResponse> getClassesOfTrainer(UUID trainerId) {
         return classRepository.findAllByTrainer_Id(trainerId)
+                .orElse(List.of())
+                .parallelStream()
+                .map((element) -> modelMapper.map(element, ClassResponse.class))
+                .toList();
+    }
+
+    @Override
+    public List<ClassResponse> getClassByProgramId(UUID programId, ClassStatus status) {
+        return classRepository.findAllByProgram_IdAndStatusEquals(programId, status)
+                .orElse(List.of())
                 .parallelStream()
                 .map((element) -> modelMapper.map(element, ClassResponse.class))
                 .toList();

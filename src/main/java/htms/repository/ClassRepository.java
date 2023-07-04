@@ -1,5 +1,6 @@
 package htms.repository;
 
+import htms.common.constants.ClassStatus;
 import htms.model.Class;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -25,5 +26,9 @@ public interface ClassRepository extends JpaRepository<Class, UUID>, JpaSpecific
             """)
     Optional<List<Class>> findAllCurrentTakingClassesByTrainee(@Param("traineeId") UUID traineeId);
 
-    List<Class> findAllByTrainer_Id(UUID trainerId);
+    Optional<List<Class>> findAllByTrainer_Id(UUID trainerId);
+
+    Optional<List<Class>> findAllByProgram_IdAndStatusEquals(UUID programId, ClassStatus status);
+
+    Optional<List<Class>> findAllByCodeStartsWith(String codeStartsWith);
 }

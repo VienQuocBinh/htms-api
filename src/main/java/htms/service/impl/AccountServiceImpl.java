@@ -6,15 +6,14 @@ import htms.model.Account;
 import htms.model.Role;
 import htms.repository.AccountRepository;
 import htms.service.AccountService;
-import htms.util.AccountUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,14 +21,18 @@ import java.util.UUID;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final ModelMapper modelMapper;
-    @Value("${account.password.length}")
-    private String passwordLength;
+
 
     @Override
     public AccountResponse getAccountById(UUID id) {
         // TODO: implement exception handler
         return modelMapper.map(accountRepository.findById(id)
                 .orElseThrow(), AccountResponse.class);
+    }
+
+    @Override
+    public Optional<Account> getAccountOptionalByEmail(String email) {
+        return accountRepository.findByEmail(email);
     }
 
     @Transactional
@@ -54,8 +57,8 @@ public class AccountServiceImpl implements AccountService {
         List<Account> list = new ArrayList<>();
         for (AccountRequest accountRequest : request) {
             list.add(Account.builder()
-                    .email(accountRequest.getEmail())
-                    .password(AccountUtil.generatePassword(Integer.parseInt(passwordLength)))
+                    .email(accountRequest.getGeneratedEmail())
+                    .password(accountRequest.getGeneratedPassword())
                     .title(accountRequest.getTitle())
                     .createdBy(UUID.randomUUID())
                     .role(Role.builder()

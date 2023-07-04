@@ -4,15 +4,17 @@ import htms.api.domain.CreateClassFormData;
 import htms.api.domain.FilterCondition;
 import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
-import htms.api.response.*;
+import htms.api.response.ClassApprovalResponse;
+import htms.api.response.ClassResponse;
+import htms.api.response.ClassesApprovalResponse;
+import htms.api.response.PageResponse;
 import htms.common.constants.ClassApprovalStatus;
-import htms.common.constants.EnrollmentStatus;
+import htms.common.constants.ClassStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
 import htms.model.Class;
 import htms.repository.ClassRepository;
 import htms.service.ClassService;
-import htms.service.EnrollmentService;
 import htms.service.impl.FilterBuilderService;
 import htms.service.impl.GenericFilterCriteriaBuilder;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +39,6 @@ public class ClassController {
     private final FilterBuilderService filterBuilderService;
     private final ClassRepository classRepository;
     private final ModelMapper modelMapper;
-    private final EnrollmentService enrollmentService;
 
     @GetMapping
     public ResponseEntity<List<ClassResponse>> getClasses() {
@@ -100,14 +101,28 @@ public class ClassController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/approve")
-    public ResponseEntity<ClassApprovalResponse> approveClassRequest(@Valid @RequestBody ApprovalRequest request) {
-        return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.APPROVE));
+    @PostMapping("/approve-for-publishing")
+    @Operation(summary = "Approve in first time about the class content")
+    public ResponseEntity<ClassApprovalResponse> approvePublishClass(@RequestBody ApprovalRequest request) {
+        return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.APPROVE_FOR_PUBLISHING));
     }
 
-    @PostMapping("/reject")
+    @PostMapping("/reject-for-publishing")
+    @Operation(summary = "Reject in first time about the class content")
+    public ResponseEntity<ClassApprovalResponse> rejectPublishClass(@RequestBody ApprovalRequest request) {
+        return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.REJECT_FOR_PUBLISHING));
+    }
+
+    @PostMapping("/approve-for-opening")
+    @Operation(summary = "Approve in second time to open the class")
+    public ResponseEntity<ClassApprovalResponse> approveClassRequest(@Valid @RequestBody ApprovalRequest request) {
+        return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.APPROVE_FOR_OPENING));
+    }
+
+    @PostMapping("/reject-for-opening")
+    @Operation(summary = "Reject in second time to close the class")
     public ResponseEntity<ClassApprovalResponse> rejectClassRequest(@Valid @RequestBody ApprovalRequest request) {
-        return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.REJECT));
+        return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.REJECT_FOR_OPENING));
     }
 
     @GetMapping("/form")
@@ -116,8 +131,12 @@ public class ClassController {
         return ResponseEntity.ok(classService.initCreateClassFormData());
     }
 
-    @GetMapping("/{id}/enrollment")
-    public ResponseEntity<List<EnrollmentResponse>> getClassEnrollments(@PathVariable UUID id) {
-        return ResponseEntity.ok(enrollmentService.getEnrollmentByClassIdAndStatus(id, EnrollmentStatus.PENDING));
+
+    @GetMapping("/program/{id}")
+    @Operation(summary = "Get pending classes related to a program to enrol")
+    public ResponseEntity<List<ClassResponse>> getClassByProgramId(
+            @PathVariable UUID id,
+            @Valid @RequestParam(required = false, defaultValue = "PENDING") ClassStatus status) {
+        return ResponseEntity.ok(classService.getClassByProgramId(id, status));
     }
 }

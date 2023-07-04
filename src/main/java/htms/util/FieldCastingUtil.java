@@ -34,7 +34,8 @@ public class FieldCastingUtil {
         } else if (fieldType.equals(ClassStatus.class)) {
             return switch (stringValue.toUpperCase()) {
                 case "PLANNING" -> ClassStatus.PLANNING;
-                case "REJECTED" -> ClassStatus.CLOSED;
+                case "CLOSED" -> ClassStatus.CLOSED;
+                case "REJECT" -> ClassStatus.REJECT;
                 case "ACCEPTED" -> ClassStatus.OPENING;
                 case "PENDING" -> ClassStatus.PENDING;
                 default ->
@@ -43,8 +44,11 @@ public class FieldCastingUtil {
             };
         } else if (fieldType.equals(ClassApprovalStatus.class)) {
             return switch (stringValue.toUpperCase()) {
-                case "REJECT" -> ClassApprovalStatus.REJECT;
-                case "APPROVE" -> ClassApprovalStatus.APPROVE;
+                case "PENDING" -> ClassApprovalStatus.PENDING;
+                case "REJECT_FOR_PUBLISHING" -> ClassApprovalStatus.REJECT_FOR_PUBLISHING;
+                case "APPROVE_FOR_PUBLISHING" -> ClassApprovalStatus.APPROVE_FOR_PUBLISHING;
+                case "REJECT_FOR_OPENING" -> ClassApprovalStatus.REJECT_FOR_OPENING;
+                case "APPROVE_FOR_OPENING" -> ClassApprovalStatus.APPROVE_FOR_OPENING;
                 default ->
                     // todo: handle exceptions
                         throw new IllegalArgumentException("Unknown approval status " + stringValue);

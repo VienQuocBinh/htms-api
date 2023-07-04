@@ -1,5 +1,6 @@
 package htms.service.impl;
 
+import htms.api.domain.EmailDetails;
 import htms.api.domain.OverlappedSchedule;
 import htms.api.request.AccountRequest;
 import htms.api.request.ProfileRequest;
@@ -16,16 +17,15 @@ import htms.model.Profile;
 import htms.model.Trainee;
 import htms.repository.ClassRepository;
 import htms.repository.TraineeRepository;
-import htms.service.AccountService;
-import htms.service.ProfileService;
-import htms.service.ReadFileService;
-import htms.service.TraineeService;
+import htms.service.*;
 import htms.util.AccountUtil;
 import htms.util.ScheduleUtil;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -45,8 +45,11 @@ public class TraineeServiceImpl implements TraineeService {
     private final ModelMapper mapper;
     private final ReadFileService readFileService;
     private final ClassRepository classRepository;
+    private final EmailService emailService;
     private AccountService accountService;
     private ProfileService profileService;
+    @Value("${account.password.length}")
+    private String passwordLength;
 
     @Autowired
     public void setAccountService(AccountService accountService) {
@@ -116,21 +119,28 @@ public class TraineeServiceImpl implements TraineeService {
     @Transactional(rollbackOn = {SQLException.class})
     public List<TraineeResponse> saveTraineesFromFile(MultipartFile file) {
         List<String[]> rows = readFileService.readDataFromCsv(file);
-        List<AccountRequest> accountRequests = new ArrayList<>();
-        List<ProfileRequest> profileRequests = new ArrayList<>();
-        List<Trainee> trainees = new ArrayList<>();
+        List<AccountRequest> accountRequests = new ArrayList<>(); // new accounts to be added
+        List<ProfileRequest> profileRequests = new ArrayList<>(); // new profiles to be added
+        List<Trainee> trainees = new ArrayList<>(); // new trainees to be added
         // Read all rows from the file
-        // todo: generate email addresses (name+code@gmail.com. eg. binhvqse16@gmail.com)
         for (String[] row : rows) {
-            String generatedEmail = AccountUtil.generateEmail(
-                    row[TraineeFileCellIndex.NAME.getValue()],
-                    row[TraineeFileCellIndex.CODE.getValue()]);
+            String code = row[TraineeFileCellIndex.CODE.getValue()];
+            String name = row[TraineeFileCellIndex.NAME.getValue()];
+            String email = row[TraineeFileCellIndex.EMAIL.getValue()];
+            String phoneNumber = row[TraineeFileCellIndex.PHONE_NUMBER.getValue()];
+
+            String generatedEmail = AccountUtil.generateEmail(name, code);
+            // Check exist account through email
+            var account = accountService.getAccountOptionalByEmail(generatedEmail);
+            if (account.isPresent())
+                continue;
 
             accountRequests.add(AccountRequest.builder()
-//                    .email(row[TraineeFileCellIndex.EMAIL.getValue()])
-                    .email(generatedEmail)
+                    .email(email)
                     .title("BS") // Title: BS
                     .roleId(3L) // role Trainee
+                    .generatedPassword(AccountUtil.generatePassword(Integer.parseInt(passwordLength)))
+                    .generatedEmail(generatedEmail)
                     .build());
             profileRequests.add(ProfileRequest.builder()
                     .status(ProfileStatus.PENDING)
@@ -138,14 +148,16 @@ public class TraineeServiceImpl implements TraineeService {
             );
             // todo: assign create by id
             trainees.add(Trainee.builder()
-                    .code(row[TraineeFileCellIndex.CODE.getValue()])
-                    .name(row[TraineeFileCellIndex.NAME.getValue()])
-                    .phone(row[TraineeFileCellIndex.PHONE_NUMBER.getValue()])
+                    .code(code)
+                    .name(name)
+                    .phone(phoneNumber)
                     .createdBy(UUID.randomUUID())
                     .build());
         }
         // Create Account for each Trainee
         List<AccountResponse> accounts = accountService.createAccounts(accountRequests);
+
+
         // Create Profile for each Trainee
         List<ProfileResponse> profiles = profileService.createProfiles(profileRequests);
         // Set Profile and Account info for each Trainee
@@ -163,6 +175,22 @@ public class TraineeServiceImpl implements TraineeService {
         }
         // Create trainee
         traineeRepository.saveAll(trainees);
+        // Send email about new account info to new trainee
+        for (AccountRequest accountRequest : accountRequests) {
+            emailService.sendSimpleEmail(EmailDetails.builder()
+                    .recipient(accountRequest.getEmail())
+                    .subject("HTMS Account")
+                    .body("<p>Hello,</p>" +
+                            "<br/>" +
+                            "<p>This is your account information, you can use to access HTMS.</p>" +
+                            "<p><strong>Email</strong>: " + accountRequest.getGeneratedEmail() + "</p>" +
+                            "<p><strong>Password</strong>: " + accountRequest.getGeneratedPassword() + "</p>" +
+                            "<br/>" +
+                            "<p>Sincerely.</p>" +
+                            "<p>From HTMS automation mailing system.</p>" +
+                            "<p><em>Please do not reply to this email.</em></p>"
+                    ).build());
+        }
         return trainees
                 .parallelStream()
                 .map((element) -> mapper.map(
@@ -186,5 +214,11 @@ public class TraineeServiceImpl implements TraineeService {
                 generalSchedule,
                 traineeGeneralSchedule.toString(),
                 id);
+    }
+
+    @Override
+    public TraineeResponse getTrainee(UUID id) {
+        return mapper.map(traineeRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new), TraineeResponse.class);
     }
 }

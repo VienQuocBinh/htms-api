@@ -7,6 +7,7 @@ import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;
 import htms.api.response.ClassesApprovalResponse;
 import htms.common.constants.ClassApprovalStatus;
+import htms.common.constants.ClassStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
 
@@ -39,4 +40,6 @@ public interface ClassService {
     CreateClassFormData initCreateClassFormData();
 
     List<ClassResponse> getClassesOfTrainer(UUID trainerId);
+
+    List<ClassResponse> getClassByProgramId(UUID programId, ClassStatus status);
 }

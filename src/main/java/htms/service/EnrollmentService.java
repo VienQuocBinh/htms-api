@@ -17,4 +17,6 @@ public interface EnrollmentService {
      * @return {@link EnrollmentResponse}
      */
     EnrollmentResponse create(EnrollmentRequest request);
+
+    EnrollmentResponse update(UUID classId, UUID traineeId, EnrollmentStatus status, String cancelReason);
 }

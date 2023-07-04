@@ -23,4 +23,6 @@ public interface TraineeService {
     List<TraineeResponse> saveTraineesFromFile(MultipartFile file);
 
     OverlappedSchedule getOverlappedScheduleOfTrainee(UUID id, String generalSchedule);
+
+    TraineeResponse getTrainee(UUID id);
 }
