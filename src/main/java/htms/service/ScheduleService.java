@@ -12,4 +12,6 @@ public interface ScheduleService {
     List<ScheduleResponse> getScheduleOfClass(UUID id);
 
     List<ScheduleResponse> getScheduleOfTrainer(UUID id);
+
+    List<ScheduleResponse> getScheduleOfTrainee(UUID id);
 }

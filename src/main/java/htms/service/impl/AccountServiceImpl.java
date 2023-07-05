@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,11 +22,17 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final ModelMapper modelMapper;
 
+
     @Override
     public AccountResponse getAccountById(UUID id) {
         // TODO: implement exception handler
         return modelMapper.map(accountRepository.findById(id)
                 .orElseThrow(), AccountResponse.class);
+    }
+
+    @Override
+    public Optional<Account> getAccountOptionalByEmail(String email) {
+        return accountRepository.findByEmail(email);
     }
 
     @Transactional
@@ -50,7 +57,8 @@ public class AccountServiceImpl implements AccountService {
         List<Account> list = new ArrayList<>();
         for (AccountRequest accountRequest : request) {
             list.add(Account.builder()
-                    .email(accountRequest.getEmail())
+                    .email(accountRequest.getGeneratedEmail())
+                    .password(accountRequest.getGeneratedPassword())
                     .title(accountRequest.getTitle())
                     .createdBy(UUID.randomUUID())
                     .role(Role.builder()
@@ -58,8 +66,9 @@ public class AccountServiceImpl implements AccountService {
                             .build())
                     .build());
         }
+
         return accountRepository.saveAll(list)
-                .stream()
+                .parallelStream()
                 .map((element) -> modelMapper.map(
                         element,
                         AccountResponse.class)).toList();

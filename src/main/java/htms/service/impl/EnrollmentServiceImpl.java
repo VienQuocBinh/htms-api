@@ -9,6 +9,7 @@ import htms.model.Trainee;
 import htms.model.embeddedkey.EnrollmentId;
 import htms.repository.EnrollmentRepository;
 import htms.service.EnrollmentService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,26 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .map(enrollmentRepository.save(Enrollment.builder()
                         .id(id)
                         .enrollmentDate(new Date())
-                        .status(EnrollmentStatus.APPROVE)
+                        .status(EnrollmentStatus.PENDING)
                         .build()), EnrollmentResponse.class);
+    }
+
+    @Override
+    public EnrollmentResponse update(UUID classId, UUID traineeId, EnrollmentStatus status, String cancelReason) {
+        var id = EnrollmentId.builder()
+                .clazz(Class.builder()
+                        .id(classId)
+                        .build())
+                .trainee(Trainee.builder()
+                        .id(traineeId)
+                        .build())
+                .build();
+        // todo: handle exception
+        var enrollment = enrollmentRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+        enrollment.setStatus(status);
+        enrollment.setCancelReason(cancelReason);
+        enrollmentRepository.save(enrollment);
+        return modelMapper.map(enrollment, EnrollmentResponse.class);
     }
 }

@@ -28,6 +28,7 @@ public class ClassApprovalServiceImpl implements ClassApprovalService {
     public ClassApprovalResponse create(ApprovalRequest request, ClassApprovalStatus status) {
         var currentLatestId = classApprovalRepository.getLatestId();
         var classApproval = ClassApproval.builder()
+                .comment(request.getComment())
                 .status(status)
                 .clazz(Class.builder()
                         .id(request.getId())

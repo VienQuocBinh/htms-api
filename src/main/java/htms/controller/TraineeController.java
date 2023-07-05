@@ -20,7 +20,7 @@ public class TraineeController {
     private final TraineeService traineeService;
 
     @GetMapping("/class/{id}")
-    public ResponseEntity<List<TraineeResponse>> getTraineeByClass(@PathVariable UUID id) {
+    public ResponseEntity<List<TraineeResponse>> getTraineesByClass(@PathVariable UUID id) {
         return ResponseEntity.ok(traineeService.getTraineesByClassId(id));
     }
 

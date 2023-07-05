@@ -6,21 +6,34 @@ spring:
     password: '123456'
   jpa:
     properties:
-      javax:
-        persistence:
-          schema-generation:
-            create-source: metadata
-            scripts:
-              action: update
-              create-target: update.sql
+      #      javax:
+      #        persistence:
+      #          schema-generation:
+      #            create-source: metadata
+      #            scripts:
+      #              action: update
+      #              create-target: update.sql
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      #disable this to run flyway. If need to change anything to database, please create new flyway script to run
-      ddl-auto: none
+      ddl-auto: create
     show-sql: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: learning.fpt.edu@gmail.com
+    password: diemoznaoiphyzwb
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 server:
   port: '8080'
   servlet:
     context-path: /htms
+account:
+  password:
+    length: 10

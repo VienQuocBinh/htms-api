@@ -19,6 +19,7 @@ public class ProgramResponse {
     private String code;
     private Boolean isActive;
     private DepartmentResponse department;
+    // Additional properties
     private TrainerResponse trainer;
     private List<TopicResponse> topics;
 }

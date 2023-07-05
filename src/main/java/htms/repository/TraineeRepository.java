@@ -14,7 +14,8 @@ import java.util.UUID;
 @Repository
 public interface TraineeRepository extends JpaRepository<Trainee, UUID>, JpaSpecificationExecutor<Trainee> {
     /**
-     * Get all trainees in a given class base on the enrollment which is not cancelled
+     * Get all trainees in a given class base on the enrollment which
+     * status is APPROVE and not cancelled
      *
      * @param classId {@link UUID}
      * @return {@code Optional<List<Trainee>>}

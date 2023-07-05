@@ -25,6 +25,7 @@ public class Account extends BaseEntityAuditing {
     private UUID id;
     @Email
     private String email;
+    private String password;
     @NotNull
     private String title;
 
@@ -49,5 +50,6 @@ public class Account extends BaseEntityAuditing {
         this.role = builder.role;
         this.trainee = builder.trainee;
         this.trainer = builder.trainer;
+        this.password = builder.password;
     }
 }

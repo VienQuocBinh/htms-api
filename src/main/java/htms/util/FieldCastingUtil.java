@@ -33,18 +33,22 @@ public class FieldCastingUtil {
             return Boolean.parseBoolean(stringValue);
         } else if (fieldType.equals(ClassStatus.class)) {
             return switch (stringValue.toUpperCase()) {
-                case "REJECTED" -> ClassStatus.REJECTED;
-                case "ACCEPTED" -> ClassStatus.ACCEPTED;
+                case "PLANNING" -> ClassStatus.PLANNING;
+                case "CLOSED" -> ClassStatus.CLOSED;
+                case "REJECT" -> ClassStatus.REJECT;
+                case "OPENING" -> ClassStatus.OPENING;
                 case "PENDING" -> ClassStatus.PENDING;
                 default ->
                     // todo: handle exceptions
-                        throw new IllegalArgumentException("Unknown approval status " + stringValue);
+                        throw new IllegalArgumentException("Unknown class status " + stringValue);
             };
         } else if (fieldType.equals(ClassApprovalStatus.class)) {
             return switch (stringValue.toUpperCase()) {
-                case "REJECT" -> ClassApprovalStatus.REJECT;
-                case "APPROVE" -> ClassApprovalStatus.APPROVE;
                 case "PENDING" -> ClassApprovalStatus.PENDING;
+                case "REJECT_FOR_PUBLISHING" -> ClassApprovalStatus.REJECT_FOR_PUBLISHING;
+                case "APPROVE_FOR_PUBLISHING" -> ClassApprovalStatus.APPROVE_FOR_PUBLISHING;
+                case "REJECT_FOR_OPENING" -> ClassApprovalStatus.REJECT_FOR_OPENING;
+                case "APPROVE_FOR_OPENING" -> ClassApprovalStatus.APPROVE_FOR_OPENING;
                 default ->
                     // todo: handle exceptions
                         throw new IllegalArgumentException("Unknown approval status " + stringValue);
@@ -57,7 +61,7 @@ public class FieldCastingUtil {
                 case "PENDING" -> ProfileStatus.PENDING;
                 default ->
                     // todo: handle exceptions
-                        throw new IllegalArgumentException("Unknown approval status " + stringValue);
+                        throw new IllegalArgumentException("Unknown profile status " + stringValue);
             };
         } else if (fieldType.equals(EnrollmentStatus.class)) {
             return switch (stringValue.toUpperCase()) {
@@ -66,7 +70,7 @@ public class FieldCastingUtil {
                 case "PENDING" -> EnrollmentStatus.PENDING;
                 default ->
                     // todo: handle exceptions
-                        throw new IllegalArgumentException("Unknown approval status " + stringValue);
+                        throw new IllegalArgumentException("Unknown enrollment status " + stringValue);
             };
         } else {
             // Handle unsupported field types or throw an exception

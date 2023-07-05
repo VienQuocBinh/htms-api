@@ -22,6 +22,8 @@ public class ClassRequest {
     private UUID programId;
     @org.hibernate.validator.constraints.UUID
     private UUID cycleId;
+    //    @org.hibernate.validator.constraints.UUID
+//    private UUID roomId;
     private Integer quantity;
     private Integer minQuantity;
     private Integer maxQuantity;
