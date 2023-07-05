@@ -36,11 +36,11 @@ public class FieldCastingUtil {
                 case "PLANNING" -> ClassStatus.PLANNING;
                 case "CLOSED" -> ClassStatus.CLOSED;
                 case "REJECT" -> ClassStatus.REJECT;
-                case "ACCEPTED" -> ClassStatus.OPENING;
+                case "OPENING" -> ClassStatus.OPENING;
                 case "PENDING" -> ClassStatus.PENDING;
                 default ->
                     // todo: handle exceptions
-                        throw new IllegalArgumentException("Unknown approval status " + stringValue);
+                        throw new IllegalArgumentException("Unknown class status " + stringValue);
             };
         } else if (fieldType.equals(ClassApprovalStatus.class)) {
             return switch (stringValue.toUpperCase()) {
@@ -61,7 +61,7 @@ public class FieldCastingUtil {
                 case "PENDING" -> ProfileStatus.PENDING;
                 default ->
                     // todo: handle exceptions
-                        throw new IllegalArgumentException("Unknown approval status " + stringValue);
+                        throw new IllegalArgumentException("Unknown profile status " + stringValue);
             };
         } else if (fieldType.equals(EnrollmentStatus.class)) {
             return switch (stringValue.toUpperCase()) {
@@ -70,7 +70,7 @@ public class FieldCastingUtil {
                 case "PENDING" -> EnrollmentStatus.PENDING;
                 default ->
                     // todo: handle exceptions
-                        throw new IllegalArgumentException("Unknown approval status " + stringValue);
+                        throw new IllegalArgumentException("Unknown enrollment status " + stringValue);
             };
         } else {
             // Handle unsupported field types or throw an exception
