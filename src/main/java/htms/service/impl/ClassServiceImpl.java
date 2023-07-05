@@ -100,6 +100,9 @@ public class ClassServiceImpl implements ClassService {
         // Check the schedule of trainees
         List<OverlappedSchedule> traineeOverlappedSchedules = new ArrayList<>();
         if (!overlappedScheduleOfTrainer.getOverlappedDayTimes().isEmpty()) {
+            var trainer = trainerService.getTrainer(request.getTrainerId());
+            overlappedScheduleOfTrainer.setName(trainer.getName());
+            overlappedScheduleOfTrainer.setCode(trainer.getCode());
             traineeOverlappedSchedules.add(overlappedScheduleOfTrainer);
             hasOverlap = true;
         }
@@ -107,6 +110,9 @@ public class ClassServiceImpl implements ClassService {
         for (UUID traineeId : request.getTraineeIds()) {
             OverlappedSchedule overlappedScheduleOfTrainee = traineeService.getOverlappedScheduleOfTrainee(traineeId, request.getGeneralSchedule());
             if (!overlappedScheduleOfTrainee.getOverlappedDayTimes().isEmpty()) {
+                var trainee = traineeService.getTrainee(traineeId);
+                overlappedScheduleOfTrainee.setName(trainee.getName());
+                overlappedScheduleOfTrainee.setCode(trainee.getCode());
                 traineeOverlappedSchedules.add(overlappedScheduleOfTrainee);
                 hasOverlap = true;
             }

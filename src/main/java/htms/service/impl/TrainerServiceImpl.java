@@ -10,6 +10,7 @@ import htms.service.AccountService;
 import htms.service.ClassService;
 import htms.service.TrainerService;
 import htms.util.ScheduleUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,12 @@ public class TrainerServiceImpl implements TrainerService {
                 .stream()
                 .map(element -> mapper.map(element, TrainerResponse.class))
                 .toList();
+    }
+
+    @Override
+    public TrainerResponse getTrainer(UUID id) {
+        return mapper.map(trainerRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new), TrainerResponse.class);
     }
 
     @Override

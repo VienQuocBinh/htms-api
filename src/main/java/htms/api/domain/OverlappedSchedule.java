@@ -12,5 +12,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OverlappedSchedule {
     private UUID id; // trainer,trainee
+    private String name;
+    private String code;
     private List<String> overlappedDayTimes;
 }

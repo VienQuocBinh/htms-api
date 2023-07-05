@@ -12,5 +12,7 @@ public interface TrainerService {
 
     List<TrainerResponse> getTrainers();
 
+    TrainerResponse getTrainer(UUID id);
+
     OverlappedSchedule getOverlappedScheduleOfTrainer(UUID id, String generalSchedule);
 }
