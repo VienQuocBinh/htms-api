@@ -58,9 +58,9 @@ public class ProgramServiceImpl implements ProgramService {
     public List<ProgramResponse> getProgramsTheTraineeIsTaking(UUID traineeId) {
         var classes = classRepository.findAllCurrentTakingClassesByTrainee(traineeId).orElse(Collections.emptyList());
         return classes.stream().map(c -> {
-            var model = mapper.map(c.getProgram(), ProgramResponse.class);
-            model.setTrainer(mapper.map(c.getTrainer(), TrainerResponse.class));
-            return model;
+            var program = mapper.map(c.getProgram(), ProgramResponse.class);
+            program.setTrainer(mapper.map(c.getTrainer(), TrainerResponse.class));
+            return program;
         }).toList();
     }
 

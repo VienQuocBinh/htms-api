@@ -1,6 +1,7 @@
 package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.Date;
@@ -20,5 +21,6 @@ public class ScheduleResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Bangkok")
     private Date endTime;
     private RoomResponse room;
+    @JsonProperty("class")
     private ClassResponse clazz;
 }

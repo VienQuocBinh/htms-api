@@ -22,7 +22,7 @@ public interface ClassRepository extends JpaRepository<Class, UUID>, JpaSpecific
                 select c from
                 Trainee t join Enrollment e on t.id  = e.id.trainee.id\s
                 		  join Class c on c.id = e.id.clazz.id
-                where e.id.trainee.id = :traineeId and e.status = 'APPROVE'
+                where e.id.trainee.id = :traineeId and e.status = 'APPROVE' and c.status = 'OPENING'
             """)
     Optional<List<Class>> findAllCurrentTakingClassesByTrainee(@Param("traineeId") UUID traineeId);
 

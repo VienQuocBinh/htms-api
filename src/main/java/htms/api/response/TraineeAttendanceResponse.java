@@ -1,8 +1,8 @@
 package htms.api.response;
 
-import htms.common.constants.AttendanceStatus;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -11,7 +11,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TraineeAttendanceResponse {
-    private UUID id;
-    private AttendanceStatus status;
-    private ScheduleResponse schedule;
+    private UUID programId;
+    private String programCode;
+    private String programName;
+    // Class details
+    private UUID classId;
+    private String className;
+    private String classCode;
+    // Attendance detail
+    private List<AttendanceDetail> attendances;
 }

@@ -10,6 +10,7 @@ import htms.common.constants.ClassApprovalStatus;
 import htms.common.constants.ClassStatus;
 import htms.common.constants.SortBy;
 import htms.common.constants.SortDirection;
+import htms.model.Class;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,4 +43,6 @@ public interface ClassService {
     List<ClassResponse> getClassesOfTrainer(UUID trainerId);
 
     List<ClassResponse> getClassByProgramId(UUID programId, ClassStatus status);
+
+    List<Class> getAllCurrentTakingClassesByTrainee(UUID id);
 }

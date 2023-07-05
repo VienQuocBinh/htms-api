@@ -15,7 +15,6 @@ import htms.model.Account;
 import htms.model.Class;
 import htms.model.Profile;
 import htms.model.Trainee;
-import htms.repository.ClassRepository;
 import htms.repository.TraineeRepository;
 import htms.service.*;
 import htms.util.AccountUtil;
@@ -26,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -44,10 +44,10 @@ public class TraineeServiceImpl implements TraineeService {
     private final FilterBuilderService filterBuilderService;
     private final ModelMapper mapper;
     private final ReadFileService readFileService;
-    private final ClassRepository classRepository;
     private final EmailService emailService;
     private AccountService accountService;
     private ProfileService profileService;
+    private ClassService classService;
     @Value("${account.password.length}")
     private String passwordLength;
 
@@ -59,6 +59,11 @@ public class TraineeServiceImpl implements TraineeService {
     @Autowired
     public void setProfileService(ProfileService profileService) {
         this.profileService = profileService;
+    }
+
+    @Autowired
+    public void setClassService(@Lazy ClassService classService) {
+        this.classService = classService;
     }
 
     @Override
@@ -203,8 +208,7 @@ public class TraineeServiceImpl implements TraineeService {
     public OverlappedSchedule getOverlappedScheduleOfTrainee(UUID id, String generalSchedule) {
         StringBuilder traineeGeneralSchedule = new StringBuilder();
         // Get all taking classes
-        List<Class> allCurrentTakingClassesByTrainee = classRepository.findAllCurrentTakingClassesByTrainee(id)
-                .orElse(List.of());
+        List<Class> allCurrentTakingClassesByTrainee = classService.getAllCurrentTakingClassesByTrainee(id);
         // Get general schedules
         for (Class aClass : allCurrentTakingClassesByTrainee) {
             traineeGeneralSchedule.append(aClass.getGeneralSchedule());

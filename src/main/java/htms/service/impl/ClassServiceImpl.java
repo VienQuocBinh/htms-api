@@ -291,4 +291,10 @@ public class ClassServiceImpl implements ClassService {
                 .map((element) -> modelMapper.map(element, ClassResponse.class))
                 .toList();
     }
+
+    @Override
+    public List<Class> getAllCurrentTakingClassesByTrainee(UUID id) {
+        return classRepository.findAllCurrentTakingClassesByTrainee(id)
+                .orElse(List.of());
+    }
 }

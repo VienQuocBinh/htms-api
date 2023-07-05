@@ -1,7 +1,6 @@
 package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import htms.api.domain.OverlappedSchedule;
 import htms.common.constants.ClassStatus;
 import lombok.*;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClassResponse {
     private UUID id;
     private String name;
@@ -37,6 +36,5 @@ public class ClassResponse {
     private Date endDate;
     // Additional properties
     private List<TraineeResponse> trainees;
-    //    private ClassApprovalStatus status;
     private List<OverlappedSchedule> overlappedSchedules;
 }

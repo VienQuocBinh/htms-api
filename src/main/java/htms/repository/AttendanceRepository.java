@@ -21,5 +21,13 @@ public interface AttendanceRepository extends JpaRepository<Attendance, UUID> {
             """)
     Optional<List<Attendance>> findAllByClassId(@Param("classId") UUID classId);
 
-    Optional<List<Attendance>> findAllByTrainee_Id(UUID traineeId);
+    @Query("""
+            select a from Attendance a
+                        join Schedule s on s.id = a.schedule.id
+                        join Class c on c.id = s.clazz.id
+                        where c.id = :classId and a.trainee.id = :traineeId
+                        and c.status = 'OPENING'
+            """)
+    Optional<List<Attendance>> findAllByTraineeIdAndClassId(@Param("traineeId") UUID traineeId,
+                                                            @Param("classId") UUID classId);
 }
