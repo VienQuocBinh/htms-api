@@ -4,6 +4,7 @@ import htms.api.response.ScheduleResponse;
 import htms.model.Schedule;
 import htms.repository.ScheduleRepository;
 import htms.service.ScheduleService;
+import htms.service.SyllabusService;
 import htms.util.ScheduleUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,16 +21,18 @@ import java.util.UUID;
 public class ScheduleServiceImpl implements ScheduleService {
     private final ModelMapper modelMapper;
     private final ScheduleRepository scheduleRepository;
+    private final SyllabusService syllabusService;
 
     @Override
-    public void createSchedulesOfClass(UUID classId, UUID trainerId, UUID roomId, String generalSchedule, Date startDate, Date endDate) {
+    public void createSchedulesOfClass(UUID classId, UUID programId, UUID trainerId, UUID roomId, Date startDate, Date endDate, String generalSchedule) {
         LocalDate start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         int day = start.getDayOfMonth();
         int month = start.getMonthValue();
         int year = start.getYear();
         LocalDate startLocalDate = LocalDate.of(year, month, day);
-        // todo: get number of slots from syllabus
-        int numberOfSlots = 30;
+        // Get number of slots from syllabus
+        var syllabus = syllabusService.getSyllabusByProgramId(programId);
+        int numberOfSlots = syllabus.getTotalSessions();
 
         // Todo: create by uuid
         List<Schedule> schedules = ScheduleUtil.createSchedules(classId, trainerId, roomId, generalSchedule, startLocalDate, numberOfSlots);

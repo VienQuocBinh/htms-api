@@ -245,11 +245,11 @@ public class ClassServiceImpl implements ClassService {
                 // Create schedule, find the suitable room
                 scheduleService.createSchedulesOfClass(
                         clazz.getId(),
+                        clazz.getProgram().getId(),
                         clazz.getTrainer().getId(),
                         UUID.fromString("b49d2b9c-d8a1-473d-bafe-2207f62a034b"),
-                        clazz.getGeneralSchedule(),
                         clazz.getStartDate(),
-                        clazz.getEndDate());
+                        clazz.getEndDate(), clazz.getGeneralSchedule());
 
                 // Create attendances for the schedule
                 attendanceService.createAttendancesOfClass(clazz.getId());
