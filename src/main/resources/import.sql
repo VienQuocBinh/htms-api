@@ -98,6 +98,7 @@ INSERT INTO public."module" (module_no, id, syllabus_id, description, link) VALU
 
 INSERT INTO public."session" (id, session_no, module_id) VALUES('a3b34ec9-2c49-4439-8ef5-b11b7e37eb5f'::uuid, 1, '47085d6f-0df8-432d-993a-00c3fd870c5c'::uuid);
 INSERT INTO public."session" (id, session_no, module_id) VALUES('2fdfebaf-560d-4623-89b9-56be33dfa840'::uuid, 2, '47085d6f-0df8-432d-993a-00c3fd870c5c'::uuid);
+INSERT INTO public."session" (id, session_no, module_id) VALUES('5c634796-638d-4aae-bfb4-deb08f816766'::uuid, 3, '9966fd86-68e4-418b-b488-873db371419a'::uuid);
 
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 1, 1, 'a3b34ec9-2c49-4439-8ef5-b11b7e37eb5f'::uuid, NULL, 'Giới thiệu môn học');
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 2, 2, 'a3b34ec9-2c49-4439-8ef5-b11b7e37eb5f'::uuid, 'Học viên nắm kiến thức', 'Bài 1: Có kiến thức khoa học cơ bản, y sinh học cơ sở làm nền tảng cho y học lâm ');
@@ -109,9 +110,13 @@ INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name")
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(3, 8, 8, '2fdfebaf-560d-4623-89b9-56be33dfa840'::uuid, 'Học viên nắm kiến thức', 'Bài 6: Phân tích những nguyên tắc kiểm soát nhiễm khuẩn trong hành nghề RHM');
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(2, 9, 9, '2fdfebaf-560d-4623-89b9-56be33dfa840'::uuid, 'Học viên nắm kiến thức', 'Bài 7: Giải thích được cơ chế đau ở miệng và vùng mặt, kiểm soát đau và lo âu trong điều trị răng hàm mặt (K1.');
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 10, 10, '2fdfebaf-560d-4623-89b9-56be33dfa840'::uuid, 'Học viên nắm kiến thức', 'Bài 8: Giải thích được công dụng và tác hại của bức xạ ion hoá lên mô sống.');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 11, 11, '5c634796-638d-4aae-bfb4-deb08f816766'::uuid, 'Học viên nắm kiến thức', 'Bài 9: Liệt kê được những chỉ định, nguyên tắc và kỹ thuật sinh thiết, các phương pháp chẩn đoán tế bào học và mô học mô mềm và mô cứng đơn giản (K1)');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 12, 12, '5c634796-638d-4aae-bfb4-deb08f816766'::uuid, 'Học viên nắm kiến thức', 'Bài 10: Giải thích được sự phát triển tâm sinh lý ở trẻ em và phát triển Răng trẻ em.');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 13, 13, '5c634796-638d-4aae-bfb4-deb08f816766'::uuid, 'Học viên nắm kiến thức', 'Bài 11: Mô tả kỹ thuật chụp phim trong và ngoài miệng thông dụng và hiểu những nguyên tắc cơ bản về kỹ thuật chụp X quang nha khoa (K1).');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 14, 14, '5c634796-638d-4aae-bfb4-deb08f816766'::uuid, 'Học viên nắm kiến thức', 'Bài 12: Giải thích được quan niệm can thiệp tối thiểu và chăm sóc răng miệng toàn diện.');
 
 INSERT INTO public.program (is_active, department_id, id, syllabus_id, description, code, name) VALUES (true, 'e71ac0a8-fe10-40f9-a831-94bc0703641d', '73574861-62eb-4965-9ebc-cecbb50ea11f', '87b61585-3506-42cf-b433-38ac591f462c', 'Chương trình học về Răng Hàm Mặt cho bác sỹ', 'RHM23', 'Chương trình học về Răng Hàm Mặt');
-INSERT INTO public.program (is_active, department_id, id, syllabus_id, description, code, name) VALUES (true, 'ef0aee96-d60f-422c-9418-0487d35e530e', 'c2c6401d-b0ab-42b8-af7d-980260fcd963', null, 'Chương trình học Hệ tim', 'TIM23', 'Chương trình học Hệ tim');
+INSERT INTO public.program (is_active, department_id, id, syllabus_id, description, code, name) VALUES (true, 'ef0aee96-d60f-422c-9418-0487d35e530e', 'c2c6401d-b0ab-42b8-af7d-980260fcd963', '87b61585-3506-42cf-b433-38ac591f462c', 'Chương trình học Hệ tim', 'TIM23', 'Chương trình học Hệ tim');
 
 INSERT INTO public.program_content (program_id, trainer_id) VALUES ('73574861-62eb-4965-9ebc-cecbb50ea11f', '3ae6a7fb-87a4-423e-8f38-d1313e710a00');
 INSERT INTO public.program_content (program_id, trainer_id) VALUES ('73574861-62eb-4965-9ebc-cecbb50ea11f', 'ff5a3c78-2642-4d4d-a793-b2cabdabde17');

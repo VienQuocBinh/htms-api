@@ -96,7 +96,7 @@ public class AttendanceServiceImpl implements AttendanceService {
                 if (aClass.getProgram().getId().equals(program.getId())) {
                     var list = attendanceRepository.findAllByTraineeIdAndClassId(traineeId, aClass.getId())
                             .orElse(List.of())
-                            .parallelStream()
+                            .stream()
                             .map((element) -> modelMapper.map(element, AttendanceDetail.class))
                             .toList();
 
