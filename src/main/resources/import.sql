@@ -84,21 +84,32 @@ INSERT INTO public.cycle (duration, id, description, name) VALUES (18, 'd99ae531
 INSERT INTO public.cycle (duration, id, description, name) VALUES (18, '426a3a28-aa82-4189-8748-54f0a2bf23ce', 'Chương trình đào tạo Bác sỹ Răng Hàm Mặt', 'Chương trình đào tạo Bác sỹ Răng Hàm Mặt');
 
 INSERT INTO public.syllabus (total_sessions, id, description, pass_criteria, "name") VALUES(20, '87b61585-3506-42cf-b433-38ac591f462c'::uuid, 'Tác phong hành nghề chuyên nghiệp theo những chuẩn mực đạo đức, pháp lý và tôn trọng các giá trị văn hóa đa dạng.', '5/10', 'Giáo trình đạo tạo bác sỹ chuyên khoa Răng Hàm Mặt');
+INSERT INTO public.syllabus (total_sessions, id, description, pass_criteria, "name") VALUES(25, 'a954d382-cb94-4f99-9259-c74e0968c460'::uuid, 'Chương trình đào tạo ngành Y học dự phòng nhằm tạo ra đội ngũ y bác sỹ y học dự phòng có tâm , có tài, kiến thức chuyên ngành vững chắc, nhằm đề xuất và tham gia tổ chức giải quyết có hiệu quả các vấn đề cơ bản của y tế dự phòng và sức khỏe cộng đồng, có khả năng tự học vươn lên đáp ứng nhu cầu chăm sóc và bảo vệ sức khỏe nhân dân.', '5/10', 'Giáo trình đạo tạo bác sỹ Y học dự phòng');
 
 INSERT INTO public.assessment_scheme (id, weight, syllabus_id, category) VALUES(1, 30.0, '87b61585-3506-42cf-b433-38ac591f462c'::uuid, 'ASSIGNMENT');
 INSERT INTO public.assessment_scheme (id, weight, syllabus_id, category) VALUES(2, 15.0, '87b61585-3506-42cf-b433-38ac591f462c'::uuid, 'QUIZ');
 INSERT INTO public.assessment_scheme (id, weight, syllabus_id, category) VALUES(3, 25.0, '87b61585-3506-42cf-b433-38ac591f462c'::uuid, 'PE');
 INSERT INTO public.assessment_scheme (id, weight, syllabus_id, category) VALUES(4, 30.0, '87b61585-3506-42cf-b433-38ac591f462c'::uuid, 'FE');
+INSERT INTO public.assessment_scheme (id, weight, syllabus_id, category) VALUES(5, 30.0, 'a954d382-cb94-4f99-9259-c74e0968c460'::uuid, 'ASSIGNMENT');
+INSERT INTO public.assessment_scheme (id, weight, syllabus_id, category) VALUES(6, 25.0, 'a954d382-cb94-4f99-9259-c74e0968c460'::uuid, 'QUIZ');
+INSERT INTO public.assessment_scheme (id, weight, syllabus_id, category) VALUES(7, 15.0, 'a954d382-cb94-4f99-9259-c74e0968c460'::uuid, 'PE');
+INSERT INTO public.assessment_scheme (id, weight, syllabus_id, category) VALUES(8, 30.0, 'a954d382-cb94-4f99-9259-c74e0968c460'::uuid, 'FE');
 
 INSERT INTO public.material (id, syllabus_id, description, link, "name") VALUES('2ac94cb1-8197-4469-ac18-1def4a4848d2'::uuid, '87b61585-3506-42cf-b433-38ac591f462c'::uuid, 'Giáo trình online', 'https://yhoctonghop.vn/giao-trinh-rang-ham-mat-y-hoc-tong-hop', 'Giáo trình răng hàm mặt');
 INSERT INTO public.material (id, syllabus_id, description, link, "name") VALUES('12631d0a-cb80-43cf-a9f0-64634a1587ff'::uuid, '87b61585-3506-42cf-b433-38ac591f462c'::uuid, 'Giáo trình online', 'http://asttmoh.vn/wp-content/uploads/2016/08/Chuan-NLCB-BS.RHM_Final-23.8.pdf', 'Giáo trình răng hàm mặt  PDF');
+INSERT INTO public.material (id, syllabus_id, description, link, "name") VALUES('eab33a57-7554-4f98-a623-0a49c933170c'::uuid, 'a954d382-cb94-4f99-9259-c74e0968c460'::uuid, 'Giáo trình online', 'https://trangtuyensinh.com.vn/chuong-trinh-dao-tao-nganh-y-hoc-du-phong.htm', 'Giáo trình dự phòng PDF');
+INSERT INTO public.material (id, syllabus_id, description, link, "name") VALUES('2f9391d4-ebed-4b5d-bf6c-4e6c635e96af'::uuid, 'a954d382-cb94-4f99-9259-c74e0968c460'::uuid, 'Giáo trình online', 'https://trangtuyensinh.com.vn/chuong-trinh-dao-tao-nganh-y-hoc-du-phong.htm', 'Bài tập PDF');
 
 INSERT INTO public."module" (module_no, id, syllabus_id, description, link) VALUES(1, '47085d6f-0df8-432d-993a-00c3fd870c5c'::uuid, '87b61585-3506-42cf-b433-38ac591f462c'::uuid, 'Nền tảng kiến thức; tổng hợp và đánh giá thông tin lâm sàng – cận ', NULL);
 INSERT INTO public."module" (module_no, id, syllabus_id, description, link) VALUES(2, '9966fd86-68e4-418b-b488-873db371419a'::uuid, '87b61585-3506-42cf-b433-38ac591f462c'::uuid, 'Dự phòng và tăng cường sức khỏe răng miệng Dự phòng và tăng cường sức khỏe răng miệng ', NULL);
+INSERT INTO public."module" (module_no, id, syllabus_id, description, link) VALUES(1, 'dc8afb9d-455a-49d6-a240-085edfc5e2f1'::uuid, 'a954d382-cb94-4f99-9259-c74e0968c460'::uuid, 'Đào tạo sinh viên ngành y có kiến thức khoa học cơ bản, khoa học xã hội nhân văn và y sinh học cơ sở làm nền tảng cho y học dự phòng;', NULL);
+INSERT INTO public."module" (module_no, id, syllabus_id, description, link) VALUES(2, 'ab3ffa15-fe8e-4955-9dc7-237ebf025503'::uuid, 'a954d382-cb94-4f99-9259-c74e0968c460'::uuid, 'Rèn luyện kiến thức để xác định các yếu tố tác động của môi trường tự nhiên, xã hội… đến sức khỏe mọi người. ', NULL);
 
 INSERT INTO public."session" (id, session_no, module_id) VALUES('a3b34ec9-2c49-4439-8ef5-b11b7e37eb5f'::uuid, 1, '47085d6f-0df8-432d-993a-00c3fd870c5c'::uuid);
 INSERT INTO public."session" (id, session_no, module_id) VALUES('2fdfebaf-560d-4623-89b9-56be33dfa840'::uuid, 2, '47085d6f-0df8-432d-993a-00c3fd870c5c'::uuid);
 INSERT INTO public."session" (id, session_no, module_id) VALUES('5c634796-638d-4aae-bfb4-deb08f816766'::uuid, 3, '9966fd86-68e4-418b-b488-873db371419a'::uuid);
+INSERT INTO public."session" (session_no, id, module_id) VALUES(1, '9934e5e7-10fd-474f-99a4-feae41bc6d38'::uuid, 'dc8afb9d-455a-49d6-a240-085edfc5e2f1'::uuid);
+INSERT INTO public."session" (session_no, id, module_id) VALUES(2, 'cf61919d-05fa-4ae5-925b-e556e66bf149'::uuid, 'ab3ffa15-fe8e-4955-9dc7-237ebf025503'::uuid);
 
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 1, 1, 'a3b34ec9-2c49-4439-8ef5-b11b7e37eb5f'::uuid, NULL, 'Giới thiệu môn học');
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 2, 2, 'a3b34ec9-2c49-4439-8ef5-b11b7e37eb5f'::uuid, 'Học viên nắm kiến thức', 'Bài 1: Có kiến thức khoa học cơ bản, y sinh học cơ sở làm nền tảng cho y học lâm ');
@@ -114,9 +125,17 @@ INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name")
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 12, 12, '5c634796-638d-4aae-bfb4-deb08f816766'::uuid, 'Học viên nắm kiến thức', 'Bài 10: Giải thích được sự phát triển tâm sinh lý ở trẻ em và phát triển Răng trẻ em.');
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 13, 13, '5c634796-638d-4aae-bfb4-deb08f816766'::uuid, 'Học viên nắm kiến thức', 'Bài 11: Mô tả kỹ thuật chụp phim trong và ngoài miệng thông dụng và hiểu những nguyên tắc cơ bản về kỹ thuật chụp X quang nha khoa (K1).');
 INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 14, 14, '5c634796-638d-4aae-bfb4-deb08f816766'::uuid, 'Học viên nắm kiến thức', 'Bài 12: Giải thích được quan niệm can thiệp tối thiểu và chăm sóc răng miệng toàn diện.');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 15, 1, '9934e5e7-10fd-474f-99a4-feae41bc6d38'::uuid, 'Học viên nắm kiến thức', 'Sinh học và di truyền');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 16, 2, '9934e5e7-10fd-474f-99a4-feae41bc6d38'::uuid, 'Học viên nắm kiến thức', 'Lý sinh');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 17, 3, '9934e5e7-10fd-474f-99a4-feae41bc6d38'::uuid, 'Học viên nắm kiến thức', 'Tin học ứng dụng');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 18, 4, '9934e5e7-10fd-474f-99a4-feae41bc6d38'::uuid, 'Học viên nắm kiến thức', 'Hoá học');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 19, 5, 'cf61919d-05fa-4ae5-925b-e556e66bf149'::uuid, 'Học viên nắm kiến thức', 'Giải phẫu I');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 20, 6, 'cf61919d-05fa-4ae5-925b-e556e66bf149'::uuid, 'Học viên nắm kiến thức', 'Giải phẫu II');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 21, 7, 'cf61919d-05fa-4ae5-925b-e556e66bf149'::uuid, 'Học viên nắm kiến thức', 'Mô phôi');
+INSERT INTO public.unit (duration, id, unit_no, session_id, description, "name") VALUES(1, 22, 8, 'cf61919d-05fa-4ae5-925b-e556e66bf149'::uuid, 'Học viên nắm kiến thức', 'Sinh lý học I');
 
 INSERT INTO public.program (is_active, department_id, id, syllabus_id, description, code, name) VALUES (true, 'e71ac0a8-fe10-40f9-a831-94bc0703641d', '73574861-62eb-4965-9ebc-cecbb50ea11f', '87b61585-3506-42cf-b433-38ac591f462c', 'Chương trình học về Răng Hàm Mặt cho bác sỹ', 'RHM23', 'Chương trình học về Răng Hàm Mặt');
-INSERT INTO public.program (is_active, department_id, id, syllabus_id, description, code, name) VALUES (true, 'ef0aee96-d60f-422c-9418-0487d35e530e', 'c2c6401d-b0ab-42b8-af7d-980260fcd963', '87b61585-3506-42cf-b433-38ac591f462c', 'Chương trình học Hệ tim', 'TIM23', 'Chương trình học Hệ tim');
+INSERT INTO public.program (is_active, department_id, id, syllabus_id, description, code, name) VALUES (true, 'ef0aee96-d60f-422c-9418-0487d35e530e', 'c2c6401d-b0ab-42b8-af7d-980260fcd963', 'a954d382-cb94-4f99-9259-c74e0968c460', 'Chương trình học Hệ tim', 'YDP23', 'Chương trình học Y học dự phòng');
 
 INSERT INTO public.program_content (program_id, trainer_id) VALUES ('73574861-62eb-4965-9ebc-cecbb50ea11f', '3ae6a7fb-87a4-423e-8f38-d1313e710a00');
 INSERT INTO public.program_content (program_id, trainer_id) VALUES ('73574861-62eb-4965-9ebc-cecbb50ea11f', 'ff5a3c78-2642-4d4d-a793-b2cabdabde17');

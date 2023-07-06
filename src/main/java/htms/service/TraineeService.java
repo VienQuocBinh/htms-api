@@ -22,6 +22,13 @@ public interface TraineeService {
 
     List<TraineeResponse> saveTraineesFromFile(MultipartFile file);
 
+    /**
+     * Get the overlapped schedule of trainee based on the given (class) general schedule
+     *
+     * @param id              trainee id
+     * @param generalSchedule given schedule to check with the trainee schedule
+     * @return {@code OverlappedSchedule}
+     */
     OverlappedSchedule getOverlappedScheduleOfTrainee(UUID id, String generalSchedule);
 
     TraineeResponse getTrainee(UUID id);
