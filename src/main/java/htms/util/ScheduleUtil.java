@@ -62,9 +62,10 @@ public class ScheduleUtil {
                 schedule.setRoom(Room.builder()
                         .id(roomId)
                         .build());
+                ZoneId asiaBangkokZone = ZoneId.of("Asia/Bangkok");
                 schedule.setDate(java.sql.Date.valueOf(nearestStartDate));
-                schedule.setStartTime(Date.from(nearestStartDate.atTime(startPartTime).atZone(ZoneId.systemDefault()).toInstant()));
-                schedule.setEndTime(Date.from(nearestStopDate.atTime(stopPartTime).atZone(ZoneId.systemDefault()).toInstant()));
+                schedule.setStartTime(Date.from(nearestStartDate.atTime(startPartTime).atZone(asiaBangkokZone).toInstant()));
+                schedule.setEndTime(Date.from(nearestStopDate.atTime(stopPartTime).atZone(asiaBangkokZone).toInstant()));
                 // Todo: create by uuid
                 schedule.setCreatedBy(UUID.fromString("b3a3aa34-0c11-4a0b-b036-f146f8c15aa3"));
 

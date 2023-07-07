@@ -23,6 +23,4 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Enrollme
     Optional<List<Enrollment>> findAllByClassIdAndStatus(
             @Param("classId") UUID classId,
             @Param("status") EnrollmentStatus status);
-
-    Optional<Enrollment> findByIdClazzIdAndIdTraineeId(UUID clazzId, UUID traineeId);
 }

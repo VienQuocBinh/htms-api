@@ -1,5 +1,6 @@
 package htms.service.impl;
 
+import htms.api.request.ClassUpdateRequest;
 import htms.api.request.EnrollmentRequest;
 import htms.api.response.EnrollmentResponse;
 import htms.common.constants.ClassStatus;
@@ -106,6 +107,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                     .overlappedSchedule(overlappedScheduleOfTrainee)
                     .build();
         }
+        // Update quantity of the class
+        int quantity = traineeService.getTraineesByClassId(request.getClassId()).size();
+        classService.update(ClassUpdateRequest.builder()
+                .id(clazz.getId())
+                .quantity(quantity + 1)
+                .build());
+
         return create(request);
     }
 }

@@ -71,7 +71,7 @@ public class TraineeServiceImpl implements TraineeService {
         // todo: handle exceptions
         return traineeRepository.findAllByClassId(classId)
                 .orElse(List.of())
-                .parallelStream()
+                .stream()
                 .map(trainees -> mapper.map(trainees, TraineeResponse.class))
                 .toList();
     }
@@ -222,6 +222,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public TraineeResponse getTrainee(UUID id) {
+        // todo: handle exception
         return mapper.map(traineeRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new), TraineeResponse.class);
     }

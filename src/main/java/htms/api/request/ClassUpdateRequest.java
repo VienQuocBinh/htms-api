@@ -11,7 +11,9 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassRequest {
+public class ClassUpdateRequest {
+    @org.hibernate.validator.constraints.UUID
+    private UUID id;
     private String name;
     private String generalSchedule;
     @org.hibernate.validator.constraints.UUID
