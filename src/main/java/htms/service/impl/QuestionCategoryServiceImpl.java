@@ -11,19 +11,15 @@ import htms.repository.QuestionCategoryRepository;
 import htms.repository.TrainerRepository;
 import htms.service.QuestionCategoryService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.autoconfigure.jms.artemis.ArtemisAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Service

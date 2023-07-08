@@ -1,7 +1,6 @@
 package htms.service;
 
 
-import htms.api.request.QuestionCategoryRequest;
 import htms.api.request.QuestionRequest;
 import htms.api.response.QuestionResponse;
 

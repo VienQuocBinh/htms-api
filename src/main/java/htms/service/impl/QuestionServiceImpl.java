@@ -8,7 +8,6 @@ import htms.repository.QuestionCategoryRepository;
 import htms.repository.QuestionRepository;
 import htms.repository.TrainerRepository;
 import htms.service.QuestionService;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service

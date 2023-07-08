@@ -1,6 +1,5 @@
 package htms.api.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import htms.api.domain.QuestionAnswerDetail;
 import htms.common.constants.QuestionStatus;
