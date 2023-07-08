@@ -29,8 +29,8 @@ public class Test {
 
     @OneToMany(mappedBy = "test", fetch = FetchType.LAZY)
     private List<TestScore> testScore;
-    @ManyToMany(mappedBy = "tests", fetch = FetchType.LAZY)
-    private List<Question> questions;
+//    @ManyToMany(mappedBy = "tests", fetch = FetchType.LAZY)
+//    private List<Question> questions;
     @OneToOne
     private Activity activity;
 }

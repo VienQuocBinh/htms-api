@@ -35,7 +35,7 @@ flyway {
 
 flywayMigrate.dependsOn classes, composeUp
 
-bootRun.dependsOn flywayClean, flywayMigrate
+//bootRun.dependsOn flywayClean, flywayMigrate
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

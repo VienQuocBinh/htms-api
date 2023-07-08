@@ -459,10 +459,16 @@ INSERT INTO public.topic (cycle_id, id, program_id, trainer_id, description, nam
 INSERT INTO public.activity (id, topic_id, description, material_link, name) VALUES ('74008bab-c1b5-4a5c-b265-eb017c9b4310', 'a64edcb5-a30b-47c5-a053-332cd2a10f6b', 'Link powerpoint', 'https://fake.link.com', 'Link powerpoint');
 INSERT INTO public.assignment (grade, due_date, start_date, activity_id, id, attachments, name, status) VALUES (null, '2023-06-26 22:12:18.000000', '2023-06-18 22:12:23.000000', '74008bab-c1b5-4a5c-b265-eb017c9b4310', 'c96da5e8-3df9-47ef-afe4-eeb48669d96d', null, 'Assignment 1', 'NOT_STARTED');
 
+INSERT INTO public.question_category (created_date, modified_date, id, parent, program_id, trainer_id, name, number_id, description) VALUES ('2023-07-08 11:17:32.159000', '2023-07-08 11:17:32.159000', 'fd52b422-fdd6-48d6-972e-e3dc664fa4b1', null, 'c2c6401d-b0ab-42b8-af7d-980260fcd963', '3ae6a7fb-87a4-423e-8f38-d1313e710a00', 'Default for ChÆ°Æ¡ng trÃ¬nh há»�c Há»‡ tim', null, null);
+INSERT INTO public.question_category (created_date, modified_date, id, parent, program_id, trainer_id, name, number_id, description) VALUES ('2023-07-08 11:17:54.898000', '2023-07-08 11:18:44.255000', 'd0be52a5-5726-4f91-9a8c-e35ba4b3ce41', 'fd52b422-fdd6-48d6-972e-e3dc664fa4b1', 'c2c6401d-b0ab-42b8-af7d-980260fcd963', '3ae6a7fb-87a4-423e-8f38-d1313e710a00', 'Unit 2', 'U002', 'Description for Unit 2');
 
-
-
-
-
-
-
+INSERT INTO public.question (default_mark, shuffle, created_date, modified_date, category_id, id, trainer, question_type, name, number_id, general_feedback, question_text, status, tags) VALUES (1, true, '2023-07-08 11:52:21.760000', '2023-07-08 11:52:21.760000', 'd0be52a5-5726-4f91-9a8c-e35ba4b3ce41', '710d099a-c6ae-44d6-bafe-628238291f67', '3ae6a7fb-87a4-423e-8f38-d1313e710a00', 'SINGLE', 'What is the correct answer of this question?', 'Q001', '', 'What is the correct answer of this question?', 'READY', 'Unit 2');
+INSERT INTO public.question_answer (fraction, position, id, question, answer_text, feedback) VALUES (0, 1, 'c94d464a-8e07-459e-a95c-9f6ba91b73f1', '216b6c1c-9830-45a0-84d0-e62006490b8d', 'This is incorrect', 'Not this');
+INSERT INTO public.question_answer (fraction, position, id, question, answer_text, feedback) VALUES (1, 2, '3fb9ba0e-b7f6-4c4c-97d1-9555581014f2', '216b6c1c-9830-45a0-84d0-e62006490b8d', 'This is correct answer', 'You are correct');
+INSERT INTO public.question_answer (fraction, position, id, question, answer_text, feedback) VALUES (0, 3, '70685016-8370-48c6-9ace-ffa5a50c09b9', '216b6c1c-9830-45a0-84d0-e62006490b8d', 'Not this one', 'Not this');
+INSERT INTO public.question_answer (fraction, position, id, question, answer_text, feedback) VALUES (0, 4, 'bfcce866-9f68-44ea-8927-9d4130d09700', '216b6c1c-9830-45a0-84d0-e62006490b8d', 'This is also wrong', 'Not this');
+INSERT INTO public.question (default_mark, shuffle, created_date, modified_date, category_id, id, trainer, question_type, name, number_id, general_feedback, question_text, status, tags) VALUES (1, true, '2023-07-08 12:43:37.024000', '2023-07-08 12:43:37.024000', 'd0be52a5-5726-4f91-9a8c-e35ba4b3ce41', '216b6c1c-9830-45a0-84d0-e62006490b8d', '3ae6a7fb-87a4-423e-8f38-d1313e710a00', 'SINGLE', 'What about this question?', 'Q002', '', 'What about this question?', 'READY', 'Unit 1');
+INSERT INTO public.question_answer (fraction, position, id, question, answer_text, feedback) VALUES (1, 1, 'c4c8e5dc-2bd9-478f-9f69-caca131b4a2c', '710d099a-c6ae-44d6-bafe-628238291f67', 'This is incorrect', 'Not this');
+INSERT INTO public.question_answer (fraction, position, id, question, answer_text, feedback) VALUES (0, 2, '1a03cb48-c46b-466c-aa58-99db5f378b1e', '710d099a-c6ae-44d6-bafe-628238291f67', 'This is correct answer', 'Not this');
+INSERT INTO public.question_answer (fraction, position, id, question, answer_text, feedback) VALUES (0, 3, '2b9c217e-9c53-436c-8744-fe87f3b5d9c5', '710d099a-c6ae-44d6-bafe-628238291f67', 'Not this one', 'Not this');
+INSERT INTO public.question_answer (fraction, position, id, question, answer_text, feedback) VALUES (0, 4, 'f60947fc-9aae-4c67-a9fa-752c4e6c8622', '710d099a-c6ae-44d6-bafe-628238291f67', 'This is also wrong', 'Not this');
