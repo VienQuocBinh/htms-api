@@ -1,13 +1,11 @@
 package htms.api.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -15,11 +13,10 @@ import java.util.UUID;
 @Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ActivityDetail {
+public class QuizQuestionAnswerResponse {
     private UUID id;
-    private String name;
-    private String description;
-    private String materialLink;
-    private List<AssignmentThumbnailInfo> assignments;
-    private TestThumbnailInfo test;
+    private String answerText;
+    private Double fraction;
+    private Integer position;
+    private String feedback;
 }

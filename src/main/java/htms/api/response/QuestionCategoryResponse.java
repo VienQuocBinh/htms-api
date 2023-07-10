@@ -1,37 +1,37 @@
-package htms.api.request;
+package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Date;
 import java.util.UUID;
 
-@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TopicRequest {
+public class QuestionCategoryResponse {
     private UUID id;
-    @NotNull
     private String name;
     private String description;
-    private UUID trainerId;
-    private UUID programId;
-    private List<TopicSlotRequest> slots;
+    private String numberId;
+    private Date craetedDate;
+    private Date modifiedDate;
+    private TrainerResponse trainer;
+    private ProgramResponse programResponse;
+    private ParentCategory parent;
 
-    @Data
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @Builder
+    @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class TopicSlotRequest {
+    static public class ParentCategory {
         private UUID id;
-        private Integer slot;
+        private String name;
     }
-
 }
