@@ -1,6 +1,7 @@
 package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import htms.api.domain.OverlappedSchedule;
 import htms.common.constants.EnrollmentStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,4 +24,6 @@ public class EnrollmentResponse {
     private String cancelReason;
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;
+    // Additional properties
+    private OverlappedSchedule overlappedSchedule;
 }

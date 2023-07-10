@@ -20,9 +20,9 @@ public class EnrollmentController {
     private final EnrollmentService enrollmentService;
 
     @PostMapping
-    @Operation(summary = "Trainee enrol to class")
-    private ResponseEntity<EnrollmentResponse> create(@RequestBody @Valid EnrollmentRequest request) {
-        return ResponseEntity.ok(enrollmentService.create(request));
+    @Operation(summary = "For trainee to enrol to the class")
+    private ResponseEntity<EnrollmentResponse> enrol(@RequestBody @Valid EnrollmentRequest request) {
+        return ResponseEntity.ok(enrollmentService.enrol(request));
     }
 
     @GetMapping("/class/{id}")

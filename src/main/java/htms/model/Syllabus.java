@@ -16,6 +16,7 @@ public class Syllabus {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    private String name;
     @Column(length = 1000)
     private String description;
     @Column(length = 1000)

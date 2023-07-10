@@ -2,11 +2,11 @@ package htms.service.impl;
 
 import htms.api.domain.CreateClassFormData;
 import htms.api.domain.OverlappedSchedule;
-import htms.api.request.ApprovalRequest;
-import htms.api.request.ClassRequest;
-import htms.api.request.EnrollmentRequest;
-import htms.api.request.ProfileUpdateRequest;
-import htms.api.response.*;
+import htms.api.request.*;
+import htms.api.response.ClassApprovalResponse;
+import htms.api.response.ClassResponse;
+import htms.api.response.ClassesApprovalResponse;
+import htms.api.response.EnrollmentResponse;
 import htms.common.constants.*;
 import htms.model.Class;
 import htms.model.*;
@@ -157,21 +157,14 @@ public class ClassServiceImpl implements ClassService {
                         .build(),
                 ClassApprovalStatus.PENDING);
 
-        // Assign trainees to the class, create enrollment status PENDING, update profile status PENDING
-        List<TraineeResponse> trainerResponses = new ArrayList<>();
-        request.getTraineeIds().forEach(traineeId -> {
-            enrollmentService.create(EnrollmentRequest.builder()
-                    .classId(clazz.getId())
-                    .traineeId(traineeId)
-                    .build());
-            trainerResponses.add(TraineeResponse.builder().id(traineeId).build());
-        });
-
-
+        // Assign trainees to the class, create enrollment status PENDING
+        request.getTraineeIds().forEach(traineeId -> enrollmentService.create(EnrollmentRequest.builder()
+                .classId(clazz.getId())
+                .traineeId(traineeId)
+                .build()));
         ClassResponse response = modelMapper.map(clazz, ClassResponse.class);
         // Set list of trainees of a class
-//        response.setTrainees(traineeService.getTraineesByClassId(clazz.getId()));
-        response.setTrainees(trainerResponses);
+        response.setTrainees(traineeService.getTraineesByClassId(clazz.getId()));
         return response;
     }
 
@@ -245,11 +238,11 @@ public class ClassServiceImpl implements ClassService {
                 // Create schedule, find the suitable room
                 scheduleService.createSchedulesOfClass(
                         clazz.getId(),
+                        clazz.getProgram().getId(),
                         clazz.getTrainer().getId(),
                         UUID.fromString("b49d2b9c-d8a1-473d-bafe-2207f62a034b"),
-                        clazz.getGeneralSchedule(),
                         clazz.getStartDate(),
-                        clazz.getEndDate());
+                        clazz.getEndDate(), clazz.getGeneralSchedule());
 
                 // Create attendances for the schedule
                 attendanceService.createAttendancesOfClass(clazz.getId());
@@ -302,5 +295,17 @@ public class ClassServiceImpl implements ClassService {
     public List<Class> getAllCurrentTakingClassesByTrainee(UUID id) {
         return classRepository.findAllCurrentTakingClassesByTrainee(id)
                 .orElse(List.of());
+    }
+
+    @Override
+    public ClassResponse update(ClassUpdateRequest request) {
+        // todo: handle exception
+        var clazz = classRepository.findById(request.getId())
+                .orElseThrow(EntityNotFoundException::new);
+//        clazz.setName(request.getName());
+        clazz.setQuantity(request.getQuantity());
+
+        classRepository.save(clazz);
+        return modelMapper.map(clazz, ClassResponse.class);
     }
 }

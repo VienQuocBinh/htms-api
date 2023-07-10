@@ -3,6 +3,7 @@ package htms.service;
 import htms.api.domain.CreateClassFormData;
 import htms.api.request.ApprovalRequest;
 import htms.api.request.ClassRequest;
+import htms.api.request.ClassUpdateRequest;
 import htms.api.response.ClassApprovalResponse;
 import htms.api.response.ClassResponse;
 import htms.api.response.ClassesApprovalResponse;
@@ -45,4 +46,6 @@ public interface ClassService {
     List<ClassResponse> getClassByProgramId(UUID programId, ClassStatus status);
 
     List<Class> getAllCurrentTakingClassesByTrainee(UUID id);
+
+    ClassResponse update(ClassUpdateRequest request);
 }

@@ -36,15 +36,4 @@ public class ScheduleController {
     public ResponseEntity<List<ScheduleResponse>> getScheduleOfTrainee(@PathVariable UUID id) {
         return ResponseEntity.ok(scheduleService.getScheduleOfTrainee(id));
     }
-
-//    @GetMapping("/test")
-//    @Operation(summary = "Dup Schedules")
-//    public ResponseEntity<OverlappedSchedule> getScheduleOfTrainee() {
-//        OverlappedSchedule duplicateSchedule = ScheduleUtil.getOverlappedSchedule(
-//                "Start{10:00,MON};Stop{11:00,MON};Start{17:00,MON};Stop{19:00,MON}",
-//                "Start{10:30,MON};Stop{12:00,MON};Start{17:00,MON};Stop{19:00,MON}",
-//                UUID.randomUUID());
-//
-//        return ResponseEntity.ok(duplicateSchedule);
-//    }
 }

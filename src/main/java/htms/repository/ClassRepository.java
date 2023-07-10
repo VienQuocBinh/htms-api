@@ -23,8 +23,10 @@ public interface ClassRepository extends JpaRepository<Class, UUID>, JpaSpecific
                 Trainee t join Enrollment e on t.id  = e.id.trainee.id\s
                 		  join Class c on c.id = e.id.clazz.id
                 where e.id.trainee.id = :traineeId
+                and (e.status = 'APPROVE' or e.status = 'PENDING')
+                and (c.status = 'OPENING' or c.status = 'PENDING' or c.status = 'PLANNING')
             """)
-    Optional<List<Class>> findAllCurrentTakingClassesByTrainee(@Param("traineeId") UUID traineeId); //  and e.status = 'APPROVE' and c.status = 'OPENING'
+    Optional<List<Class>> findAllCurrentTakingClassesByTrainee(@Param("traineeId") UUID traineeId);
 
     Optional<List<Class>> findAllByTrainer_Id(UUID trainerId);
 
