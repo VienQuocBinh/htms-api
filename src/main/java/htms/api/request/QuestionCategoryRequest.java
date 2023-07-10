@@ -1,4 +1,4 @@
-package htms.api.response;
+package htms.api.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -6,19 +6,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Date;
 import java.util.UUID;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ActivityResponse {
+public class QuestionCategoryRequest {
     private UUID id;
     private String name;
+    private String numberId;
     private String description;
-    private String materialLink;
-    private List<AssignmentThumbnailInfo> assignments;
-    private TestThumbnailInfo test;
+    private Date createdDate;
+    private Date modifiedDate;
+    private UUID trainerId;
+    private UUID programId;
+    private UUID parent;
 }

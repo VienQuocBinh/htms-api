@@ -22,9 +22,6 @@ public class Cycle {
     @Column(length = 1000)
     private String description;
     private Integer duration; // months
-
     @OneToMany(mappedBy = "cycle", fetch = FetchType.LAZY)
     private List<Class> classes;
-    @OneToMany(mappedBy = "cycle", fetch = FetchType.LAZY)
-    private List<Topic> topics;
 }

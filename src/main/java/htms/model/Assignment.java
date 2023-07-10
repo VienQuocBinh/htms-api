@@ -29,9 +29,8 @@ public class Assignment {
     @Enumerated(EnumType.STRING)
     private AssignmentStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "activity_id")
-    private Activity activity;
+    @OneToOne
+    private TopicSlot slot;
     @OneToMany(mappedBy = "assignment", fetch = FetchType.LAZY)
     private List<AssignmentSubmission> assignmentSubmissions;
 }
