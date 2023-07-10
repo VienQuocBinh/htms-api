@@ -56,13 +56,4 @@ public class QuestionCategory {
     private QuestionCategory parent;
     @OneToMany(mappedBy = "questionCategory", fetch = FetchType.LAZY)
     private List<Question> questions;
-
-//    public QuestionCategory(BaseEntityAuditingBuilder<?, ?> builder, UUID id,@NotNull String name, String description, Date createdDate, Date modifiedDate) {
-//        super(builder);
-//        this.id = id;
-//        this.name = name;
-//        this.description = description;
-//        this.createdDate = createdDate;
-//        this.modifiedDate = modifiedDate;
-//    }
 }

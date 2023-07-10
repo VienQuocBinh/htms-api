@@ -4,6 +4,7 @@ import htms.api.request.QuestionCategoryRequest;
 import htms.api.response.QuestionCategoryResponse;
 import htms.service.QuestionCategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class QuestionCategoryController {
     public ResponseEntity<QuestionCategoryResponse> getCategoryDetail(
             @PathVariable UUID category_id
     ) {
-        return ResponseEntity.ok(service.getQuestionCategoryDetail(category_id));
+        return new ResponseEntity<>(service.getQuestionCategoryDetail(category_id), HttpStatus.CREATED);
     }
 
     @PostMapping

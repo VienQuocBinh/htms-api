@@ -3,10 +3,12 @@ package htms.model;
 import htms.common.constants.QuestionStatus;
 import htms.common.constants.QuestionType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,12 +25,8 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(uniqueConstraints =
-        {
-                @UniqueConstraint(columnNames = {"number_id", "category_id"})
-        })
 @EntityListeners(AuditingEntityListener.class)
-public class Question {
+public class QuizQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -50,8 +48,7 @@ public class Question {
     @Column(name = "question_text", columnDefinition = "text")
     @NotNull(message = "question text cannot be null")
     private String questionText;
-    @Column(name = "default_mark", nullable = false)
-    @DecimalMin(value = "1", message = "Default mark must be greater than 0")
+    @Column(name = "default_mark")
     @NotNull(message = "Default mark cannot be null")
     private Double defaultMark;
     @Column(name = "general_feedback", columnDefinition = "text")
@@ -69,6 +66,16 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private QuestionCategory questionCategory;
-    @OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    List<QuestionAnswer> answers;
+    @OneToMany(mappedBy = "quizQuestion", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    List<QuizQuestionAnswer> answers;
+    @ManyToOne
+    private Quiz quiz;
+
+    private Integer slot; //keep order of the question in the question list;
+
+    // fields for random question
+    private boolean isRandomQuestion;
+    @ManyToOne(cascade = CascadeType.DETACH)
+    private QuestionCategory targetCategory;
+    private String targetTags;
 }

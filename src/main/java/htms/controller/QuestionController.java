@@ -5,6 +5,7 @@ import htms.api.response.QuestionResponse;
 import htms.service.QuestionService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,7 @@ public class QuestionController {
     public ResponseEntity<QuestionResponse> saveNewQuestion(
             @RequestBody QuestionRequest request
             ) throws Exception {
-        return ResponseEntity.ok(service.saveNewQuestion(request));
+        return new ResponseEntity<>(service.saveNewQuestion(request), HttpStatus.CREATED);
     }
 
     @PatchMapping

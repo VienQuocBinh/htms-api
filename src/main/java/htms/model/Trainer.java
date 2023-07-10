@@ -43,7 +43,8 @@ public class Trainer extends BaseEntityAuditing {
     private List<QuestionCategory> questionCategories;
     @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
     private List<Question> questions;
-
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
+    private List<Quiz> quizzes;
     public Trainer(BaseEntityAuditingBuilder<?, ?> builder, UUID id, @NotNull String name, @NotNull String phone, Date birthdate, Account account) {
         super(builder);
         this.id = id;

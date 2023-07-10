@@ -4,6 +4,10 @@ spring:
     username: user
     url: jdbc:postgresql://localhost:5432/htms
     password: '123456'
+    hikari:
+      data-source-properties:
+        useUnicode: "true"
+        characterEncoding: "UTF-8"
   jpa:
     properties:
       #      javax:
@@ -19,6 +23,7 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: false
+
   mail:
     host: smtp.gmail.com
     port: 587

@@ -37,8 +37,6 @@ public class Trainee extends BaseEntityAuditing {
     private Profile profile;
     @OneToMany(mappedBy = "trainee", fetch = FetchType.LAZY)
     private List<Attendance> attendances;
-    @OneToMany(mappedBy = "trainee", fetch = FetchType.LAZY)
-    private List<TestScore> scores;
     @OneToMany(mappedBy = "id.trainee", fetch = FetchType.LAZY)
     private List<Enrollment> enrollments;
 
@@ -52,7 +50,6 @@ public class Trainee extends BaseEntityAuditing {
         this.account = builder.account;
         this.profile = builder.profile;
         this.attendances = builder.attendances;
-        this.scores = builder.scores;
         this.enrollments = builder.enrollments;
     }
 }
