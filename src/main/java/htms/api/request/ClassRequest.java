@@ -1,5 +1,6 @@
 package htms.api.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Date;
@@ -12,18 +13,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClassRequest {
+    @NotNull(message = "Name not null")
     private String name;
     private String generalSchedule;
-    @org.hibernate.validator.constraints.UUID
     private UUID departmentId;
-    @org.hibernate.validator.constraints.UUID
     private UUID trainerId;
-    @org.hibernate.validator.constraints.UUID
     private UUID programId;
-    @org.hibernate.validator.constraints.UUID
     private UUID cycleId;
-    //    @org.hibernate.validator.constraints.UUID
-//    private UUID roomId;
+    //    private UUID roomId;
     private Integer quantity;
     private Integer minQuantity;
     private Integer maxQuantity;
@@ -31,4 +28,6 @@ public class ClassRequest {
     private Date endDate;
     // Additional properties
     private List<UUID> traineeIds; // request trainees to assign to the class
+    private boolean notRegistered; // true: open class directly, false: allow for trainees to enroll
+    private Date dueDate; // Deadline for making approval of the class
 }

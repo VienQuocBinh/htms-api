@@ -8,7 +8,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 public interface ProfileService {
-    ProfileResponse updateProfile(ProfileUpdateRequest request);
+    void updateProfile(ProfileUpdateRequest request);
 
     @Transactional
     List<ProfileResponse> createProfiles(List<ProfileRequest> request);

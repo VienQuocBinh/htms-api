@@ -29,6 +29,7 @@ public class ClassApproval {
     private Date createdDate;
     @CreatedBy
     private UUID createdBy;
+    private Date dueDate;
 
     @ManyToOne
     @JoinColumn(name = "class_id")

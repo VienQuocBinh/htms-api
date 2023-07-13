@@ -51,7 +51,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional(rollbackFor = {SQLException.class})
-    public EnrollmentResponse create(EnrollmentRequest request) {
+    public EnrollmentResponse create(EnrollmentRequest request, EnrollmentStatus status) {
         var id = EnrollmentId.builder()
                 .clazz(Class.builder()
                         .id(request.getClassId())
@@ -64,7 +64,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .map(enrollmentRepository.save(Enrollment.builder()
                         .id(id)
                         .enrollmentDate(new Date())
-                        .status(EnrollmentStatus.PENDING)
+                        .status(status)
                         .build()), EnrollmentResponse.class);
     }
 
@@ -114,6 +114,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .quantity(quantity + 1)
                 .build());
 
-        return create(request);
+        return create(request, EnrollmentStatus.PENDING);
     }
 }

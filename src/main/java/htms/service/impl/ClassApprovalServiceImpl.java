@@ -32,7 +32,8 @@ public class ClassApprovalServiceImpl implements ClassApprovalService {
                 .status(status)
                 .clazz(Class.builder()
                         .id(request.getId())
-                        .build());
+                        .build())
+                .dueDate(request.getDueDate());
         // if the data table is already has data, then create with id = latestId + 1
         if (currentLatestId.isPresent()) {
             Long currentId = (Long) entityManager.createNativeQuery("SELECT setval('class_approval_id_seq', " + currentLatestId.get() + ", true);")

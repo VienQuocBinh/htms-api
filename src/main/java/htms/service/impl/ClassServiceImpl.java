@@ -136,7 +136,7 @@ public class ClassServiceImpl implements ClassService {
                 .maxQuantity(request.getMaxQuantity())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .status(ClassStatus.PLANNING)
+                .status(request.isNotRegistered() ? ClassStatus.OPENING : ClassStatus.PLANNING)
                 .trainer(Trainer.builder()
                         .id(request.getTrainerId())
                         .build())
@@ -149,19 +149,59 @@ public class ClassServiceImpl implements ClassService {
                 .build();
         classRepository.save(clazz);
 
-        // create class approval with PENDING status
-        classApprovalService.create(
-                ApprovalRequest.builder()
-                        .comment("Lớp đang chờ duyệt")
-                        .id(clazz.getId())
-                        .build(),
-                ClassApprovalStatus.PENDING);
+        // Check the notRegister status. True: open class immediately, False: allow to enroll
+        if (request.isNotRegistered()) {
+            // create class approval with APPROVE_FOR_OPENING status
+            classApprovalService.create(
+                    ApprovalRequest.builder()
+                            .comment("Lớp đã được mở thành công")
+                            .id(clazz.getId())
+                            .dueDate(request.getDueDate())
+                            .build(),
+                    ClassApprovalStatus.APPROVE_FOR_OPENING);
 
-        // Assign trainees to the class, create enrollment status PENDING
-        request.getTraineeIds().forEach(traineeId -> enrollmentService.create(EnrollmentRequest.builder()
-                .classId(clazz.getId())
-                .traineeId(traineeId)
-                .build()));
+            // Assign trainees to the class, create enrollment status APPROVE
+            // Update trainees profile
+            request.getTraineeIds().forEach(traineeId -> {
+                enrollmentService.create(EnrollmentRequest.builder()
+                        .classId(clazz.getId())
+                        .traineeId(traineeId)
+                        .build(), EnrollmentStatus.APPROVE);
+
+                UUID profileId = traineeService.getTrainee(traineeId).getProfile().getId();
+                profileService.updateProfile(ProfileUpdateRequest.builder()
+                        .id(profileId)
+                        .status(ProfileStatus.STUDYING)
+                        .build());
+            });
+
+            // Create schedule, find the suitable room
+            scheduleService.createSchedulesOfClass(
+                    clazz.getId(),
+                    clazz.getProgram().getId(),
+                    clazz.getTrainer().getId(),
+                    UUID.fromString("b49d2b9c-d8a1-473d-bafe-2207f62a034b"),
+                    clazz.getStartDate(),
+                    clazz.getEndDate(), clazz.getGeneralSchedule());
+
+            // Create attendances for the schedule
+            attendanceService.createAttendancesOfClass(clazz.getId());
+        } else {
+            // create class approval with PENDING status
+            classApprovalService.create(
+                    ApprovalRequest.builder()
+                            .comment("Lớp đang chờ duyệt")
+                            .id(clazz.getId())
+                            .dueDate(request.getDueDate())
+                            .build(),
+                    ClassApprovalStatus.PENDING);
+            // Assign trainees to the class, create enrollment status PENDING
+            request.getTraineeIds().forEach(traineeId -> enrollmentService.create(EnrollmentRequest.builder()
+                    .classId(clazz.getId())
+                    .traineeId(traineeId)
+                    .build(), EnrollmentStatus.PENDING));
+        }
+
         ClassResponse response = modelMapper.map(clazz, ClassResponse.class);
         // Set list of trainees of a class
         response.setTrainees(traineeService.getTraineesByClassId(clazz.getId()));
