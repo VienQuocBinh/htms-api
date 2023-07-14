@@ -2,6 +2,7 @@ package htms.service.impl;
 
 import htms.api.response.*;
 import htms.common.constants.AttendanceStatus;
+import htms.common.exception.EntityNotFoundException;
 import htms.model.Attendance;
 import htms.model.Class;
 import htms.model.Schedule;
@@ -29,7 +30,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     private ProgramService programService;
 
     @Autowired
-    public void setScheduleService(ScheduleService scheduleService) {
+    public void setScheduleService(@Lazy ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
 
@@ -114,5 +115,14 @@ public class AttendanceServiceImpl implements AttendanceService {
             traineeAttendanceResponse.add(attendanceBuilder.build());
         }
         return traineeAttendanceResponse;
+    }
+
+    @Override
+    public AttendanceDetail getAttendanceByTraineeIdAndScheduleId(UUID traineeId, UUID scheduleId) {
+        var attendance = attendanceRepository.findBySchedule_IdAndTrainee_Id(scheduleId, traineeId)
+                .orElseThrow(() -> new EntityNotFoundException(Attendance.class,
+                        "trainee id", traineeId,
+                        "schedule id", scheduleId));
+        return modelMapper.map(attendance, AttendanceDetail.class);
     }
 }

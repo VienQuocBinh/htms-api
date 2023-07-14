@@ -4,13 +4,11 @@ import htms.model.Attendance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, UUID> {
 
     @Query("""
@@ -21,6 +19,13 @@ public interface AttendanceRepository extends JpaRepository<Attendance, UUID> {
             """)
     Optional<List<Attendance>> findAllByClassId(@Param("classId") UUID classId);
 
+    /**
+     * Returns a list of trainee's attendances for the given OPENING class
+     *
+     * @param traineeId {@code traineeId}
+     * @param classId   {@code classId}
+     * @return a list of trainee's attendances {@code Optional<List<Attendance>>}
+     */
     @Query("""
             select a from Attendance a
                         join Schedule s on s.id = a.schedule.id
@@ -30,4 +35,13 @@ public interface AttendanceRepository extends JpaRepository<Attendance, UUID> {
             """)
     Optional<List<Attendance>> findAllByTraineeIdAndClassId(@Param("traineeId") UUID traineeId,
                                                             @Param("classId") UUID classId);
+
+    /**
+     * Get the Attendance of the specified schedule of the trainee.
+     *
+     * @param scheduleId the schedule of the trainee
+     * @param traineeId  the trainee
+     * @return the Attendance of the specified schedule of the trainee
+     */
+    Optional<Attendance> findBySchedule_IdAndTrainee_Id(UUID scheduleId, UUID traineeId);
 }

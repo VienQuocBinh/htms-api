@@ -18,7 +18,6 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public List<SessionResponse> getSessionByModuleId(UUID moduleId) {
-        // todo: handle exception
         return sessionRepository.findAllByModule_Id(moduleId)
                 .orElse(List.of())
                 .stream()

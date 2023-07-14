@@ -10,6 +10,7 @@ import htms.api.response.ProfileResponse;
 import htms.api.response.TraineeResponse;
 import htms.common.constants.ProfileStatus;
 import htms.common.constants.TraineeFileCellIndex;
+import htms.common.exception.EntityNotFoundException;
 import htms.common.specification.TraineeSpecification;
 import htms.model.Account;
 import htms.model.Class;
@@ -19,7 +20,6 @@ import htms.repository.TraineeRepository;
 import htms.service.*;
 import htms.util.AccountUtil;
 import htms.util.ScheduleUtil;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -68,7 +68,6 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public List<TraineeResponse> getTraineesByClassId(UUID classId) {
-        // todo: handle exceptions
         return traineeRepository.findAllByClassId(classId)
                 .orElse(List.of())
                 .stream()
@@ -222,8 +221,8 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public TraineeResponse getTrainee(UUID id) {
-        // todo: handle exception
         return mapper.map(traineeRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new), TraineeResponse.class);
+                        .orElseThrow(() -> new EntityNotFoundException(Trainee.class, "id", id)),
+                TraineeResponse.class);
     }
 }

@@ -2,6 +2,8 @@ package htms.service.impl;
 
 import htms.api.domain.FilterCondition;
 import htms.common.constants.FilterOperation;
+import htms.common.exception.BadRequestException;
+import htms.common.exception.IllegalArgumentException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -50,9 +52,7 @@ public class FilterBuilderService {
                 return PageRequest.of(currentPage - 1, pageSize);
             }
         } catch (Exception exception) {
-            // todo: handle exception
-            throw new IllegalArgumentException("Cannot create pageable " + exception.getMessage());
-//            throw new BadRequestException("Cannot create condition filter " + ex.getMessage())
+            throw new BadRequestException("Cannot create pageable " + exception.getMessage());
         }
     }
 
@@ -80,9 +80,7 @@ public class FilterBuilderService {
             return filters;
 
         } catch (Exception ex) {
-            // todo: handle exception
-            throw new IllegalArgumentException("Cannot create condition filter " + ex.getMessage());
-            //throw new BadRequestException("Cannot create condition filter " + ex.getMessage())
+            throw new BadRequestException("Cannot create condition filter " + ex.getMessage());
         }
 
     }

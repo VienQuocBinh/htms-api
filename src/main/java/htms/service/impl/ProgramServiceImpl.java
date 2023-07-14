@@ -4,12 +4,13 @@ import htms.api.request.ProgramRequest;
 import htms.api.response.ProgramResponse;
 import htms.api.response.TopicResponse;
 import htms.api.response.TrainerResponse;
+import htms.common.exception.EntityNotFoundException;
 import htms.model.Program;
+import htms.model.ProgramContent;
 import htms.repository.ClassRepository;
 import htms.repository.ProgramContentRepository;
 import htms.repository.ProgramRepository;
 import htms.service.ProgramService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -37,10 +38,9 @@ public class ProgramServiceImpl implements ProgramService {
 
     @Override
     public ProgramResponse getProgramDetails(UUID id) {
-        // todo: handle exceptions
         return programRepository.findById(id)
                 .map((element) -> mapper.map(element, ProgramResponse.class))
-                .orElseThrow();
+                .orElseThrow(() -> new EntityNotFoundException(Program.class, "id", id));
     }
 
     @Override
@@ -66,10 +66,22 @@ public class ProgramServiceImpl implements ProgramService {
 
     @Override
     public ProgramResponse getProgramContent(UUID programId, UUID trainerId) {
-        var content = contentRepository.findById_Program_IdAndId_Trainer_Id(programId, trainerId).stream().findFirst().orElseThrow(EntityNotFoundException::new);
+        var content = contentRepository.findById_Program_IdAndId_Trainer_Id(programId, trainerId).stream().findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(ProgramContent.class,
+                        "program id", programId,
+                        "trainer id", trainerId));
         var response = mapper.map(content.getId().getProgram(), ProgramResponse.class);
         response.setTopics(content.getTopics().stream().map(topic -> mapper.map(topic, TopicResponse.class)).toList());
         response.setTrainer(mapper.map(content.getId().getTrainer(), TrainerResponse.class));
         return response;
+    }
+
+    @Override
+    public List<ProgramResponse> getProgramsTheTrainerIsTeaching(UUID trainerId) {
+        var programs = programRepository.findAllCurrentTeachingProgramsByTrainerId(trainerId)
+                .orElse(Collections.emptyList());
+        return programs.stream()
+                .map((element) -> mapper.map(element, ProgramResponse.class))
+                .toList();
     }
 }
