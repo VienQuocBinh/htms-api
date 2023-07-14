@@ -2,6 +2,7 @@ package htms.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import htms.common.constants.AttendanceStatus;
 import lombok.*;
 
 import java.util.Date;
@@ -23,4 +24,6 @@ public class ScheduleResponse {
     private RoomResponse room;
     @JsonProperty("class")
     private ClassResponse clazz;
+    // Additional properties
+    private AttendanceStatus attendanceStatus;
 }

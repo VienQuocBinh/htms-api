@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -44,5 +42,10 @@ public class ProgramController {
             @RequestParam UUID trainerId
     ) {
         return ResponseEntity.ok(programService.getProgramContent(programId, trainerId));
+    }
+
+    @GetMapping("/trainer/{trainerId}")
+    public ResponseEntity<List<ProgramResponse>> getProgramsTheTrainerIsTeaching(@PathVariable UUID trainerId) {
+        return ResponseEntity.ok(programService.getProgramsTheTrainerIsTeaching(trainerId));
     }
 }

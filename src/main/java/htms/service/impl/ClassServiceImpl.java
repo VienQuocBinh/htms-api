@@ -8,12 +8,13 @@ import htms.api.response.ClassResponse;
 import htms.api.response.ClassesApprovalResponse;
 import htms.api.response.EnrollmentResponse;
 import htms.common.constants.*;
+import htms.common.exception.CreateClassException;
+import htms.common.exception.EntityNotFoundException;
 import htms.model.Class;
 import htms.model.*;
 import htms.repository.ClassRepository;
 import htms.service.*;
 import htms.util.ClassUtil;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +92,10 @@ public class ClassServiceImpl implements ClassService {
     @Override
     @Transactional(rollbackFor = {SQLException.class})
     public ClassResponse createClass(ClassRequest request) {
+        if (request.getTraineeIds().size() > request.getMaxQuantity()) {
+            throw new CreateClassException("The number of trainees can not be greater than max quantity");
+        }
+
         boolean hasOverlap = false;
         // Check the schedule of trainer
         OverlappedSchedule overlappedScheduleOfTrainer = trainerService.getOverlappedScheduleOfTrainer(
@@ -131,12 +136,12 @@ public class ClassServiceImpl implements ClassService {
                 .code(classUtil.generateClassCode(request.getProgramId(), request.getStartDate()))
                 .createdBy(UUID.randomUUID())
                 .generalSchedule(request.getGeneralSchedule())
-                .quantity(request.getQuantity())
+                .quantity(request.getTraineeIds().size())
                 .minQuantity(request.getMinQuantity())
                 .maxQuantity(request.getMaxQuantity())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .status(ClassStatus.PLANNING)
+                .status(request.getNotRegistered() ? ClassStatus.OPENING : ClassStatus.PLANNING)
                 .trainer(Trainer.builder()
                         .id(request.getTrainerId())
                         .build())
@@ -149,19 +154,60 @@ public class ClassServiceImpl implements ClassService {
                 .build();
         classRepository.save(clazz);
 
-        // create class approval with PENDING status
-        classApprovalService.create(
-                ApprovalRequest.builder()
-                        .comment("Lớp đang chờ duyệt")
-                        .id(clazz.getId())
-                        .build(),
-                ClassApprovalStatus.PENDING);
+        // Check the notRegister option status. True: open class immediately, False: allow to enroll
+        if (request.getNotRegistered()) {
+            // create class approval with APPROVE_FOR_OPENING status
+            classApprovalService.create(
+                    ApprovalRequest.builder()
+                            .comment("Lớp đã được mở thành công")
+                            .id(clazz.getId())
+                            .dueDate(request.getDueDate())
+                            .build(),
+                    ClassApprovalStatus.APPROVE_FOR_OPENING);
 
-        // Assign trainees to the class, create enrollment status PENDING
-        request.getTraineeIds().forEach(traineeId -> enrollmentService.create(EnrollmentRequest.builder()
-                .classId(clazz.getId())
-                .traineeId(traineeId)
-                .build()));
+            // Assign trainees to the class, create enrollment status APPROVE
+            // Update trainees profile
+            request.getTraineeIds().forEach(traineeId -> {
+                // Check role
+                enrollmentService.create(EnrollmentRequest.builder()
+                        .classId(clazz.getId())
+                        .traineeId(traineeId)
+                        .build(), EnrollmentStatus.APPROVE);
+
+                UUID profileId = traineeService.getTrainee(traineeId).getProfile().getId();
+                profileService.updateProfile(ProfileUpdateRequest.builder()
+                        .id(profileId)
+                        .status(ProfileStatus.STUDYING)
+                        .build());
+            });
+
+            // Create schedule, find the suitable room
+            scheduleService.createSchedulesOfClass(
+                    clazz.getId(),
+                    clazz.getProgram().getId(),
+                    clazz.getTrainer().getId(),
+                    UUID.fromString("b49d2b9c-d8a1-473d-bafe-2207f62a034b"),
+                    clazz.getStartDate(),
+                    clazz.getEndDate(), clazz.getGeneralSchedule());
+
+            // Create attendances for the schedule
+            attendanceService.createAttendancesOfClass(clazz.getId());
+        } else {
+            // create class approval with PENDING status
+            classApprovalService.create(
+                    ApprovalRequest.builder()
+                            .comment("Lớp đang chờ duyệt")
+                            .id(clazz.getId())
+                            .dueDate(request.getDueDate())
+                            .build(),
+                    ClassApprovalStatus.PENDING);
+            // Assign trainees to the class, create enrollment status PENDING
+            request.getTraineeIds().forEach(traineeId -> enrollmentService.create(EnrollmentRequest.builder()
+                    .classId(clazz.getId())
+                    .traineeId(traineeId)
+                    .build(), EnrollmentStatus.PENDING));
+        }
+
         ClassResponse response = modelMapper.map(clazz, ClassResponse.class);
         // Set list of trainees of a class
         response.setTrainees(traineeService.getTraineesByClassId(clazz.getId()));
@@ -177,9 +223,8 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public ClassResponse getClassDetail(UUID id) {
-        // todo: handle exceptions
         var clazz = classRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException(Class.class, "id", id));
         var response = modelMapper.map(clazz, ClassResponse.class);
         // Get list of trainees in the class
         response.setTrainees(traineeService.getTraineesByClassId(id));
@@ -200,11 +245,11 @@ public class ClassServiceImpl implements ClassService {
         Set<UUID> approvalsClassIdSet = approvals.stream().map(classApproval -> classApproval.getClazz().getId()).collect(Collectors.toSet());
         classes = classes.stream().filter(aClass -> (aClass.getCode().contains(q) || aClass.getName().contains(q)) && approvalsClassIdSet.contains(aClass.getId())).toList();
         List<ClassApproval> finalApprovals = approvals;
-        // todo: handle exceptions
+
         return classes.stream().map(aClass -> {
             var model = modelMapper.map(aClass, ClassesApprovalResponse.class);
             var approvalStatus = finalApprovals.stream().filter(classApproval -> classApproval.getClazz().getId().equals(aClass.getId())).findFirst()
-                    .orElseThrow(EntityNotFoundException::new);
+                    .orElseThrow(() -> new EntityNotFoundException(Class.class, "id", aClass.getId()));
             model.setProgramCode(aClass.getCode());
             model.setStatus(approvalStatus.getStatus());
             return model;
@@ -213,7 +258,7 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public ClassApprovalResponse makeApproval(ApprovalRequest request, ClassApprovalStatus status) {
-        var clazz = classRepository.findById(request.getId()).orElseThrow(EntityNotFoundException::new);
+        var clazz = classRepository.findById(request.getId()).orElseThrow(() -> new EntityNotFoundException(Class.class, "id", request.getId()));
 
         switch (status) {
             case APPROVE_FOR_PUBLISHING -> clazz.setStatus(ClassStatus.PENDING);
@@ -299,9 +344,8 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public ClassResponse update(ClassUpdateRequest request) {
-        // todo: handle exception
         var clazz = classRepository.findById(request.getId())
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException(Class.class, "id", request.getId()));
 //        clazz.setName(request.getName());
         clazz.setQuantity(request.getQuantity());
 

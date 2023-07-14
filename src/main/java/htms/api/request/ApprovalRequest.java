@@ -2,13 +2,13 @@ package htms.api.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import htms.common.constants.ClassApprovalStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Builder
@@ -22,4 +22,5 @@ public class ApprovalRequest {
     private UUID id;
     @NotNull(message = "comment is required")
     private String comment;
+    private Date dueDate; // Deadline for making approval of the class
 }

@@ -1,7 +1,9 @@
 package htms.service;
 
 import htms.api.request.AccountRequest;
+import htms.api.request.LoginRequest;
 import htms.api.response.AccountResponse;
+import htms.api.response.LoginResponse;
 import htms.model.Account;
 import jakarta.transaction.Transactional;
 
@@ -18,4 +20,6 @@ public interface AccountService {
 
     @Transactional
     List<AccountResponse> createAccounts(List<AccountRequest> request);
+
+    LoginResponse login(LoginRequest request);
 }

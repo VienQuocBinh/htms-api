@@ -1,5 +1,6 @@
 package htms.service.impl;
 
+import htms.api.response.AttendanceDetail;
 import htms.api.response.ScheduleResponse;
 import htms.model.Schedule;
 import htms.repository.ScheduleRepository;
@@ -22,6 +23,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ModelMapper modelMapper;
     private final ScheduleRepository scheduleRepository;
     private final SyllabusService syllabusService;
+    private final AttendanceServiceImpl attendanceService;
 
     @Override
     public void createSchedulesOfClass(UUID classId, UUID programId, UUID trainerId, UUID roomId, Date startDate, Date endDate, String generalSchedule) {
@@ -67,9 +69,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.findAllByTraineeId(id)
                 .orElse(List.of())
                 .stream()
-                .map((element) -> modelMapper.map(
-                        element,
-                        ScheduleResponse.class))
+                .map((element) -> {
+                    ScheduleResponse map = modelMapper.map(element,
+                            ScheduleResponse.class);
+                    AttendanceDetail attendanceByTraineeIdAndScheduleId = attendanceService.getAttendanceByTraineeIdAndScheduleId(id, element.getId());
+                    map.setAttendanceStatus(attendanceByTraineeIdAndScheduleId.getStatus());
+                    return map;
+                })
                 .toList();
     }
 }

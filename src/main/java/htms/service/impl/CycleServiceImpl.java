@@ -2,6 +2,7 @@ package htms.service.impl;
 
 import htms.api.request.CycleRequest;
 import htms.api.response.CycleResponse;
+import htms.common.exception.EntityNotFoundException;
 import htms.model.Cycle;
 import htms.repository.CycleRepository;
 import htms.service.CycleService;
@@ -27,9 +28,9 @@ public class CycleServiceImpl implements CycleService {
 
     @Override
     public CycleResponse getCycleDetails(UUID id) {
-        // todo: handle exceptions
         return modelMapper.map(
-                cycleRepository.findById(id).orElseThrow(),
+                cycleRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException(Cycle.class, "id", id)),
                 CycleResponse.class);
     }
 

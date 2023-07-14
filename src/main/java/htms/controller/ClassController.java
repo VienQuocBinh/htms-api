@@ -53,7 +53,7 @@ public class ClassController {
 
     @PostMapping
     @Operation(summary = "Create a new class")
-    public ResponseEntity<ClassResponse> createClass(@RequestBody ClassRequest request) {
+    public ResponseEntity<ClassResponse> createClass(@RequestBody @Valid ClassRequest request) {
         return ResponseEntity.status(201).body(classService.createClass(request));
     }
 
@@ -103,7 +103,7 @@ public class ClassController {
 
     @PostMapping("/approve-for-publishing")
     @Operation(summary = "Approve in first time about the class content")
-    public ResponseEntity<ClassApprovalResponse> approvePublishClass(@RequestBody ApprovalRequest request) {
+    public ResponseEntity<ClassApprovalResponse> approvePublishClass(@RequestBody @Valid ApprovalRequest request) {
         return ResponseEntity.ok(classService.makeApproval(request, ClassApprovalStatus.APPROVE_FOR_PUBLISHING));
     }
 

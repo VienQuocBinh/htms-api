@@ -16,9 +16,10 @@ public interface EnrollmentService {
      * Create new Enrollment with APPROVE status
      *
      * @param request {@link EnrollmentRequest}
+     * @param status  {@link EnrollmentStatus}
      * @return {@link EnrollmentResponse}
      */
-    EnrollmentResponse create(EnrollmentRequest request);
+    EnrollmentResponse create(EnrollmentRequest request, EnrollmentStatus status);
 
     EnrollmentResponse update(UUID classId, UUID traineeId, EnrollmentStatus status, String cancelReason);
 

@@ -7,15 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,8 +24,7 @@ public class QuestionController {
     @GetMapping
     public ResponseEntity<List<QuestionResponse>> getListOfQuestionsByCategoryAndListTags(
             @RequestParam @NotNull UUID categoryId,
-            @RequestParam(required = false) String tags
-            ) throws Exception {
+            @RequestParam(required = false) String tags) throws Exception {
         List<String> tagsArray;
         if (tags == null || tags.isEmpty()) {
             tagsArray = Collections.emptyList();
@@ -45,29 +36,25 @@ public class QuestionController {
 
     @GetMapping("/{question_id}")
     public ResponseEntity<QuestionResponse> getQuestionDetail(
-            @PathVariable UUID question_id
-    ) {
+            @PathVariable UUID question_id) {
         return ResponseEntity.ok(service.getQuestionDetail(question_id));
     }
 
     @PostMapping
     public ResponseEntity<QuestionResponse> saveNewQuestion(
-            @RequestBody QuestionRequest request
-            ) throws Exception {
+            @RequestBody QuestionRequest request) throws Exception {
         return new ResponseEntity<>(service.saveNewQuestion(request), HttpStatus.CREATED);
     }
 
     @PatchMapping
     public ResponseEntity<QuestionResponse> updateNewQuestion(
-            @RequestBody QuestionRequest request
-    ) throws Exception {
+            @RequestBody QuestionRequest request) throws Exception {
         return ResponseEntity.ok(service.updateQuestion(request));
     }
 
     @DeleteMapping("/{question_id}")
     public ResponseEntity<QuestionResponse> deleteQuestion(
-            @PathVariable UUID question_id
-    ) {
+            @PathVariable UUID question_id) {
         return ResponseEntity.ok(service.delete(question_id));
     }
 }

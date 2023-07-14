@@ -9,6 +9,8 @@ import htms.service.ProfileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,18 +19,20 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@EnableAsync
 public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
     private final ModelMapper modelMapper;
 
     @Override
-    public ProfileResponse updateProfile(ProfileUpdateRequest request) {
+    @Async
+    public void updateProfile(ProfileUpdateRequest request) {
         // todo: handle exception
         var profile = profileRepository.findById(request.getId())
                 .orElseThrow();
         profile.setStatus(request.getStatus());
         profileRepository.save(profile);
-        return modelMapper.map(profile, ProfileResponse.class);
+//        return modelMapper.map(profile, ProfileResponse.class);
     }
 
     @Override
