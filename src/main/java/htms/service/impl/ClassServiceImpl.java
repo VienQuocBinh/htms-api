@@ -136,7 +136,7 @@ public class ClassServiceImpl implements ClassService {
                 .maxQuantity(request.getMaxQuantity())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .status(request.isNotRegistered() ? ClassStatus.OPENING : ClassStatus.PLANNING)
+                .status(request.getNotRegistered() ? ClassStatus.OPENING : ClassStatus.PLANNING)
                 .trainer(Trainer.builder()
                         .id(request.getTrainerId())
                         .build())
@@ -150,7 +150,7 @@ public class ClassServiceImpl implements ClassService {
         classRepository.save(clazz);
 
         // Check the notRegister status. True: open class immediately, False: allow to enroll
-        if (request.isNotRegistered()) {
+        if (request.getNotRegistered()) {
             // create class approval with APPROVE_FOR_OPENING status
             classApprovalService.create(
                     ApprovalRequest.builder()

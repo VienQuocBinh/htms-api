@@ -4,11 +4,11 @@ import htms.api.request.AccountRequest;
 import htms.api.request.LoginRequest;
 import htms.api.response.AccountResponse;
 import htms.api.response.LoginResponse;
+import htms.common.exception.EntityNotFoundException;
 import htms.model.Account;
 import htms.model.Role;
 import htms.repository.AccountRepository;
 import htms.service.AccountService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,7 +30,8 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse getAccountById(UUID id) {
         // TODO: implement exception handler
         return modelMapper.map(accountRepository.findById(id)
-                .orElseThrow(), AccountResponse.class);
+                        .orElseThrow(() -> new EntityNotFoundException(Account.class, "id", id)),
+                AccountResponse.class);
     }
 
     @Override
@@ -80,7 +81,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public LoginResponse login(LoginRequest request) {
         var account = accountRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException(
+                        Account.class,
+                        "email", request.getEmail(),
+                        "password", request.getPassword()));
         return LoginResponse.builder()
                 .id(account.getId())
                 .email(account.getEmail())
