@@ -1,21 +1,17 @@
 package htms.controller;
 
-import htms.api.request.QuizQuestionRequest;
 import htms.api.request.QuizRequest;
-import htms.api.response.QuizQuestionResponse;
 import htms.api.response.QuizResponse;
 import htms.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/topic/quiz")
 public class QuizController {

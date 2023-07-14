@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -15,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/bank")
 public class QuestionController {
@@ -26,7 +25,7 @@ public class QuestionController {
     public ResponseEntity<List<QuestionResponse>> getListOfQuestionsByCategoryAndListTags(
             @RequestParam @NotNull UUID categoryId,
             @RequestParam(required = false) String tags
-            ) throws Exception {
+    ) throws Exception {
         List<String> tagsArray;
         if (tags == null || tags.isEmpty()) {
             tagsArray = Collections.emptyList();
@@ -46,7 +45,7 @@ public class QuestionController {
     @PostMapping
     public ResponseEntity<QuestionResponse> saveNewQuestion(
             @RequestBody QuestionRequest request
-            ) throws Exception {
+    ) throws Exception {
         return new ResponseEntity<>(service.saveNewQuestion(request), HttpStatus.CREATED);
     }
 

@@ -6,13 +6,12 @@ import htms.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/topic")
 public class TopicController {
@@ -22,7 +21,7 @@ public class TopicController {
     public ResponseEntity<List<TopicResponse>> getProgramTopics(
             @RequestParam UUID trainerId,
             @RequestParam UUID programId
-            ) {
+    ) {
         return ResponseEntity.ok(service.getProgramTopics(programId, trainerId));
     }
 

@@ -1,11 +1,14 @@
 package htms.service.impl;
 
 import htms.api.request.AccountRequest;
+import htms.api.request.LoginRequest;
 import htms.api.response.AccountResponse;
+import htms.api.response.LoginResponse;
 import htms.model.Account;
 import htms.model.Role;
 import htms.repository.AccountRepository;
 import htms.service.AccountService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -72,5 +75,16 @@ public class AccountServiceImpl implements AccountService {
                 .map((element) -> modelMapper.map(
                         element,
                         AccountResponse.class)).toList();
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest request) {
+        var account = accountRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
+                .orElseThrow(EntityNotFoundException::new);
+        return LoginResponse.builder()
+                .id(account.getId())
+                .email(account.getEmail())
+                .role(account.getRole().getName())
+                .build();
     }
 }

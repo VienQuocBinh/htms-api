@@ -9,11 +9,12 @@ import java.util.UUID;
 
 @Entity
 @Builder
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Check(constraints = "((resource IS NOT NULL AND quiz IS NULL) " +
-                     "OR (quiz IS NOT NULL AND resource IS NULL))")
+        "OR (quiz IS NOT NULL AND resource IS NULL))")
 public class TopicSlot {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

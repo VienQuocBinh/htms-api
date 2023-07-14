@@ -6,13 +6,12 @@ import htms.service.QuestionCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/bank/category")
 public class QuestionCategoryController {
@@ -23,7 +22,7 @@ public class QuestionCategoryController {
     public ResponseEntity<List<QuestionCategoryResponse>> getAllByTrainerAndProgram(
             @RequestParam UUID trainerId,
             @RequestParam UUID programId
-            ){
+    ) {
         return ResponseEntity.ok(service.getAllByTrainerAndProgram(trainerId, programId));
     }
 
@@ -37,7 +36,7 @@ public class QuestionCategoryController {
     @PostMapping
     public ResponseEntity<QuestionCategoryResponse> save(
             @RequestBody QuestionCategoryRequest request
-            ) throws Exception {
+    ) throws Exception {
         return ResponseEntity.ok(service.saveNewCategory(request));
     }
 
