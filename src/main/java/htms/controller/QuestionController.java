@@ -24,8 +24,7 @@ public class QuestionController {
     @GetMapping
     public ResponseEntity<List<QuestionResponse>> getListOfQuestionsByCategoryAndListTags(
             @RequestParam @NotNull UUID categoryId,
-            @RequestParam(required = false) String tags
-    ) throws Exception {
+            @RequestParam(required = false) String tags) throws Exception {
         List<String> tagsArray;
         if (tags == null || tags.isEmpty()) {
             tagsArray = Collections.emptyList();
@@ -37,29 +36,25 @@ public class QuestionController {
 
     @GetMapping("/{question_id}")
     public ResponseEntity<QuestionResponse> getQuestionDetail(
-            @PathVariable UUID question_id
-    ) {
+            @PathVariable UUID question_id) {
         return ResponseEntity.ok(service.getQuestionDetail(question_id));
     }
 
     @PostMapping
     public ResponseEntity<QuestionResponse> saveNewQuestion(
-            @RequestBody QuestionRequest request
-    ) throws Exception {
+            @RequestBody QuestionRequest request) throws Exception {
         return new ResponseEntity<>(service.saveNewQuestion(request), HttpStatus.CREATED);
     }
 
     @PatchMapping
     public ResponseEntity<QuestionResponse> updateNewQuestion(
-            @RequestBody QuestionRequest request
-    ) throws Exception {
+            @RequestBody QuestionRequest request) throws Exception {
         return ResponseEntity.ok(service.updateQuestion(request));
     }
 
     @DeleteMapping("/{question_id}")
     public ResponseEntity<QuestionResponse> deleteQuestion(
-            @PathVariable UUID question_id
-    ) {
+            @PathVariable UUID question_id) {
         return ResponseEntity.ok(service.delete(question_id));
     }
 }

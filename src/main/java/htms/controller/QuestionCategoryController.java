@@ -21,36 +21,31 @@ public class QuestionCategoryController {
     @GetMapping
     public ResponseEntity<List<QuestionCategoryResponse>> getAllByTrainerAndProgram(
             @RequestParam UUID trainerId,
-            @RequestParam UUID programId
-    ) {
+            @RequestParam UUID programId) {
         return ResponseEntity.ok(service.getAllByTrainerAndProgram(trainerId, programId));
     }
 
     @GetMapping("/{category_id}")
     public ResponseEntity<QuestionCategoryResponse> getCategoryDetail(
-            @PathVariable UUID category_id
-    ) {
+            @PathVariable UUID category_id) {
         return new ResponseEntity<>(service.getQuestionCategoryDetail(category_id), HttpStatus.CREATED);
     }
 
     @PostMapping
     public ResponseEntity<QuestionCategoryResponse> save(
-            @RequestBody QuestionCategoryRequest request
-    ) throws Exception {
+            @RequestBody QuestionCategoryRequest request) throws Exception {
         return ResponseEntity.ok(service.saveNewCategory(request));
     }
 
     @PatchMapping
     public ResponseEntity<QuestionCategoryResponse> update(
-            @RequestBody QuestionCategoryRequest request
-    ) throws Exception {
+            @RequestBody QuestionCategoryRequest request) throws Exception {
         return ResponseEntity.ok(service.update(request));
     }
 
     @DeleteMapping("/{category_id}")
     public ResponseEntity<QuestionCategoryResponse> delete(
-            @PathVariable UUID category_id
-    ) {
+            @PathVariable UUID category_id) {
         return ResponseEntity.ok(service.delete(category_id));
     }
 

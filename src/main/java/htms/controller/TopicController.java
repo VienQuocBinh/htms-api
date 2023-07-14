@@ -20,8 +20,7 @@ public class TopicController {
     @GetMapping
     public ResponseEntity<List<TopicResponse>> getProgramTopics(
             @RequestParam UUID trainerId,
-            @RequestParam UUID programId
-    ) {
+            @RequestParam UUID programId) {
         return ResponseEntity.ok(service.getProgramTopics(programId, trainerId));
     }
 

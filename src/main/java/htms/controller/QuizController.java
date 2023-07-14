@@ -29,7 +29,8 @@ public class QuizController {
     }
 
     @PatchMapping
-    public ResponseEntity<QuizResponse> updateQuiz(@RequestBody QuizRequest request) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    public ResponseEntity<QuizResponse> updateQuiz(@RequestBody QuizRequest request)
+            throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         return ResponseEntity.ok(service.updateQuiz(request));
     }
 
@@ -37,6 +38,5 @@ public class QuizController {
     public ResponseEntity<QuizResponse> delete(@PathVariable UUID quiz_id) {
         return ResponseEntity.ok(service.deleteQuiz(quiz_id));
     }
-
 
 }
